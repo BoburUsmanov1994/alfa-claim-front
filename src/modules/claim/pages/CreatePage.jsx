@@ -9,7 +9,7 @@ const Styled = styled.div`
 
   .rodal-dialog {
     height: unset !important;
-    max-height: unset !important;
+    max-height: 80vh !important;
     top: 50% !important;
     bottom: unset !important;
     transform: translateY(-50%);

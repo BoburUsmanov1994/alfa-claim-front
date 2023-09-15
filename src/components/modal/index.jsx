@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Rodal from 'rodal';
 
 const Styled = styled.div`
-  z-index: 9999999;
+  z-index: 99999999;
   position: relative;
 
   .rodal-dialog {
