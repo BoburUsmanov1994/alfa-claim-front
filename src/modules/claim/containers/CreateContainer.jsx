@@ -2064,36 +2064,15 @@ const CreateContainer = () => {
                     footer={<Flex className={'mt-16'}><Button>Добавить</Button></Flex>}>
                     <Row align={'end'}>
                         <Col xs={12} className={' mt-15'}>
-                        <Flex justify={''}>
-                                            <Field
-                                                className={'mr-16'} style={{width: 75}}
-                                                property={{
-                                                    hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
-                                                    onChange: (val) => setPassportSeries(upperCase(val))
-                                                }}
-                                                name={'passportSeries'}
-                                                type={'input-mask'}
-                                            />
-                                            <Field property={{
-                                                hideLabel: true,
-                                                mask: '9999999',
-                                                placeholder: '1234567',
-                                                maskChar: '_',
-                                                onChange: (val) => setPassportNumber(val)
-                                            }} name={'passportNumber'} type={'input-mask'}/>
-
-                                            <Field className={'ml-15'}
-                                                   property={{
-                                                       hideLabel: true,
-                                                       placeholder: 'Дата рождения',
-                                                       onChange: (e) => setBirthDate(e)
-                                                   }}
-                                                   name={'birthDate'} type={'datepicker'}/>
-                                            <Button onClick={() => getInfo('applicant')} className={'ml-15'}
-                                                    type={'button'}>Получить
-                                                данные</Button>
-                                        </Flex>
-                                        </Col>
+                            <Row>
+                                <Col xs={3}>
+                                <Field params={{required: true}} defaultValue={get(applicantPerson, 'lastNameLatin')}
+                                           label={'Lastname'}
+                                           type={'input'}
+                                           name={'otherPropertyDamage.lastname'}/>
+                                </Col>
+                            </Row>
+                        </Col>
                     
                                         <Col xs={12}>
                             <hr className={'mt-15'}/>
@@ -2379,7 +2358,7 @@ const CreateContainer = () => {
                                         type={'select'}
                                         name={'applicant.organization.districtId'}/>
                                 </Col>
-                                <Col xs={3}>
+                                <Col xs={3} className={'mb-25'}>
                                     <Field
                                         params={{required: true}}
                                         options={areaTypesList}
