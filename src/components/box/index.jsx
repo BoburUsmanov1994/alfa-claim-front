@@ -5,7 +5,7 @@ const Styled = styled.div`
   padding: 40px;
   background: #FFFFFF;
   border: ${({outlined}) => outlined && '1px solid #CDCDCD'};
-  box-shadow: 0px 5px 49px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 5px 49px rgba(0, 0, 0, 0.06);
   border-radius: 5px;
 `;
 
