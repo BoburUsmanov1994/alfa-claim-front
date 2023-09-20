@@ -74,6 +74,20 @@ const CreateContainer = () => {
         regionId: null,
         list: []
     })
+    const [vehicleDamage, setVehicleDamage] = useState({
+        type: 'person',
+        seria: null,
+        number: null,
+        person: null,
+        birthDate: null,
+        regionId: null,
+        inn: null,
+        techSeria: null,
+        techNumber: null,
+        vehicle: null,
+        govNumber:null,
+        list: []
+    })
     const [propertyDamage, setPropertyDamage] = useState({
         type: 'person',
         inn: null,
@@ -206,6 +220,10 @@ const CreateContainer = () => {
                     birthDate: dayjs(get(healthDamage, 'birthDate')).format('YYYY-MM-DD'),
                     passportSeries: get(healthDamage, 'seria'),
                     passportNumber: get(healthDamage, 'number')
+                } : type == 'vehicleDamage' ? {
+                    birthDate: dayjs(get(vehicleDamage, 'birthDate')).format('YYYY-MM-DD'),
+                    passportSeries: get(vehicleDamage, 'seria'),
+                    passportNumber: get(vehicleDamage, 'number')
                 } : {
                     birthDate: dayjs(get(applicant, 'birthDate')).format('YYYY-MM-DD'),
                     passportSeries: get(applicant, 'seria'),
@@ -232,6 +250,9 @@ const CreateContainer = () => {
                     if (type == 'healthDamage') {
                         setHealthDamage(prev => ({...prev, person: get(data, 'result')}));
                     }
+                    if (type == 'vehicleDamage') {
+                        setVehicleDamage(prev => ({...prev, person: get(data, 'result')}));
+                    }
                 }
             }
         )
@@ -243,7 +264,7 @@ const CreateContainer = () => {
                     inn: get(responsible, 'inn')
                 } : type == 'owner' ? {
                     inn: get(owner, 'inn')
-                } : type == 'propertyDamage' ? {inn: get(propertyDamage, 'inn')} : {
+                } : type == 'propertyDamage' ? {inn: get(propertyDamage, 'inn')} : type == 'vehicleDamage' ? {inn: get(vehicleDamage, 'inn')} : {
                     inn: get(applicant, 'inn')
                 }
             },
@@ -261,28 +282,51 @@ const CreateContainer = () => {
                     if (type == 'owner') {
                         setApplicant(prev => ({...prev, organization: get(data, 'result')}));
                     }
+                    if (type == 'vehicleDamage') {
+                        setVehicleDamage(prev => ({...prev, organization: get(data, 'result')}));
+                    }
                 }
             }
         )
     }
 
-    const getVehicleInfo = () => {
-        if (govNumber && techPassportNumber && techPassportSeria) {
-            getVehicleInfoRequest({
-                    url: URLS.vehicleInfoProvider, attributes: {
-                        govNumber,
-                        techPassportNumber,
-                        techPassportSeria
+    const getVehicleInfo = (vehicle_type='vehicle') => {
+        if(vehicle_type == 'vehicleDamage') {
+            if (get(vehicleDamage,'govNumber') && get(vehicleDamage,'number') && get(vehicleDamage,'number')) {
+                getVehicleInfoRequest({
+                        url: URLS.vehicleInfoProvider, attributes: {
+                            govNumber:get(vehicleDamage,'govNumber'),
+                            techPassportNumber:get(vehicleDamage,'number'),
+                            techPassportSeria:get(vehicleDamage,'number')
+                        }
+                    },
+                    {
+                        onSuccess: ({data}) => {
+                            setVehicleDamage(prev=>({...prev,vehicle:get(data, 'result')}))
+                        }
                     }
-                },
-                {
-                    onSuccess: ({data}) => {
-                        setVehicle(get(data, 'result'))
+                )
+            } else {
+                toast.warn('Please fill all fields')
+            }
+        }else{
+            if (govNumber && techPassportNumber && techPassportSeria) {
+                getVehicleInfoRequest({
+                        url: URLS.vehicleInfoProvider, attributes: {
+                            govNumber,
+                            techPassportNumber,
+                            techPassportSeria
+                        }
+                    },
+                    {
+                        onSuccess: ({data}) => {
+                            setVehicle(get(data, 'result'))
+                        }
                     }
-                }
-            )
-        } else {
-            toast.warn('Please fill all fields')
+                )
+            } else {
+                toast.warn('Please fill all fields')
+            }
         }
     }
 
@@ -292,7 +336,6 @@ const CreateContainer = () => {
         if (isEqual(name, 'regionId')) {
             setRegionId(value)
         }
-
         if (isEqual(name, 'owner.organization.regionId')) {
             setRegionId(value)
         }
@@ -1477,7 +1520,7 @@ const CreateContainer = () => {
                                     <Table bordered hideThead={false}
                                            thead={['№ ', 'ПИНФЛ', 'Фамилия', 'Имя', 'Отчество', 'Action']}>
                                         {
-                                            get(healthDamage,'list',[]).map((item, index) => <tr>
+                                            get(healthDamage, 'list', []).map((item, index) => <tr>
 
                                                 <td>{index + 1}</td>
                                                 <td>{get(item, 'healthDamage.person.passportData.pinfl')}</td>
@@ -1577,27 +1620,30 @@ const CreateContainer = () => {
                     <Row align={'end'}>
                         <Col xs={9} className={' mt-15'}>
                             <Flex align={'items-end'}>
-                                <Field params={{required: true}} onChange={(e) => setGovNumber(e.target.value)}
+                                <Field params={{required: true}} onChange={(e) => setVehicleDamage(prev => ({
+                                    ...prev,
+                                    govNumber: e.target.value
+                                }))}
                                        className={'mr-16'}
                                        label={'Гос.номер'}
-                                       name={'vehicle.objects[0].vehicle.govNumber'}
+                                       name={'vehicleDamage.vehicle.govNumber'}
                                        type={'input'}
                                 />
                                 <Field params={{required: true}} className={'mr-16'}
-                                       onChange={(e) => setTechPassportSeria(e.target.value)}
-                                       name={'vehicle.objects[0].vehicle.techPassport.seria'}
+                                       onChange={(e) => setVehicleDamage(prev=>({...prev,techSeria:e.target.value}))}
+                                       name={'vehicleDamage.vehicle.techPassport.seria'}
                                        type={'input'}
                                        label={'Серия тех.паспорта'}
                                 />
 
-                                <Field params={{required: true}} onChange={(e) => setTechPassportNumber(e.target.value)}
-                                       name={'vehicle.objects[0].vehicle.techPassport.number'} type={'input'}
+                                <Field params={{required: true}} onChange={(e) => setVehicleDamage(prev=>({...prev,techNumber:e.target.value}))}
+                                       name={'vehicleDamage.vehicle.techPassport.number'} type={'input'}
                                        label={'Номер тех.паспорта'}
                                 />
 
                             </Flex></Col>
                         <Col xs={3}>
-                            <Button onClick={() => getVehicleInfo()} className={'ml-15'}
+                            <Button onClick={() => getVehicleInfo('vehicleDamage')} className={'ml-15'}
                                     type={'button'}>Получить
                                 данные</Button>
                         </Col>
@@ -1607,21 +1653,21 @@ const CreateContainer = () => {
                         <Col xs={4} className={'mt-15'}>
                             <Field params={{required: true}}
                                    options={vehicleTypeList}
-                                   defaultValue={get(vehicle, 'vehicleTypeId', 0)} label={'Вид ТС'}
+                                   defaultValue={get(vehicleDamage, 'vehicle.vehicleTypeId', 0)} label={'Вид ТС'}
                                    type={'select'}
-                                   name={'vehicle.objects[0].vehicle.vehicleTypeId'}/>
+                                   name={'vehicleDamage.vehicle.vehicleTypeId'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field params={{required: true}}
                                    defaultValue={get(vehicle, 'modelName')} label={'Модель ТС'}
                                    type={'input'}
-                                   name={'vehicle.objects[0].vehicle.modelCustomName'}/>
+                                   name={'vehicleDamage.vehicle.modelCustomName'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field params={{required: true}}
                                    defaultValue={get(vehicle, 'bodyNumber')} label={'Номер кузова (шасси)'}
                                    type={'input'}
-                                   name={'vehicle.objects[0].vehicle.bodyNumber'}/>
+                                   name={'vehicleDamage.vehicle.bodyNumber'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field
@@ -1629,7 +1675,7 @@ const CreateContainer = () => {
                                 defaultValue={get(vehicle, 'liftingCapacity', 0)} label={'Грузоподъемность'}
                                 property={{type: 'number'}}
                                 type={'input'}
-                                name={'vehicle.objects[0].vehicle.liftingCapacity'}/>
+                                name={'vehicleDamage.vehicle.liftingCapacity'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field
@@ -1665,7 +1711,6 @@ const CreateContainer = () => {
                     </Row>
                 </Form>
             </Modal>
-
 
 
             <Modal title={'Добавление Потерпевшие'} hide={() => setVisibleLifeDamage(false)}
