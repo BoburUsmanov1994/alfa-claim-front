@@ -65,6 +65,15 @@ const CreateContainer = () => {
         regionId: null,
         list: []
     })
+    const [healthDamage, setHealthDamage] = useState({
+        type: 'person',
+        seria: null,
+        number: null,
+        person: null,
+        birthDate: null,
+        regionId: null,
+        list: []
+    })
     const [propertyDamage, setPropertyDamage] = useState({
         type: 'person',
         inn: null,
@@ -85,6 +94,7 @@ const CreateContainer = () => {
     const [vehicleType, setVehicleType] = useState(null)
     const [otherParams, setOtherParams] = useState({})
     const [visibleLifeDamage, setVisibleLifeDamage] = useState(false);
+    const [visibleHealthDamage, setVisibleHealthDamage] = useState(false);
     const [visibleOtherPropertyDamage, setVisibleOtherPropertyDamage] = useState(false);
 
     const navigate = useNavigate();
@@ -192,6 +202,10 @@ const CreateContainer = () => {
                     birthDate: dayjs(get(lifeDamage, 'birthDate')).format('YYYY-MM-DD'),
                     passportSeries: get(lifeDamage, 'seria'),
                     passportNumber: get(lifeDamage, 'number')
+                } : type == 'healthDamage' ? {
+                    birthDate: dayjs(get(healthDamage, 'birthDate')).format('YYYY-MM-DD'),
+                    passportSeries: get(healthDamage, 'seria'),
+                    passportNumber: get(healthDamage, 'number')
                 } : {
                     birthDate: dayjs(get(applicant, 'birthDate')).format('YYYY-MM-DD'),
                     passportSeries: get(applicant, 'seria'),
@@ -214,6 +228,9 @@ const CreateContainer = () => {
                     }
                     if (type == 'lifeDamage') {
                         setLifeDamage(prev => ({...prev, person: get(data, 'result')}));
+                    }
+                    if (type == 'healthDamage') {
+                        setHealthDamage(prev => ({...prev, person: get(data, 'result')}));
                     }
                 }
             }
@@ -285,7 +302,9 @@ const CreateContainer = () => {
         if (isEqual(name, 'otherPropertyDamage.ownerPerson.regionId')) {
             setRegionId(value)
         }
-
+        if (isEqual(name, 'healthDamage.person.regionId')) {
+            setRegionId(value)
+        }
         if (isEqual(name, 'vehicle.techPassport.number')) {
             setTechPassportNumber(value)
         }
@@ -1450,7 +1469,7 @@ const CreateContainer = () => {
                             <Col xs={12}>
                                 <Flex justify={'flex-end'}>
                                     <Button
-                                        onClick={() => setVisibleLifeDamage(true)} className={'ml-15'}
+                                        onClick={() => setVisibleHealthDamage(true)} className={'ml-15'}
                                         type={'button'}>Добавить</Button></Flex>
                             </Col>
                             <Col xs={12}>
@@ -1458,19 +1477,19 @@ const CreateContainer = () => {
                                     <Table bordered hideThead={false}
                                            thead={['№ ', 'ПИНФЛ', 'Фамилия', 'Имя', 'Отчество', 'Action']}>
                                         {
-                                            [].map((item, index) => <tr>
+                                            get(healthDamage,'list',[]).map((item, index) => <tr>
 
                                                 <td>{index + 1}</td>
-                                                <td>{get(find(vehicleTypeList, (_vehicle) => get(_vehicle, 'value') == get(item, 'objects[0].vehicle.vehicleTypeId')), 'label', '-')}</td>
-                                                <td>{get(item, 'objects[0].vehicle.modelCustomName')}</td>
-                                                <td>{get(item, 'objects[0].vehicle.govNumber')}</td>
-                                                <td><NumberFormat value={get(item, 'insurancePremium', 0)}
-                                                                  displayType={'text'} thousandSeparator={' '}/></td>
-                                                <td><NumberFormat value={get(item, 'insuranceSum', 0)}
-                                                                  displayType={'text'} thousandSeparator={' '}/></td>
+                                                <td>{get(item, 'healthDamage.person.passportData.pinfl')}</td>
+                                                <td>{get(item, 'healthDamage.person.fullName.lastname')}</td>
+                                                <td>{get(item, 'healthDamage.person.fullName.firstname')}</td>
+                                                <td>{get(item, 'healthDamage.person.fullName.middlename')}</td>
 
                                                 <td><Trash2
-                                                    onClick={() => console.log([].filter((d, i) => i != index))}
+                                                    onClick={() => setHealthDamage((prev => ({
+                                                        ...prev,
+                                                        list: get(prev, 'list', []).filter((d, i) => i != index)
+                                                    })))}
                                                     className={'cursor-pointer'} color={'red'}/></td>
                                             </tr>)
                                         }
@@ -1646,6 +1665,8 @@ const CreateContainer = () => {
                     </Row>
                 </Form>
             </Modal>
+
+
 
             <Modal title={'Добавление Потерпевшие'} hide={() => setVisibleLifeDamage(false)}
                    visible={visibleLifeDamage}>
@@ -1825,6 +1846,209 @@ const CreateContainer = () => {
                                 label={'Address'}
                                 type={'input'}
                                 name={'lifeDamage.person.address'}/>
+                        </Col>
+
+                    </Row>
+                </Form>
+            </Modal>
+
+            <Modal title={'Добавление Потерпевшие'} hide={() => setVisibleHealthDamage(false)}
+                   visible={visibleHealthDamage}>
+                <Form
+                    formRequest={({data: item}) => {
+                        setHealthDamage(prev => ({...prev, list: [...get(prev, 'list', []), item]}));
+                        setVisibleHealthDamage(false);
+                    }}
+                    getValueFromField={(value, name) => getFieldData(name, value)}
+                    footer={<Flex className={'mt-16'}><Button>Добавить</Button></Flex>}>
+                    <Row align={'end'}>
+                        <Col xs={12} className={' mt-15'}>
+                            <Flex justify={''}>
+                                <Field
+                                    className={'mr-16'} style={{width: 75}}
+                                    property={{
+                                        hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
+                                        onChange: (val) => setHealthDamage(prev => ({...prev, seria: upperCase(val)}))
+                                    }}
+                                    name={'healthDamage.person.passportData.seria'}
+                                    type={'input-mask'}
+                                />
+                                <Field property={{
+                                    hideLabel: true,
+                                    mask: '9999999',
+                                    placeholder: '1234567',
+                                    maskChar: '_',
+                                    onChange: (val) => setHealthDamage(prev => ({...prev, number: val}))
+                                }} name={'healthDamage.person.passportData.number'} type={'input-mask'}/>
+
+                                <Field className={'ml-15'}
+                                       property={{
+                                           hideLabel: true,
+                                           placeholder: 'Дата рождения',
+                                           onChange: (e) => setHealthDamage(prev => ({...prev, birthDate: e}))
+                                       }}
+                                       name={'healthDamage.person.birthDate'} type={'datepicker'}/>
+                                <Button onClick={() => getInfo('healthDamage')} className={'ml-15'}
+                                        type={'button'}>Получить
+                                    данные</Button>
+                            </Flex></Col>
+
+                        <Col xs={12}>
+                            <hr className={'mt-15 mb-15'}/>
+                        </Col>
+
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   label={'Заявленный размер вреда'}
+                                   type={'input'}
+                                   name={'healthDamage.claimedDamage'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   label={'Дата документа'}
+                                   type={'datepicker'}
+                                   name={'healthDamage.medicalConclusion.documentDate'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   label={'Медицинское учреждение'}
+                                   type={'input'}
+                                   name={'healthDamage.medicalConclusion.medicalInstitution'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   label={'Наименование документа'}
+                                   type={'input'}
+                                   name={'healthDamage.medicalConclusion.documentName'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   label={'Номер документа'}
+                                   type={'input'}
+                                   name={'healthDamage.medicalConclusion.documentNumber'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(healthDamage, 'person.lastNameLatin')}
+                                   label={'Lastname'}
+                                   type={'input'}
+                                   name={'healthDamage.person.fullName.lastname'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(healthDamage, 'person.firstNameLatin')}
+                                   label={'Firstname'}
+                                   type={'input'}
+                                   name={'healthDamage.person.fullName.firstname'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(healthDamage, 'person.middleNameLatin')}
+                                   label={'Middlename'}
+                                   type={'input'}
+                                   name={'healthDamage.person.fullName.middlename'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(healthDamage, 'startDate')}
+                                   label={'Дата выдачи паспорта'}
+                                   type={'datepicker'}
+                                   name={'healthDamage.person.passportData.startDate'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(healthDamage, 'person.issuedBy')}
+                                   label={'Кем выдан'}
+                                   type={'input'}
+                                   name={'healthDamage.person.passportData.issuedBy'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                defaultValue={get(healthDamage, 'person.gender')}
+                                options={genderList}
+                                label={'Gender'}
+                                type={'select'}
+                                name={'healthDamage.person.gender'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field defaultValue={get(healthDamage, 'person.pinfl')}
+                                   label={'ПИНФЛ'} type={'input'}
+                                   name={'healthDamage.person.passportData.pinfl'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{
+                                    required: true,
+                                    pattern: {
+                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        message: 'Invalid format'
+                                    }
+                                }}
+                                defaultValue={get(healthDamage, 'person.phone')}
+                                label={'Phone'}
+                                type={'input'}
+                                property={{placeholder: '998XXXXXXXXX'}}
+                                name={'healthDamage.person.phone'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(healthDamage, 'person.email')}
+                                label={'Email'}
+                                type={'input'}
+                                name={'healthDamage.person.email'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                options={residentTypeList}
+                                defaultValue={get(healthDamage, 'person.residentType')}
+                                label={'Resident type'}
+                                type={'select'}
+                                name={'healthDamage.person.residentType'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                label={'Серия вод. удостоверения'}
+                                type={'input'}
+                                name={'healthDamage.person.driverLicenseSeria'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                label={'Номер вод. удостоверения'}
+                                type={'input'}
+                                name={'healthDamage.person.driverLicenseNumber'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(healthDamage, 'person.birthCountry')}
+                                label={'Country'}
+                                type={'select'}
+                                options={countryList}
+                                name={'healthDamage.person.countryId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                options={regionList}
+                                defaultValue={get(healthDamage, 'person.regionId')}
+                                label={'Region'}
+                                type={'select'}
+                                name={'healthDamage.person.regionId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                options={districtList}
+                                defaultValue={get(healthDamage, 'person.districtId')}
+                                label={'District'}
+                                type={'select'}
+                                name={'healthDamage.person.districtId'}/>
+                        </Col>
+
+                        <Col xs={6} className={'mb-25'}>
+                            <Field
+                                noMaxWidth
+                                params={{required: true}}
+                                defaultValue={get(healthDamage, 'person.address')}
+                                label={'Address'}
+                                type={'input'}
+                                name={'healthDamage.person.address'}/>
                         </Col>
 
                     </Row>
