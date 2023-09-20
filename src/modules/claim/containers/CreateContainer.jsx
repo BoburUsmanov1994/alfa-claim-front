@@ -56,6 +56,15 @@ const CreateContainer = () => {
         birthDate: null,
         regionId: null,
     })
+    const [lifeDamage, setLifeDamage] = useState({
+        type: 'person',
+        seria: null,
+        number: null,
+        person: null,
+        birthDate: null,
+        regionId: null,
+        list: []
+    })
     const [propertyDamage, setPropertyDamage] = useState({
         type: 'person',
         inn: null,
@@ -179,6 +188,10 @@ const CreateContainer = () => {
                     birthDate: dayjs(get(owner, 'birthDate')).format('YYYY-MM-DD'),
                     passportSeries: get(owner, 'seria'),
                     passportNumber: get(owner, 'number')
+                } : type == 'lifeDamage' ? {
+                    birthDate: dayjs(get(lifeDamage, 'birthDate')).format('YYYY-MM-DD'),
+                    passportSeries: get(lifeDamage, 'seria'),
+                    passportNumber: get(lifeDamage, 'number')
                 } : {
                     birthDate: dayjs(get(applicant, 'birthDate')).format('YYYY-MM-DD'),
                     passportSeries: get(applicant, 'seria'),
@@ -198,6 +211,9 @@ const CreateContainer = () => {
                     }
                     if (type == 'owner') {
                         setOwner(prev => ({...prev, person: get(data, 'result')}));
+                    }
+                    if (type == 'lifeDamage') {
+                        setLifeDamage(prev => ({...prev, person: get(data, 'result')}));
                     }
                 }
             }
@@ -481,18 +497,20 @@ const CreateContainer = () => {
                                                 ...prev,
                                                 type: 'person'
                                             }))}
-                                                    gray={!isEqual(get(applicant,'type'), 'person')} className={'mr-16'}
+                                                    gray={!isEqual(get(applicant, 'type'), 'person')}
+                                                    className={'mr-16'}
                                                     type={'button'}>Физ. лицо</Button>
                                             <Button onClick={() => setApplicant(prev => ({
                                                 ...prev,
                                                 type: 'organization'
                                             }))}
-                                                    gray={!isEqual(get(applicant,'type'), 'organization')} type={'button'}>Юр.
+                                                    gray={!isEqual(get(applicant, 'type'), 'organization')}
+                                                    type={'button'}>Юр.
                                                 лицо</Button>
                                         </Flex>
                                     </Col>
                                     <Col xs={8} className={'text-right'}>
-                                        {isEqual(get(applicant,'type'), 'person') && <Flex justify={'flex-end'}>
+                                        {isEqual(get(applicant, 'type'), 'person') && <Flex justify={'flex-end'}>
                                             <Field
                                                 className={'mr-16'} style={{width: 75}}
                                                 property={{
@@ -525,7 +543,7 @@ const CreateContainer = () => {
                                                     type={'button'}>Получить
                                                 данные</Button>
                                         </Flex>}
-                                        {isEqual(get(applicant,'type'), 'organization') && <Flex justify={'flex-end'}>
+                                        {isEqual(get(applicant, 'type'), 'organization') && <Flex justify={'flex-end'}>
                                             <Field
                                                 onChange={(e) => setApplicant(prev => ({...prev, inn: e.target.value}))}
                                                 property={{
@@ -760,13 +778,15 @@ const CreateContainer = () => {
                                         <Flex>
                                             <h4 className={'mr-16'}>Лицо, ответственное за причиненный вред </h4>
                                             <Button onClick={() => setResponsible(prev => ({...prev, type: 'person'}))}
-                                                    gray={!isEqual(get(responsible,'type'), 'person')} className={'mr-16'}
+                                                    gray={!isEqual(get(responsible, 'type'), 'person')}
+                                                    className={'mr-16'}
                                                     type={'button'}>Физ. лицо</Button>
                                             <Button onClick={() => setResponsible(prev => ({
                                                 ...prev,
                                                 type: 'organization'
                                             }))}
-                                                    gray={!isEqual(get(responsible,'type'), 'organization')} type={'button'}>Юр.
+                                                    gray={!isEqual(get(responsible, 'type'), 'organization')}
+                                                    type={'button'}>Юр.
                                                 лицо</Button>
                                         </Flex>
                                     </Col>
@@ -807,21 +827,22 @@ const CreateContainer = () => {
                                                     type={'button'}>Получить
                                                 данные</Button>
                                         </Flex>}
-                                        {isEqual(get(responsible,'type'), 'organization') && <Flex justify={'flex-end'}>
-                                            <Field onChange={(e) => setResponsible(prev => ({
-                                                ...prev,
-                                                inn: e.target.value
-                                            }))} property={{
-                                                hideLabel: true,
-                                                mask: '999999999',
-                                                placeholder: 'Inn',
-                                                maskChar: '_'
-                                            }} name={'responsibleForDamage.organization.inn'} type={'input-mask'}/>
+                                        {isEqual(get(responsible, 'type'), 'organization') &&
+                                            <Flex justify={'flex-end'}>
+                                                <Field onChange={(e) => setResponsible(prev => ({
+                                                    ...prev,
+                                                    inn: e.target.value
+                                                }))} property={{
+                                                    hideLabel: true,
+                                                    mask: '999999999',
+                                                    placeholder: 'Inn',
+                                                    maskChar: '_'
+                                                }} name={'responsibleForDamage.organization.inn'} type={'input-mask'}/>
 
-                                            <Button onClick={() => getOrgInfo('responsible')} className={'ml-15'}
-                                                    type={'button'}>Получить
-                                                данные</Button>
-                                        </Flex>}
+                                                <Button onClick={() => getOrgInfo('responsible')} className={'ml-15'}
+                                                        type={'button'}>Получить
+                                                    данные</Button>
+                                            </Flex>}
                                     </Col>
                                 </Row>
                             </Col>
@@ -1121,21 +1142,24 @@ const CreateContainer = () => {
                                     <Col xs={4}>
                                         <Flex>
                                             <h4 className={'mr-16'}>Лицо, ответственное за причиненный вред </h4>
-                                            <Button onClick={() => setOwner(prev=>({...prev,type:'person'}))}
-                                                    gray={!isEqual(get(owner,'type'), 'person')} className={'mr-16'}
+                                            <Button onClick={() => setOwner(prev => ({...prev, type: 'person'}))}
+                                                    gray={!isEqual(get(owner, 'type'), 'person')} className={'mr-16'}
                                                     type={'button'}>Физ. лицо</Button>
-                                            <Button onClick={() => setOwner(prev=>({...prev,type:'organization'}))}
-                                                    gray={!isEqual(get(owner,'type'), 'organization')} type={'button'}>Юр.
+                                            <Button onClick={() => setOwner(prev => ({...prev, type: 'organization'}))}
+                                                    gray={!isEqual(get(owner, 'type'), 'organization')} type={'button'}>Юр.
                                                 лицо</Button>
                                         </Flex>
                                     </Col>
                                     <Col xs={8} className={'text-right'}>
-                                        {isEqual(get(owner,'type'), 'person') && <Flex justify={'flex-end'}>
+                                        {isEqual(get(owner, 'type'), 'person') && <Flex justify={'flex-end'}>
                                             <Field
                                                 className={'mr-16'} style={{width: 75}}
                                                 property={{
                                                     hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
-                                                    onChange: (val) => setOwner(prev=>({...prev,seria: upperCase(val)}))
+                                                    onChange: (val) => setOwner(prev => ({
+                                                        ...prev,
+                                                        seria: upperCase(val)
+                                                    }))
                                                 }}
                                                 name={'responsibleVehicleInfo.ownerPerson.passportData.seria'}
                                                 type={'input-mask'}
@@ -1145,27 +1169,31 @@ const CreateContainer = () => {
                                                 mask: '9999999',
                                                 placeholder: '1234567',
                                                 maskChar: '_',
-                                                onChange: (val) => setOwner(prev=>({...prev,number: val}))
-                                            }} name={'responsibleVehicleInfo.ownerPerson.passportData.number'} type={'input-mask'}/>
+                                                onChange: (val) => setOwner(prev => ({...prev, number: val}))
+                                            }} name={'responsibleVehicleInfo.ownerPerson.passportData.number'}
+                                                   type={'input-mask'}/>
 
                                             <Field className={'ml-15'}
                                                    property={{
                                                        hideLabel: true,
                                                        placeholder: 'Дата рождения',
-                                                       onChange: (e) =>setOwner(prev=>({...prev,birthDate: e}))
+                                                       onChange: (e) => setOwner(prev => ({...prev, birthDate: e}))
                                                    }}
-                                                   name={'responsibleVehicleInfo.ownerPerson.birthDate'} type={'datepicker'}/>
+                                                   name={'responsibleVehicleInfo.ownerPerson.birthDate'}
+                                                   type={'datepicker'}/>
                                             <Button onClick={() => getInfo('owner')} className={'ml-15'}
                                                     type={'button'}>Получить
                                                 данные</Button>
                                         </Flex>}
                                         {isEqual(responsible, 'organization') && <Flex justify={'flex-end'}>
-                                            <Field onChange={(e) => setOwner(prev=>({...prev,inn:e.target.value}))} property={{
-                                                hideLabel: true,
-                                                mask: '999999999',
-                                                placeholder: 'Inn',
-                                                maskChar: '_'
-                                            }} name={'responsibleVehicleInfo.ownerOrganization.inn'} type={'input-mask'}/>
+                                            <Field onChange={(e) => setOwner(prev => ({...prev, inn: e.target.value}))}
+                                                   property={{
+                                                       hideLabel: true,
+                                                       mask: '999999999',
+                                                       placeholder: 'Inn',
+                                                       maskChar: '_'
+                                                   }} name={'responsibleVehicleInfo.ownerOrganization.inn'}
+                                                   type={'input-mask'}/>
 
                                             <Button onClick={() => getOrgInfo('owner')} className={'ml-15'}
                                                     type={'button'}>Получить
@@ -1177,7 +1205,7 @@ const CreateContainer = () => {
                             <Col xs={12}>
                                 <hr className={'mt-15 mb-15'}/>
                             </Col>
-                            {isEqual(get(owner,'type'), 'person') && <>
+                            {isEqual(get(owner, 'type'), 'person') && <>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field params={{required: true}}
                                            defaultValue={get(owner, 'person.lastNameLatin')}
@@ -1304,7 +1332,7 @@ const CreateContainer = () => {
                                         name={'responsibleVehicleInfo.ownerPerson.address'}/>
                                 </Col>
                             </>}
-                            {isEqual(get(owner,'type'), 'organization') && <>
+                            {isEqual(get(owner, 'type'), 'organization') && <>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field params={{required: true}} defaultValue={get(owner, 'organization.name')}
                                            label={'Наименование'} type={'input'}
@@ -1397,19 +1425,18 @@ const CreateContainer = () => {
                                     <Table bordered hideThead={false}
                                            thead={['№ ', 'ПИНФЛ', 'Фамилия', 'Имя', 'Отчество', 'Action']}>
                                         {
-                                            [].map((item, index) => <tr>
+                                            get(lifeDamage, 'list', []).map((item, index) => <tr>
 
                                                 <td>{index + 1}</td>
-                                                <td>{get(find(vehicleTypeList, (_vehicle) => get(_vehicle, 'value') == get(item, 'objects[0].vehicle.vehicleTypeId')), 'label', '-')}</td>
-                                                <td>{get(item, 'objects[0].vehicle.modelCustomName')}</td>
-                                                <td>{get(item, 'objects[0].vehicle.govNumber')}</td>
-                                                <td><NumberFormat value={get(item, 'insurancePremium', 0)}
-                                                                  displayType={'text'} thousandSeparator={' '}/></td>
-                                                <td><NumberFormat value={get(item, 'insuranceSum', 0)}
-                                                                  displayType={'text'} thousandSeparator={' '}/></td>
-
+                                                <td>{get(item, 'lifeDamage.person.passportData.pinfl')}</td>
+                                                <td>{get(item, 'lifeDamage.person.fullName.lastname')}</td>
+                                                <td>{get(item, 'lifeDamage.person.fullName.firstname')}</td>
+                                                <td>{get(item, 'lifeDamage.person.fullName.middlename')}</td>
                                                 <td><Trash2
-                                                    onClick={() => console.log([].filter((d, i) => i != index))}
+                                                    onClick={() => setLifeDamage((prev => ({
+                                                        ...prev,
+                                                        list: get(prev, 'list', []).filter((d, i) => i != index)
+                                                    })))}
                                                     className={'cursor-pointer'} color={'red'}/></td>
                                             </tr>)
                                         }
@@ -1622,363 +1649,186 @@ const CreateContainer = () => {
 
             <Modal title={'Добавление Потерпевшие'} hide={() => setVisibleLifeDamage(false)}
                    visible={visibleLifeDamage}>
-                {isLoadingVehicleInfo && <OverlayLoader/>}
-                {/*<Form*/}
-                {/*    formRequest={({data: item}) => {*/}
+                <Form
+                    formRequest={({data: item}) => {
+                        setLifeDamage(prev => ({...prev, list: [...get(prev, 'list', []), item]}));
+                        setVisibleLifeDamage(false);
+                    }}
+                    getValueFromField={(value, name) => getFieldData(name, value)}
+                    footer={<Flex className={'mt-16'}><Button>Добавить</Button></Flex>}>
+                    <Row align={'end'}>
+                        <Col xs={12} className={' mt-15'}>
+                            <Flex justify={''}>
+                                <Field
+                                    className={'mr-16'} style={{width: 75}}
+                                    property={{
+                                        hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
+                                        onChange: (val) => setLifeDamage(prev => ({...prev, seria: upperCase(val)}))
+                                    }}
+                                    name={'lifeDamage.person.passportData.seria'}
+                                    type={'input-mask'}
+                                />
+                                <Field property={{
+                                    hideLabel: true,
+                                    mask: '9999999',
+                                    placeholder: '1234567',
+                                    maskChar: '_',
+                                    onChange: (val) => setLifeDamage(prev => ({...prev, number: val}))
+                                }} name={'lifeDamage.person.passportData.number'} type={'input-mask'}/>
 
-                {/*    }}*/}
-                {/*    getValueFromField={(value, name) => getFieldData(name, value)}*/}
-                {/*    footer={<Flex className={'mt-16'}><Button>Добавить</Button></Flex>}>*/}
-                {/*    <Row align={'end'}>*/}
-                {/*        <Col xs={12} className={' mt-15'}>*/}
-                {/*            <Flex justify={''}>*/}
-                {/*                <Field*/}
-                {/*                    className={'mr-16'} style={{width: 75}}*/}
-                {/*                    property={{*/}
-                {/*                        hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',*/}
-                {/*                        onChange: (val) => setPassportSeries(upperCase(val))*/}
-                {/*                    }}*/}
-                {/*                    name={'passportSeries'}*/}
-                {/*                    type={'input-mask'}*/}
-                {/*                />*/}
-                {/*                <Field property={{*/}
-                {/*                    hideLabel: true,*/}
-                {/*                    mask: '9999999',*/}
-                {/*                    placeholder: '1234567',*/}
-                {/*                    maskChar: '_',*/}
-                {/*                    onChange: (val) => setPassportNumber(val)*/}
-                {/*                }} name={'passportNumber'} type={'input-mask'}/>*/}
+                                <Field className={'ml-15'}
+                                       property={{
+                                           hideLabel: true,
+                                           placeholder: 'Дата рождения',
+                                           onChange: (e) => setLifeDamage(prev => ({...prev, birthDate: e}))
+                                       }}
+                                       name={'lifeDamage.person.birthDate'} type={'datepicker'}/>
+                                <Button onClick={() => getInfo('lifeDamage')} className={'ml-15'}
+                                        type={'button'}>Получить
+                                    данные</Button>
+                            </Flex></Col>
 
-                {/*                <Field className={'ml-15'}*/}
-                {/*                       property={{*/}
-                {/*                           hideLabel: true,*/}
-                {/*                           placeholder: 'Дата рождения',*/}
-                {/*                           onChange: (e) => setBirthDate(e)*/}
-                {/*                       }}*/}
-                {/*                       name={'birthDate'} type={'datepicker'}/>*/}
-                {/*                <Button onClick={() => getInfo('applicant')} className={'ml-15'}*/}
-                {/*                        type={'button'}>Получить*/}
-                {/*                    данные</Button>*/}
-                {/*            </Flex></Col>*/}
+                        <Col xs={12}>
+                            <hr className={'mt-15 mb-15'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   label={'Информация о свидетельстве смерти'}
+                                   type={'input'}
+                                   name={'lifeDamage.deathCertificate'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   label={'Заявленный размер вреда'}
+                                   type={'input'}
+                                   name={'lifeDamage.claimedDamage'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(lifeDamage, 'person.lastNameLatin')}
+                                   label={'Lastname'}
+                                   type={'input'}
+                                   name={'lifeDamage.person.fullName.lastname'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(lifeDamage, 'person.firstNameLatin')}
+                                   label={'Firstname'}
+                                   type={'input'}
+                                   name={'lifeDamage.person.fullName.firstname'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(lifeDamage, 'person.middleNameLatin')}
+                                   label={'Middlename'}
+                                   type={'input'}
+                                   name={'lifeDamage.person.fullName.middlename'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(lifeDamage, 'startDate')}
+                                   label={'Дата выдачи паспорта'}
+                                   type={'datepicker'}
+                                   name={'lifeDamage.person.passportData.startDate'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}} defaultValue={get(lifeDamage, 'person.issuedBy')}
+                                   label={'Кем выдан'}
+                                   type={'input'}
+                                   name={'lifeDamage.person.passportData.issuedBy'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                defaultValue={get(lifeDamage, 'person.gender')}
+                                options={genderList}
+                                label={'Gender'}
+                                type={'select'}
+                                name={'lifeDamage.person.gender'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field defaultValue={get(lifeDamage, 'person.pinfl')}
+                                   label={'ПИНФЛ'} type={'input'}
+                                   name={'lifeDamage.person.passportData.pinfl'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{
+                                    required: true,
+                                    pattern: {
+                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        message: 'Invalid format'
+                                    }
+                                }}
+                                defaultValue={get(lifeDamage, 'person.phone')}
+                                label={'Phone'}
+                                type={'input'}
+                                property={{placeholder: '998XXXXXXXXX'}}
+                                name={'lifeDamage.person.phone'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(lifeDamage, 'person.email')}
+                                label={'Email'}
+                                type={'input'}
+                                name={'lifeDamage.person.email'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                options={residentTypeList}
+                                defaultValue={get(lifeDamage, 'person.residentType')}
+                                label={'Resident type'}
+                                type={'select'}
+                                name={'lifeDamage.person.residentType'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                label={'Серия вод. удостоверения'}
+                                type={'input'}
+                                name={'lifeDamage.person.driverLicenseSeria'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                label={'Номер вод. удостоверения'}
+                                type={'input'}
+                                name={'lifeDamage.person.driverLicenseNumber'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(lifeDamage, 'person.birthCountry')}
+                                label={'Country'}
+                                type={'select'}
+                                options={countryList}
+                                name={'lifeDamage.person.countryId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                options={regionList}
+                                defaultValue={get(lifeDamage, 'person.regionId')}
+                                label={'Region'}
+                                type={'select'}
+                                name={'lifeDamage.person.regionId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                options={districtList}
+                                defaultValue={get(lifeDamage, 'person.districtId')}
+                                label={'District'}
+                                type={'select'}
+                                name={'lifeDamage.person.districtId'}/>
+                        </Col>
 
-                {/*        <Col xs={12}>*/}
-                {/*            <hr className={'mt-15'}/>*/}
-                {/*        </Col>*/}
+                        <Col xs={6} className={'mb-25'}>
+                            <Field
+                                noMaxWidth
+                                params={{required: true}}
+                                defaultValue={get(lifeDamage, 'person.address')}
+                                label={'Address'}
+                                type={'input'}
+                                name={'lifeDamage.person.address'}/>
+                        </Col>
 
-                {/*        <Col xs={12} className={'mb-25'}><Title>Заявитель</Title></Col>*/}
-                {/*        <Col xs={12}>*/}
-                {/*            <Row>*/}
-                {/*                <Col xs={4}>*/}
-                {/*                    <Flex>*/}
-                {/*                        <h4 className={'mr-16'}>Заявитель </h4>*/}
-                {/*                        <Button onClick={() => setApplicant('person')}*/}
-                {/*                                gray={!isEqual(applicant, 'person')} className={'mr-16'}*/}
-                {/*                                type={'button'}>Физ. лицо</Button>*/}
-                {/*                        <Button onClick={() => setApplicant('organization')}*/}
-                {/*                                gray={!isEqual(applicant, 'organization')} type={'button'}>Юр.*/}
-                {/*                            лицо</Button>*/}
-                {/*                    </Flex>*/}
-                {/*                </Col>*/}
-                {/*                <Col xs={8} className={'text-right'}>*/}
-                {/*                    {isEqual(applicant, 'person') && <Flex justify={'flex-end'}>*/}
-                {/*                        <Field*/}
-                {/*                            className={'mr-16'} style={{width: 75}}*/}
-                {/*                            property={{*/}
-                {/*                                hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',*/}
-                {/*                                onChange: (val) => setPassportSeries(upperCase(val))*/}
-                {/*                            }}*/}
-                {/*                            name={'passportSeries'}*/}
-                {/*                            type={'input-mask'}*/}
-                {/*                        />*/}
-                {/*                        <Field property={{*/}
-                {/*                            hideLabel: true,*/}
-                {/*                            mask: '9999999',*/}
-                {/*                            placeholder: '1234567',*/}
-                {/*                            maskChar: '_',*/}
-                {/*                            onChange: (val) => setPassportNumber(val)*/}
-                {/*                        }} name={'passportNumber'} type={'input-mask'}/>*/}
-
-                {/*                        <Field className={'ml-15'}*/}
-                {/*                               property={{*/}
-                {/*                                   hideLabel: true,*/}
-                {/*                                   placeholder: 'Дата рождения',*/}
-                {/*                                   onChange: (e) => setBirthDate(e)*/}
-                {/*                               }}*/}
-                {/*                               name={'birthDate'} type={'datepicker'}/>*/}
-                {/*                        <Button onClick={() => getInfo('applicant')} className={'ml-15'}*/}
-                {/*                                type={'button'}>Получить*/}
-                {/*                            данные</Button>*/}
-                {/*                    </Flex>}*/}
-                {/*                    {isEqual(applicant, 'organization') && <Flex justify={'flex-end'}>*/}
-                {/*                        <Field onChange={(e) => setInn(e.target.value)} property={{*/}
-                {/*                            hideLabel: true,*/}
-                {/*                            mask: '999999999',*/}
-                {/*                            placeholder: 'Inn',*/}
-                {/*                            maskChar: '_'*/}
-                {/*                        }} name={'inn'} type={'input-mask'}/>*/}
-
-                {/*                        <Button onClick={() => getOrgInfo('applicant')} className={'ml-15'}*/}
-                {/*                                type={'button'}>Получить*/}
-                {/*                            данные</Button>*/}
-                {/*                    </Flex>}*/}
-                {/*                </Col>*/}
-                {/*            </Row>*/}
-                {/*        </Col>*/}
-                {/*        <Col xs={12}>*/}
-                {/*            <hr className={'mt-15 mb-15'}/>*/}
-                {/*        </Col>*/}
-                {/*        {isEqual(applicant, 'person') && <>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field params={{required: true}} defaultValue={get(applicantPerson, 'lastNameLatin')}*/}
-                {/*                       label={'Lastname'}*/}
-                {/*                       type={'input'}*/}
-                {/*                       name={'applicant.person.fullName.lastname'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field params={{required: true}} defaultValue={get(applicantPerson, 'firstNameLatin')}*/}
-                {/*                       label={'Firstname'}*/}
-                {/*                       type={'input'}*/}
-                {/*                       name={'applicant.person.fullName.firstname'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field params={{required: true}} defaultValue={get(applicantPerson, 'middleNameLatin')}*/}
-                {/*                       label={'Middlename'}*/}
-                {/*                       type={'input'}*/}
-                {/*                       name={'applicant.person.fullName.middlename'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field params={{required: true}} defaultValue={get(applicantPerson, 'startDate')}*/}
-                {/*                       label={'Дата выдачи паспорта'}*/}
-                {/*                       type={'datepicker'}*/}
-                {/*                       name={'applicant.person.passportData.startDate'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field params={{required: true}} defaultValue={get(applicantPerson, 'issuedBy')}*/}
-                {/*                       label={'Кем выдан'}*/}
-                {/*                       type={'input'}*/}
-                {/*                       name={'applicant.person.passportData.issuedBy'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    defaultValue={get(applicantPerson, 'gender')}*/}
-                {/*                    options={genderList}*/}
-                {/*                    label={'Gender'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    name={'insurant.person.gender'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field defaultValue={get(applicantPerson, 'pinfl')}*/}
-                {/*                       label={'ПИНФЛ'} type={'input'}*/}
-                {/*                       name={'applicant.person.passportData.pinfl'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    params={{*/}
-                {/*                        required: true,*/}
-                {/*                        pattern: {*/}
-                {/*                            value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,*/}
-                {/*                            message: 'Invalid format'*/}
-                {/*                        }*/}
-                {/*                    }}*/}
-                {/*                    defaultValue={get(applicantPerson, 'phone')}*/}
-                {/*                    label={'Phone'}*/}
-                {/*                    type={'input'}*/}
-                {/*                    property={{placeholder: '998XXXXXXXXX'}}*/}
-                {/*                    name={'applicant.person.phone'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    defaultValue={get(applicantPerson, 'email')}*/}
-                {/*                    label={'Email'}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.person.email'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    options={residentTypeList}*/}
-                {/*                    defaultValue={get(applicantPerson, 'residentType')}*/}
-                {/*                    label={'Resident type'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    name={'applicant.person.residentType'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    label={'Серия вод. удостоверения'}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.person.driverLicenseSeria'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    label={'Номер вод. удостоверения'}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.person.driverLicenseNumber'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    defaultValue={get(applicantPerson, 'birthCountry')}*/}
-                {/*                    label={'Country'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    options={countryList}*/}
-                {/*                    name={'applicant.person.countryId'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    options={regionList}*/}
-                {/*                    defaultValue={get(applicantPerson, 'regionId')}*/}
-                {/*                    label={'Region'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    name={'applicant.person.regionId'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    options={districtList}*/}
-                {/*                    defaultValue={get(applicantPerson, 'districtId')}*/}
-                {/*                    label={'District'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    name={'applicant.person.districtId'}/>*/}
-                {/*            </Col>*/}
-
-                {/*            <Col xs={3}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    options={areaTypesList}*/}
-                {/*                    defaultValue={get(applicantPerson, 'areaTypeId')}*/}
-                {/*                    label={'Тип местности'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    name={'areaTypeId'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={6} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    noMaxWidth*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    defaultValue={get(applicantPerson, 'address')}*/}
-                {/*                    label={'Address'}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.person.address'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={1} className={'mt-15'}>*/}
-                {/*                <Field*/}
-                {/*                    property={{disabled: true, type: 'hidden', hideLabel: true}}*/}
-                {/*                    defaultValue={passportSeries}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.person.passportData.seria'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={1} className={'mt-15'}>*/}
-                {/*                <Field*/}
-                {/*                    property={{disabled: true, type: 'hidden', hideLabel: true}}*/}
-                {/*                    defaultValue={passportNumber}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.person.passportData.number'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={1} className={'mt-15'}>*/}
-                {/*                <Field*/}
-                {/*                    property={{disabled: true, type: 'hidden', hideLabel: true}}*/}
-                {/*                    defaultValue={dayjs(birthDate).format("YYYY-MM-DD")}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.person.birthDate'}/>*/}
-                {/*            </Col>*/}
-                {/*        </>}*/}
-                {/*        {isEqual(applicant, 'organization') && <>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field params={{required: true}} defaultValue={get(applicantOrganization, 'name')}*/}
-                {/*                       label={'Наименование'} type={'input'}*/}
-                {/*                       name={'applicant.organization.name'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field label={'Руководитель'} type={'input'}*/}
-                {/*                       name={'applicant.organization.representativeName'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field label={'Должность'} type={'input'}*/}
-                {/*                       name={'applicant.organization.position'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field defaultValue={get(applicantOrganization, 'email')} label={'Email'} type={'input'}*/}
-                {/*                       name={'applicant.organization.email'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field defaultValue={get(applicantOrganization, 'phone')} params={{*/}
-                {/*                    required: true,*/}
-                {/*                    pattern: {*/}
-                {/*                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,*/}
-                {/*                        message: 'Invalid format'*/}
-                {/*                    }*/}
-                {/*                }}*/}
-                {/*                       property={{placeholder: '998XXXXXXXXX'}}*/}
-                {/*                       label={'Телефон'} type={'input'}*/}
-                {/*                       name={'applicant.organization.phone'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3}><Field defaultValue={parseInt(get(applicantOrganization, 'oked'))}*/}
-                {/*                               label={'Oked'} params={{required: true, valueAsString: true}}*/}
-                {/*                               options={okedList}*/}
-                {/*                               type={'select'}*/}
-                {/*                               name={'applicant.organization.oked'}/></Col>*/}
-
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field label={'Расчетный счет'} type={'input'}*/}
-                {/*                       name={'applicant.organization.checkingAccount'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3}><Field label={'Форма собственности'}*/}
-                {/*                               options={ownershipFormList}*/}
-                {/*                               type={'select'}*/}
-                {/*                               name={'insurant.organization.ownershipFormId'}/></Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    defaultValue={get(applicantOrganization, 'birthCountry', 210)}*/}
-                {/*                    label={'Country'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    options={countryList}*/}
-                {/*                    name={'applicant.organization.countryId'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3}><Field label={'Область'} params={{required: true}} options={regionList}*/}
-                {/*                               type={'select'}*/}
-                {/*                               name={'applicant.organization.regionId'}/></Col>*/}
-                {/*            <Col xs={3} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    options={districtList}*/}
-                {/*                    defaultValue={get(applicantOrganization, 'districtId')}*/}
-                {/*                    label={'District'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    name={'applicant.organization.districtId'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={3}>*/}
-                {/*                <Field*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    options={areaTypesList}*/}
-                {/*                    defaultValue={get(applicantOrganization, 'areaTypeId')}*/}
-                {/*                    label={'Тип местности'}*/}
-                {/*                    type={'select'}*/}
-                {/*                    name={'areaTypeId'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={6} className={'mb-25'}>*/}
-                {/*                <Field*/}
-                {/*                    noMaxWidth*/}
-                {/*                    params={{required: true}}*/}
-                {/*                    defaultValue={get(applicantOrganization, 'address')}*/}
-                {/*                    label={'Address'}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.organization.address'}/>*/}
-                {/*            </Col>*/}
-                {/*            <Col xs={1} className={'mt-15'}>*/}
-                {/*                <Field*/}
-                {/*                    property={{disabled: true, type: 'hidden', hideLabel: true}}*/}
-                {/*                    defaultValue={inn}*/}
-                {/*                    type={'input'}*/}
-                {/*                    name={'applicant.organization.inn'}/>*/}
-                {/*            </Col>*/}
-
-
-                {/*        </>}*/}
-
-
-                {/*    </Row>*/}
-                {/*</Form>*/}
+                    </Row>
+                </Form>
             </Modal>
 
             <Modal title={'Добавление Пострадавшее имущество'} hide={() => setVisibleOtherPropertyDamage(false)}
