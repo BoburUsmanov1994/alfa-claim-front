@@ -1659,20 +1659,20 @@ const CreateContainer = () => {
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field params={{required: true}}
-                                   defaultValue={get(vehicle, 'modelName')} label={'Модель ТС'}
+                                   defaultValue={get(vehicleDamage, 'vehicle.modelName')} label={'Модель ТС'}
                                    type={'input'}
                                    name={'vehicleDamage.vehicle.modelCustomName'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field params={{required: true}}
-                                   defaultValue={get(vehicle, 'bodyNumber')} label={'Номер кузова (шасси)'}
+                                   defaultValue={get(vehicleDamage, 'vehicle.bodyNumber')} label={'Номер кузова (шасси)'}
                                    type={'input'}
                                    name={'vehicleDamage.vehicle.bodyNumber'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field
                                 params={{valueAsNumber: true}}
-                                defaultValue={get(vehicle, 'liftingCapacity', 0)} label={'Грузоподъемность'}
+                                defaultValue={get(vehicleDamage, 'vehicle.liftingCapacity', 0)} label={'Грузоподъемность'}
                                 property={{type: 'number'}}
                                 type={'input'}
                                 name={'vehicleDamage.vehicle.liftingCapacity'}/>
@@ -1680,10 +1680,10 @@ const CreateContainer = () => {
                         <Col xs={4} className={'mt-15'}>
                             <Field
                                 params={{valueAsNumber: true}}
-                                defaultValue={get(vehicle, 'seats')} label={'Количество мест сидения'}
+                                defaultValue={get(vehicleDamage, 'vehicle.seats')} label={'Количество мест сидения'}
                                 property={{type: 'number', max: 1000}}
                                 type={'input'}
-                                name={'vehicle.objects[0].vehicle.numberOfSeats'}/>
+                                name={'vehicleDamage.vehicle.numberOfSeats'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field params={{required: true}} defaultValue={get(vehicle, 'issueYear')}
