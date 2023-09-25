@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Label from "../../../../components/ui/label";
 import {get, isEmpty, isFunction} from "lodash";
 import {ErrorMessage} from "@hookform/error-message";
 import {Calendar} from "react-feather";
 import dayjs from "dayjs";
 import ru from "date-fns/locale/ru"
+import "react-datepicker/dist/react-datepicker.css";
 
 const Styled = styled.div`
+
   .custom-datepicker {
     display: block;
     min-width: 275px;
@@ -26,12 +27,12 @@ const Styled = styled.div`
   }
 
   .custom__box {
-    position: relative;
+    position: ${({showTime}) => showTime ? 'static' : 'relative'};
     max-width: 400px;
 
     .custom__icon {
       position: absolute;
-      right: 8px;
+      right: ${({showTime}) => showTime ? '24px' : '8px'};;
       top: 10px;
     }
 
@@ -74,7 +75,7 @@ const CustomDatepicker = ({
         }
     }, [defaultValue])
     return (
-        <Styled {...rest}>
+        <Styled showTime={get(property, 'showTimeSelect')} {...rest}>
             <div className="form-group">
                 {!get(property, 'hideLabel', false) && <Label>{label ?? name}</Label>}
                 <div className={"custom__box"}>
@@ -89,6 +90,7 @@ const CustomDatepicker = ({
                                 setStartDate(date)
                             }
                         }}
+                        showTimeSelect={get(property, 'showTimeSelect')}
                         readOnly={disabled}
                     />
                     <Calendar className={'custom__icon'}/>
