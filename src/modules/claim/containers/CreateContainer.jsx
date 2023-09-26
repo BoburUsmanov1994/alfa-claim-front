@@ -385,7 +385,7 @@ const CreateContainer = () => {
                         setPropertyDamage(prev => ({...prev, organization: get(data, 'result')}));
                     }
                     if (type == 'owner') {
-                        setApplicant(prev => ({...prev, organization: get(data, 'result')}));
+                        setOwner(prev => ({...prev, organization: get(data, 'result')}));
                     }
                     if (type == 'vehicleDamage') {
                         setVehicleDamage(prev => ({...prev, organization: get(data, 'result')}));
@@ -456,7 +456,7 @@ const CreateContainer = () => {
         if (isEqual(name, 'healthDamage.person.regionId') || isEqual(name, 'healthDamage.organization.regionId')) {
             setHealthDamage(prev => ({...prev, regionId: value}))
         }
-        if (isEqual(name, 'responsible.person.regionId') || isEqual(name, 'responsible.organization.regionId')) {
+        if (isEqual(name, 'responsibleForDamage.person.regionId') || isEqual(name, 'responsibleForDamage.organization.regionId')) {
             setResponsible(prev => ({...prev, regionId: value}))
         }
         if (isEqual(name, 'vehicleDamage.vehicle.ownerPerson.regionId') || isEqual(name, 'vehicleDamage.vehicle.ownerOrganization.regionId')) {
@@ -465,10 +465,10 @@ const CreateContainer = () => {
         if (isEqual(name, 'lifeDamage.person.regionId')) {
             setLifeDamage(prev => ({...prev, regionId: value}))
         }
-        if (isEqual(name, 'vehicle.techPassport.number')) {
+        if (isEqual(name, 'responsibleVehicleInfo.techPassport.number')) {
             setTechPassportNumber(value)
         }
-        if (isEqual(name, 'vehicle.techPassport.seria')) {
+        if (isEqual(name, 'responsibleVehicleInfo.techPassport.seria')) {
             setTechPassportSeria(value)
         }
         setOtherParams(prev => ({...prev, [name]: value}))
@@ -488,10 +488,10 @@ const CreateContainer = () => {
         createRequest({
                 url: URLS.create, attributes: {
                     ...rest,
-                    lifeDamage: get(lifeDamage, 'list', []),
-                    healthDamage: get(healthDamage, 'list', []),
-                    vehicleDamage: get(vehicleDamage, 'list', []),
-                    otherPropertyDamage: get(propertyDamage, 'list', [])
+                    lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
+                    healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
+                    vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
+                    otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage'))
                 }
             },
             {
@@ -848,7 +848,7 @@ const CreateContainer = () => {
                                     <Field
                                         noMaxWidth
                                         params={{required: true}}
-                                        defaultValue={get(applicant, 'address')}
+                                        defaultValue={get(applicant, 'person.address')}
                                         label={'Address'}
                                         type={'input'}
                                         name={'applicant.person.address'}/>
@@ -1341,7 +1341,7 @@ const CreateContainer = () => {
                                                     type={'button'}>Получить
                                                 данные</Button>
                                         </Flex>}
-                                        {isEqual(responsible, 'organization') && <Flex justify={'flex-end'}>
+                                        {isEqual(get(owner, 'type'), 'organization') && <Flex justify={'flex-end'}>
                                             <Field onChange={(e) => setOwner(prev => ({...prev, inn: e.target.value}))}
                                                    property={{
                                                        hideLabel: true,
@@ -1700,7 +1700,7 @@ const CreateContainer = () => {
                 </Col>
             </Row>
             <Modal title={'Добавление пострадавшее TC'} hide={() => setVisible(false)} visible={visible}>
-                {isLoadingVehicleInfo && <OverlayLoader/>}
+                {(isLoadingVehicleInfo || isLoadingPersonalInfo || isLoadingOrganizationInfo) && <OverlayLoader/>}
                 <Form
                     formRequest={({data: item}) => {
                         setVehicleDamage(prev => ({...prev, list: [...get(prev, 'list', []), item]}));
@@ -1900,7 +1900,10 @@ const CreateContainer = () => {
                                     </Flex>}
                                     {isEqual(get(vehicleDamage, 'type'), 'organization') &&
                                         <Flex justify={'flex-start'}>
-                                            <Field onChange={(e) => setVehicleDamage(prev => ({inn: e.target.value}))}
+                                            <Field onChange={(e) => setVehicleDamage(prev => ({
+                                                ...prev,
+                                                inn: e.target.value
+                                            }))}
                                                    property={{
                                                        hideLabel: true,
                                                        mask: '999999999',
@@ -2137,6 +2140,7 @@ const CreateContainer = () => {
                     }}
                     getValueFromField={(value, name) => getFieldData(name, value)}
                     footer={<Flex className={'mt-16'}><Button>Добавить</Button></Flex>}>
+                    {isLoadingPersonalInfo && <OverlayLoader/>}
                     <Row align={'end'}>
                         <Col xs={12} className={' mt-15'}>
                             <Flex justify={''}>
@@ -2321,6 +2325,7 @@ const CreateContainer = () => {
                     }}
                     getValueFromField={(value, name) => getFieldData(name, value)}
                     footer={<Flex className={'mt-16'}><Button>Добавить</Button></Flex>}>
+                    {isLoadingPersonalInfo && <OverlayLoader/>}
                     <Row align={'end'}>
                         <Col xs={12} className={' mt-15'}>
                             <Flex justify={''}>
@@ -2517,7 +2522,7 @@ const CreateContainer = () => {
 
             <Modal title={'Добавление Пострадавшее имущество'} hide={() => setVisibleOtherPropertyDamage(false)}
                    visible={visibleOtherPropertyDamage}>
-                {isLoadingVehicleInfo && <OverlayLoader/>}
+                {(isLoadingVehicleInfo || isLoadingPersonalInfo || isLoadingOrganizationInfo) && <OverlayLoader/>}
                 <Form
                     formRequest={({data: item}) => {
                         setPropertyDamage(prev => ({...prev, list: [...get(prev, 'list', []), item]}));
@@ -2525,6 +2530,7 @@ const CreateContainer = () => {
                     }}
                     getValueFromField={(value, name) => getFieldData(name, value)}
                     footer={<Flex className={'mt-16'}><Button>Добавить</Button></Flex>}>
+
                     <Row align={'end'}>
                         <Col xs={12} className={' mt-15'}>
                             <Row>
@@ -2620,7 +2626,10 @@ const CreateContainer = () => {
                                     </Flex>}
                                     {isEqual(get(propertyDamage, 'type'), 'organization') &&
                                         <Flex justify={'flex-start'}>
-                                            <Field onChange={(e) => setPropertyDamage(prev => ({inn: e.target.value}))}
+                                            <Field onChange={(e) => setPropertyDamage(prev => ({
+                                                ...prev,
+                                                inn: e.target.value
+                                            }))}
                                                    property={{
                                                        hideLabel: true,
                                                        mask: '999999999',
@@ -2843,7 +2852,6 @@ const CreateContainer = () => {
                                     name={'otherPropertyDamage.ownerOrganization.address'}/>
                             </Col>
                         </>}
-
                     </Row>
                 </Form>
             </Modal>
