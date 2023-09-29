@@ -491,7 +491,7 @@ const CreateContainer = () => {
                 url: URLS.create, attributes: {
                     ...rest,
                     responsibleVehicleInfo:{...responsibleVehicleInfo,govNumber:govNumber},
-                    responsibleForDamage:{...responsibleForDamage,regionId:get(responsible,'responsibleForDamage.person.regionId',get(responsible,'responsibleForDamage.organization.regionId'))},
+                    responsibleForDamage:{...responsibleForDamage,regionId:get(responsible,'regionId')},
                     lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                     healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
                     vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
@@ -1292,7 +1292,7 @@ const CreateContainer = () => {
                                                name={'responsibleVehicleInfo.fullWeight'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={get(vehicle, 'seats')} params={{required: true}}
+                                        <Field defaultValue={parseInt(get(vehicle, 'seats'))} params={{required: true}}
                                                property={{type:'number'}}
                                                label={'Количество мест сидения'}
                                                type={'input'}
