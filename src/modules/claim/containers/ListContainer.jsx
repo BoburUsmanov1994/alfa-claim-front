@@ -42,31 +42,38 @@ const ListContainer = ({...rest}) => {
                 tableHeaderData={[
                     {
                         id: 3,
-                        key: 'seria',
-                        title: 'Policy seria',
+                        key: 'claimNumber',
+                        title: 'Номер претензионного дела',
                     },
                     {
                         id: 4,
-                        key: 'number',
-                        title: 'Policy number',
+                        key: 'claimDate',
+                        title: 'Дата претензионного дела',
                     },
                     {
                         id: 5,
-                        key: 'owner',
-                        title: 'Owner',
-                        render: ({row}) => get(row, 'owner.person') ? `${get(row, 'owner.person.fullName.lastname')} ${get(row, 'owner.person.fullName.firstname')}  ${get(row, 'owner.person.fullName.middlename')}` : get(row, 'owner.organization.name')
-                    },
-                    {
-                        id: 55,
-                        key: 'insurant',
-                        title: 'Isnurant',
-                        render: ({row}) => get(row, 'insurant.person') ? `${get(row, 'insurant.person.fullName.lastname')} ${get(row, 'insurant.person.fullName.firstname')}  ${get(row, 'insurant.person.fullName.middlename')}` : get(row, 'insurant.organization.name')
+                        key: 'polisSeria',
+                        title: 'Серия полиса',
                     },
                     {
                         id: 6,
-                        key: 'premium',
-                        title: 'Insurance premium',
-                        render: ({value}) => <NumberFormat displayType={'text'} thousandSeparator={' '} value={value}/>
+                        key: 'polisNumber',
+                        title: 'Номер полиса',
+                    },
+                    {
+                        id: 66,
+                        key: 'eventCircumstances.eventDateTime',
+                        title: 'Дата события',
+                    },
+                    {
+                        id: 67,
+                        key: 'eventCircumstances.eventDateTime',
+                        title: 'Время события',
+                    },
+                    {
+                        id: 68,
+                        key: 'eventCircumstances.eventDateTime',
+                        title: '',
                     },
                     {
                         id: 7,
