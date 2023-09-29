@@ -483,11 +483,15 @@ const CreateContainer = () => {
             passportNumber,
             passportSeries,
             inn,
+            responsibleForDamage,
+            responsibleVehicleInfo,
             ...rest
         } = data
         createRequest({
                 url: URLS.create, attributes: {
                     ...rest,
+                    responsibleVehicleInfo:{...responsibleVehicleInfo,govNumber:govNumber},
+                    responsibleForDamage:{...responsibleForDamage,regionId:get(responsible,'responsibleForDamage.person.regionId',get(responsible,'responsibleForDamage.organization.regionId'))},
                     lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                     healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
                     vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
@@ -701,7 +705,7 @@ const CreateContainer = () => {
                                                        placeholder: 'Дата рождения',
                                                        onChange: (e) => setApplicant(prev => ({...prev, birthDate: e}))
                                                    }}
-                                                   name={'birthDate'} type={'datepicker'}/>
+                                                   name={'applicant.person.birthDate'} type={'datepicker'}/>
                                             <Button onClick={() => getInfo('applicant')} className={'ml-15'}
                                                     type={'button'}>Получить
                                                 данные</Button>
@@ -1286,6 +1290,13 @@ const CreateContainer = () => {
                                                label={'Объем'}
                                                type={'input'}
                                                name={'responsibleVehicleInfo.fullWeight'}/>
+                                    </Col>
+                                    <Col xs={4} className="mb-25">
+                                        <Field defaultValue={get(vehicle, 'seats')} params={{required: true}}
+                                               property={{type:'number'}}
+                                               label={'Количество мест сидения'}
+                                               type={'input'}
+                                               name={'responsibleVehicleInfo.numberOfSeats'}/>
                                     </Col>
                                 </Row>
                             </Col>
