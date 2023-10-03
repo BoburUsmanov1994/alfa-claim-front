@@ -1248,51 +1248,49 @@ const CreateContainer = () => {
                                 <Row>
                                     <Col xs={4} className="mb-25">
                                         <Field defaultValue={get(vehicle, 'regionId')} options={regionList}
-                                               params={{required: true}}
                                                label={'Территория пользования'}
                                                type={'select'}
                                                name={'responsibleVehicleInfo.regionId'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={get(vehicle, 'modelName')} params={{required: true}}
+                                        <Field defaultValue={get(vehicle, 'modelName')} 
                                                label={'Марка / модель'}
                                                type={'input'}
                                                name={'responsibleVehicleInfo.modelCustomName'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
                                         <Field defaultValue={get(vehicle, 'vehicleTypeId')} options={vehicleTypeList}
-                                               params={{required: true}}
                                                label={'Вид транспорта'}
                                                type={'select'}
                                                name={'responsibleVehicleInfo.vehicleTypeId'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
                                         <Field defaultValue={get(vehicle, 'issueYear')}
-                                               property={{mask: '9999', maskChar: '_'}} params={{required: true}}
+                                               property={{mask: '9999', maskChar: '_'}}
                                                label={'Год'}
                                                type={'input-mask'}
                                                name={'responsibleVehicleInfo.issueYear'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={get(vehicle, 'bodyNumber')} params={{required: true}}
+                                        <Field defaultValue={get(vehicle, 'bodyNumber')}
                                                label={'Номер кузова (шасси)'}
                                                type={'input'}
                                                name={'responsibleVehicleInfo.bodyNumber'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={get(vehicle, 'engineNumber')} params={{required: true}}
+                                        <Field defaultValue={get(vehicle, 'engineNumber')}
                                                label={'Номер двигателя'}
                                                type={'input'}
                                                name={'responsibleVehicleInfo.engineNumber'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={get(vehicle, 'fullWeight')} params={{required: true}}
+                                        <Field defaultValue={get(vehicle, 'fullWeight')}
                                                label={'Объем'}
                                                type={'input'}
                                                name={'responsibleVehicleInfo.fullWeight'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={parseInt(get(vehicle, 'seats'))} params={{required: true}}
+                                        <Field defaultValue={parseInt(get(vehicle, 'seats'))}
                                                property={{type:'number'}}
                                                label={'Количество мест сидения'}
                                                type={'input'}
