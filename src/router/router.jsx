@@ -24,7 +24,7 @@ const Router = ({...rest}) => {
                             <Route path={"claim"}>
                                 <Route index element={<ListPage/>}/>
                                 <Route path={"create"} element={<CreatePage/>}/>
-                                <Route path={"view/:form_id"} element={<ViewPage/>}/>
+                                <Route path={"view/:claimFormId"} element={<ViewPage/>}/>
                             </Route>
                             <Route path="/auth/logout" element={<LogOutPage/>}/>
                             <Route path={"auth/*"} element={<Navigate to={'/claim'} replace/>}/>

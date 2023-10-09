@@ -25,16 +25,16 @@ import NumberFormat from "react-number-format";
 import {Eye} from "react-feather";
 import Modal from "../../../components/modal";
 
-const ViewContainer = ({osgop_formId = null}) => {
+const ViewContainer = ({claimFormId  = null}) => {
     const {t} = useTranslation()
     const navigate = useNavigate();
     const setBreadcrumbs = useStore(state => get(state, 'setBreadcrumbs', () => {
     }))
     const [vehicle, setVehicle] = useState(null)
     const breadcrumbs = useMemo(() => [{
-        id: 1, title: 'OSGOP list', path: '/osaga',
+        id: 1, title: 'Claims list', path: '/claim',
     }, {
-        id: 2, title: 'OSGOP view', path: '/osaga',
+        id: 2, title: 'Claim view', path: '/claim',
     }], [])
 
 
@@ -42,14 +42,14 @@ const ViewContainer = ({osgop_formId = null}) => {
         setBreadcrumbs(breadcrumbs)
     }, [])
     const {data, isLoading} = useGetAllQuery({
-        key: KEYS.osgopView,
-        url: URLS.osgopView,
+        key: KEYS.view,
+        url: URLS.view,
         params: {
             params: {
-                osgop_formId: osgop_formId
+                claimFormId : claimFormId
             }
         },
-        enabled: !!(osgop_formId)
+        enabled: !!(claimFormId )
     })
 
     const {data: filials} = useGetAllQuery({key: KEYS.agencies, url: URLS.agencies})
@@ -130,7 +130,7 @@ const ViewContainer = ({osgop_formId = null}) => {
 
     const send = () => {
         sendFond({
-                url: `${URLS.osgopSendFond}?osgop_formId=${osgop_formId}`, attributes: {}
+                url: `${URLS.osgopSendFond}?claimFormId=${claimFormId }`, attributes: {}
             },
             {
                 onSuccess: ({data}) => {
@@ -176,7 +176,7 @@ const ViewContainer = ({osgop_formId = null}) => {
             },
         }).then((result) => {
             if (result.isConfirmed) {
-                deleteRequest({url: `${URLS.osgopDelete}?osgop_formId=${osgop_formId}`}, {
+                deleteRequest({url: `${URLS.osgopDelete}?claimFormId=${claimFormId}`}, {
                     onSuccess: () => {
                         navigate('/osgop')
                     }
@@ -210,8 +210,9 @@ const ViewContainer = ({osgop_formId = null}) => {
                 <Button onClick={remove}
                         danger type={'button'}
                         className={'mr-16'}>Удалить</Button>
-                <Button onClick={() => navigate(`/osgop/update/${osgop_formId}`)} yellow type={'button'}
-                        className={'mr-16'}>Изменить</Button></>}
+                {/*<Button onClick={() => navigate(`/osgop/update/${claimFormId}`)} yellow type={'button'}*/}
+                {/*        className={'mr-16'}>Изменить</Button>*/}
+            </>}
                 <Button
                     onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => send() : () => {
                     }}
@@ -226,85 +227,117 @@ const ViewContainer = ({osgop_formId = null}) => {
                     <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
                         <Row align={'center'} className={'mb-25'}>
                             <Col xs={5}>Статус</Col>
-                            <Col xs={7}><Button green>{get(data, 'data.result.status')}</Button></Col>
+                            <Col xs={7}><Button green>{get(data,'data.result.status')}</Button></Col>
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Филиал </Col>
-                            <Col xs={7}><Field defaultValue={get(data, 'data.result.agencyId')} disabled
-                                               params={{required: true}} options={filialList}
-                                               property={{hideLabel: true}} type={'select'}
-                                               name={'agencyId'}/></Col>
-                        </Row>
-                        <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Серия договора:</Col>
-                            <Col xs={7}><Field defaultValue={get(data, 'data.result.seria')}
-                                               property={{hideLabel: true, disabled: true}} type={'input'}
-                                               name={'seria'}/></Col>
-                        </Row>
-                        <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Номер договора: </Col>
-                            <Col xs={7}><Field defaultValue={get(data, 'data.result.number')}
-                                               params={{required: true}}
-                                               property={{hideLabel: true, disabled: true}}
+                            <Col xs={5}>Номер претензионного дела:</Col>
+                            <Col xs={7}><Field defaultValue={get(data,'data.result.claimNumber')} params={{required: true}} property={{hideLabel: true,disabled:true}}
                                                type={'input'}
-                                               name={'number'}/></Col>
-                        </Row>
-
-                    </Col>
-                    <Col xs={4}>
-
-                        <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Страховая сумма: </Col>
-                            <Col xs={7}><Field defaultValue={get(data, 'data.result.sum', 0)}
-                                               property={{hideLabel: true, disabled: true}}
-                                               type={'number-format-input'}
-                                               name={'policies[0].insuranceSum'}/></Col>
+                                               name={'claimNumber'}/></Col>
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Страховая премия: </Col>
-                            <Col xs={7}><Field defaultValue={get(data, 'data.result.premium', 0)}
-                                               property={{hideLabel: true, disabled: true}}
-                                               type={'number-format-input'}
-                                               name={'policies[0].insurancePremium'}/></Col>
+                            <Col xs={5}>Дата претензионного делa: </Col>
+                            <Col xs={7}><Field
+                                defaultValue={get(data,'data.result.claimDate')}
+                                params={{required: true}}
+                                property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} disabled type={'datepicker'}
+                                name={'claimDate'}/></Col>
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Оплачено: </Col>
-                            <Col xs={7}><Field params={{required: true}}
-                                               defaultValue={get(data, 'data.result.premium', 0) - get(data, 'data.result.unpaid', 0)}
-                                               property={{hideLabel: true, disabled: true}}
-                                               type={'number-format-input'}
-                                               name={'premium'}/></Col>
+                            <Col xs={5}>Серия полиса:</Col>
+                            <Col xs={7}><Field defaultValue={get(data,'data.result.polisSeria')} params={{required: true}} property={{hideLabel: true,disabled:true}}
+                                               type={'input'}
+                                               name={'polisSeria'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Номер полиса: </Col>
+                            <Col xs={7}><Field defaultValue={get(data,'data.result.polisNumber')} params={{required: true}} property={{hideLabel: true,disabled:true}}
+                                               type={'input'}
+                                               name={'polisNumber'}/></Col>
                         </Row>
                     </Col>
-                    <Col xs={4}>
+                    <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
+
                         <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Срок страхования:</Col>
-                            <Col xs={7}><Field disabled
-                                               defaultValue={get(data, 'data.result.insuranceTermId')}
-                                               options={insuranceTermsList} params={{required: true}}
+                            <Col xs={5}>Регион претензии:</Col>
+                            <Col xs={7}><Field disabled defaultValue={get(data,'data.result.regionId')} options={regionList} params={{required: true}}
                                                label={'Insurance term'} property={{hideLabel: true}}
                                                type={'select'}
-                                               name={'policies[0].insuranceTermId'}/></Col>
+                                               name={'regionId'}/></Col>
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Дата начала покрытия: </Col>
+                            <Col xs={5}>Район претензии:</Col>
+                            <Col xs={7}><Field disabled defaultValue={get(data,'data.result.districtId')} options={districtList}
+                                               label={'Район претензии'} property={{hideLabel: true}}
+                                               type={'select'}
+                                               name={'districtId'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Тип местности претензии:</Col>
+                            <Col xs={7}><Field options={areaTypesList}
+                                               label={'Тип местности претензии'} property={{hideLabel: true}}
+                                               type={'select'}
+                                               name={'areaTypeId'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Сведения о документах, подтверждающих наследство:</Col>
+                            <Col xs={7}><Field property={{hideLabel: true}}
+                                               type={'input'}
+                                               name={'inheritanceDocsInformation'}/></Col>
+                        </Row>
+                    </Col>
+
+                    <Col xs={4}>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Дата и время события: </Col>
                             <Col xs={7}><Field
-                                defaultValue={get(data, 'data.result.contractStartDate')} disabled
+                                params={{required: true}}
                                 property={{
                                     hideLabel: true,
-                                    dateFormat: 'dd.MM.yyyy'
-                                }}
-                                type={'datepicker'}
-                                name={'policies[0].startDate'}/></Col>
+                                    dateFormat: 'dd.MM.yyyy HH:mm:ss',
+                                    showTimeSelect: true
+                                }} type={'datepicker'}
+                                name={'eventCircumstances.eventDateTime'}/></Col>
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
-                            <Col xs={5}>Дача окончания покрытия: </Col>
-                            <Col xs={7}><Field
-                                defaultValue={get(data, 'data.result.contractEndDate')} disabled
-                                property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} type={'datepicker'}
-                                name={'policies[0].endDate'}/></Col>
+                            <Col xs={5}>Регион события:</Col>
+                            <Col xs={7}><Field options={regionList} params={{required: true}}
+                                               label={'Регион события'} property={{hideLabel: true}}
+                                               type={'select'}
+                                               name={'eventCircumstances.regionId'}/></Col>
                         </Row>
-
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Район события:</Col>
+                            <Col xs={7}><Field params={{required: true}} options={districtList}
+                                               label={'Район события'} property={{hideLabel: true}}
+                                               type={'select'}
+                                               name={'eventCircumstances.districtId'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Место события:</Col>
+                            <Col xs={7}><Field params={{required: true}} property={{hideLabel: true}}
+                                               type={'input'}
+                                               name={'eventCircumstances.place'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Описание случая:</Col>
+                            <Col xs={7}><Field property={{hideLabel: true}}
+                                               type={'input'}
+                                               name={'eventCircumstances.eventInfo'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Дата решения суда: </Col>
+                            <Col xs={7}><Field
+                                params={{required: true}}
+                                property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} type={'datepicker'}
+                                name={'eventCircumstances.courtDecision.courtDecisionDate'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Наименование суда:</Col>
+                            <Col xs={7}><Field property={{hideLabel: true}}
+                                               type={'input'}
+                                               name={'eventCircumstances.courtDecision.court'}/></Col>
+                        </Row>
                     </Col>
                 </Row>
                 <Row gutterWidth={60} className={'mt-30'}>

@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useStore} from "../../../store";
-import {find, get, isEqual, upperCase, values, isEmpty, sumBy, includes} from "lodash";
+import {find, get, isEqual, upperCase} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";

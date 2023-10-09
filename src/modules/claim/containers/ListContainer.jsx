@@ -103,9 +103,9 @@ const ListContainer = ({...rest}) => {
                 createUrl={'/claim/create'}
                 updateUrl={'/claim/update'}
                 isHideColumn
-                dataKey={'osgop_formId'}
+                dataKey={'claimFormId'}
                 deleteUrl={URLS.remove}
-                deleteParam={'osgop_formId'}
+                deleteParam={'claimFormId'}
 
             />
         </>

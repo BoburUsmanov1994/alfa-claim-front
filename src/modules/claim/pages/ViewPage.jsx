@@ -25,10 +25,10 @@ const Styled = styled.div`
   }
 `;
 const ViewPage = ({...rest}) => {
-    const {osgop_formId  = null} = useParams();
+    const {claimFormId  = null} = useParams();
     return (
         <Styled {...rest}>
-            <ViewContainer osgop_formId ={osgop_formId }/>
+            <ViewContainer claimFormId ={claimFormId }/>
         </Styled>
     );
 };
