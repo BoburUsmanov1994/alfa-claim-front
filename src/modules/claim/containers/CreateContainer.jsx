@@ -489,10 +489,11 @@ const CreateContainer = () => {
             responsibleVehicleInfo,
             ...rest
         } = data
+        const {ownerPerson,ownerOrganization,...responsibleVehicleInfoRest} = responsibleVehicleInfo;
         createRequest({
                 url: URLS.create, attributes: {
                     ...rest,
-                    responsibleVehicleInfo:{...responsibleVehicleInfo,govNumber:govNumber},
+                    responsibleVehicleInfo:insurantIsOwner ? {...responsibleVehicleInfoRest,insurantIsOwner:true,govNumber:govNumber} : {...responsibleVehicleInfoRest,ownerPerson,ownerOrganization,govNumber:govNumber},
                     responsibleForDamage:{...responsibleForDamage,regionId:get(responsible,'regionId')},
                     lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                     healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
@@ -1381,41 +1382,40 @@ const CreateContainer = () => {
                             </Col>
                             {isEqual(get(owner, 'type'), 'person') && <>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}}
+                                    <Field
                                            defaultValue={get(insurantIsOwner ? responsible : owner, 'person.lastNameLatin')}
                                            label={'Lastname'}
                                            type={'input'}
                                            name={'responsibleVehicleInfo.ownerPerson.fullName.lastname'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}}
+                                    <Field
                                            defaultValue={get(insurantIsOwner ? responsible : owner, 'person.firstNameLatin')}
                                            label={'Firstname'}
                                            type={'input'}
                                            name={'responsibleVehicleInfo.ownerPerson.fullName.firstname'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}}
+                                    <Field
                                            defaultValue={get(insurantIsOwner ? responsible : owner, 'person.middleNameLatin')}
                                            label={'Middlename'}
                                            type={'input'}
                                            name={'responsibleVehicleInfo.ownerPerson.fullName.middlename'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}} defaultValue={get(insurantIsOwner ? responsible : owner, 'person.startDate')}
+                                    <Field  defaultValue={get(insurantIsOwner ? responsible : owner, 'person.startDate')}
                                            label={'Дата выдачи паспорта'}
                                            type={'datepicker'}
                                            name={'responsibleVehicleInfo.ownerPerson.passportData.startDate'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}} defaultValue={get(insurantIsOwner ? responsible : owner, 'person.issuedBy')}
+                                    <Field  defaultValue={get(insurantIsOwner ? responsible : owner, 'person.issuedBy')}
                                            label={'Кем выдан'}
                                            type={'input'}
                                            name={'responsibleVehicleInfo.ownerPerson.passportData.issuedBy'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'person.gender')}
                                         options={genderList}
                                         label={'Gender'}
@@ -1430,7 +1430,6 @@ const CreateContainer = () => {
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         params={{
-                                            required: true,
                                             pattern: {
                                                 value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
                                                 message: 'Invalid format'
@@ -1451,7 +1450,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={residentTypeList}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'person.residentType')}
                                         label={'Resident type'}
@@ -1480,7 +1478,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={regionList}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'person.regionId')}
                                         label={'Region'}
@@ -1489,7 +1486,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={ownerDistrictList}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'person.districtId')}
                                         label={'District'}
@@ -1499,7 +1495,6 @@ const CreateContainer = () => {
                                 <Col xs={6} className={'mb-25'}>
                                     <Field
                                         noMaxWidth
-                                        params={{required: true}}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'person.address')}
                                         label={'Address'}
                                         type={'input'}
@@ -1508,7 +1503,7 @@ const CreateContainer = () => {
                             </>}
                             {isEqual(get(insurantIsOwner ? responsible : owner, 'type'), 'organization') && <>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}} defaultValue={get(insurantIsOwner ? responsible : owner, 'organization.name')}
+                                    <Field  defaultValue={get(insurantIsOwner ? responsible : owner, 'organization.name')}
                                            label={'Наименование'} type={'input'}
                                            name={'responsibleVehicleInfo.ownerOrganization.name'}/>
                                 </Col>
@@ -1527,7 +1522,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field defaultValue={get(insurantIsOwner ? responsible : owner, 'organization.phone')} params={{
-                                        required: true,
                                         pattern: {
                                             value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
                                             message: 'Invalid format'
@@ -1538,7 +1532,7 @@ const CreateContainer = () => {
                                            name={'responsibleVehicleInfo.ownerOrganization.phone'}/>
                                 </Col>
                                 <Col xs={3}><Field defaultValue={parseInt(get(insurantIsOwner ? responsible : owner, 'organization.oked'))}
-                                                   label={'Oked'} params={{required: true, valueAsString: true}}
+                                                   label={'Oked'} params={{valueAsString: true}}
                                                    options={okedList}
                                                    type={'select'}
                                                    name={'responsibleVehicleInfo.ownerOrganization.oked'}/></Col>
@@ -1553,19 +1547,17 @@ const CreateContainer = () => {
                                                    name={'responsibleVehicleInfo.ownerOrganization.ownershipFormId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'organization.birthCountry', 210)}
                                         label={'Country'}
                                         type={'select'}
                                         options={countryList}
                                         name={'responsibleVehicleInfo.ownerOrganization.countryId'}/>
                                 </Col>
-                                <Col xs={3}><Field label={'Область'} params={{required: true}} options={regionList}
+                                <Col xs={3}><Field label={'Область'}  options={regionList}
                                                    type={'select'}
                                                    name={'responsibleVehicleInfo.ownerOrganization.regionId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={ownerDistrictList}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'organization.districtId')}
                                         label={'District'}
@@ -1575,7 +1567,6 @@ const CreateContainer = () => {
                                 <Col xs={6} className={'mb-25'}>
                                     <Field
                                         noMaxWidth
-                                        params={{required: true}}
                                         defaultValue={get(insurantIsOwner ? responsible : owner, 'organization.address')}
                                         label={'Address'}
                                         type={'input'}
