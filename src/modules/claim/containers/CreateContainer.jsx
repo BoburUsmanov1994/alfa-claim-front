@@ -493,7 +493,7 @@ const CreateContainer = () => {
         createRequest({
                 url: URLS.create, attributes: {
                     ...rest,
-                    responsibleVehicleInfo:insurantIsOwner ? {...responsibleVehicleInfoRest,insurantIsOwner:true,govNumber:govNumber} : {...responsibleVehicleInfoRest,ownerPerson,ownerOrganization,govNumber:govNumber},
+                    responsibleVehicleInfo:insurantIsOwner ? {...responsibleVehicleInfoRest,insurantIsOwner:true,govNumber:govNumber} : {...responsibleVehicleInfoRest,ownerPerson,insurantIsOwner:false,ownerOrganization,govNumber:govNumber},
                     responsibleForDamage:{...responsibleForDamage,regionId:get(responsible,'regionId')},
                     lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                     healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
