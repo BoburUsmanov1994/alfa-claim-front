@@ -22,8 +22,9 @@ import dayjs from "dayjs";
 import Checkbox from "rc-checkbox";
 import Table from "../../../components/table";
 import NumberFormat from "react-number-format";
-import {Eye} from "react-feather";
+import {Eye, Trash2} from "react-feather";
 import Modal from "../../../components/modal";
+import CarNumber from "../../../components/car-number";
 
 const ViewContainer = ({claimFormId = null}) => {
     const {t} = useTranslation()
@@ -993,6 +994,93 @@ const ViewContainer = ({claimFormId = null}) => {
                         </Col>
                     </>}
                 </Row>
+                {get(data, 'data.result.responsibleVehicleInfo') && <Row gutterWidth={60} className={'mt-30'}>
+                    <Col xs={12} className={'mb-15'}><Title>ТС виновного лица:</Title></Col>
+
+                    <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
+                        <div className={'mb-15'}>Государственный номер</div>
+                        <div className={'mb-25'}><CarNumber disabled
+                                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.govNumber')}/>
+                        </div>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Серия тех.паспорта:</Col>
+                            <Col xs={7}><Field
+                                defaultValue={get(data, 'data.result.responsibleVehicleInfo.techPassport.seria')}
+                                property={{hideLabel: true, disabled: true}}
+                                type={'input'}
+                                name={'responsibleVehicleInfo.techPassport.seria'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Номер тех.паспорта:</Col>
+                            <Col xs={7}><Field
+                                defaultValue={get(data, 'data.result.responsibleVehicleInfo.techPassport.number')}
+                                property={{hideLabel: true, disabled: true}}
+                                type={'input'}
+                                name={'responsibleVehicleInfo.techPassport.number'}/></Col>
+                        </Row>
+                    </Col>
+                    <Col xs={8}>
+                        <Row>
+                            <Col xs={4} className="mb-25">
+                                <Field disabled defaultValue={get(data, 'data.result.responsibleVehicleInfo.regionId')}
+                                       options={regionList}
+                                       label={'Территория пользования'}
+                                       type={'select'}
+                                       name={'responsibleVehicleInfo.regionId'}/>
+                            </Col>
+                            <Col xs={4} className="mb-25">
+                                <Field property={{disabled: true}}
+                                       defaultValue={get(data, 'data.result.responsibleVehicleInfo.modelCustomName')}
+                                       label={'Марка / модель'}
+                                       type={'input'}
+                                       name={'responsibleVehicleInfo.modelCustomName'}/>
+                            </Col>
+                            <Col xs={4} className="mb-25">
+                                <Field disabled
+                                       defaultValue={get(data, 'data.result.responsibleVehicleInfo.vehicleTypeId')}
+                                       options={vehicleTypeList}
+                                       label={'Вид транспорта'}
+                                       type={'select'}
+                                       name={'responsibleVehicleInfo.vehicleTypeId'}/>
+                            </Col>
+                            <Col xs={4} className="mb-25">
+                                <Field disabled defaultValue={get(data, 'data.result.responsibleVehicleInfo.issueYear')}
+                                       property={{mask: '9999', maskChar: '_'}}
+                                       label={'Год'}
+                                       type={'input-mask'}
+                                       name={'responsibleVehicleInfo.issueYear'}/>
+                            </Col>
+                            <Col xs={4} className="mb-25">
+                                <Field property={{disabled: true}}
+                                       defaultValue={get(data, 'data.result.responsibleVehicleInfo.bodyNumber')}
+                                       label={'Номер кузова (шасси)'}
+                                       type={'input'}
+                                       name={'responsibleVehicleInfo.bodyNumber'}/>
+                            </Col>
+                            <Col xs={4} className="mb-25">
+                                <Field property={{disabled: true}}
+                                       defaultValue={get(data, 'data.result.responsibleVehicleInfo.engineNumber')}
+                                       label={'Номер двигателя'}
+                                       type={'input'}
+                                       name={'responsibleVehicleInfo.engineNumber'}/>
+                            </Col>
+                            <Col xs={4} className="mb-25">
+                                <Field property={{disabled: true}}
+                                       defaultValue={get(data, 'data.result.responsibleVehicleInfo.fullWeight')}
+                                       label={'Объем'}
+                                       type={'input'}
+                                       name={'responsibleVehicleInfo.fullWeight'}/>
+                            </Col>
+                            <Col xs={4} className="mb-25">
+                                <Field defaultValue={get(data, 'data.result.responsibleVehicleInfo.numberOfSeats')}
+                                       property={{type: 'number', disabled: true}}
+                                       label={'Количество мест сидения'}
+                                       type={'input'}
+                                       name={'responsibleVehicleInfo.numberOfSeats'}/>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>}
                 <Row>
                     <Col xs={12} className={'mt-30'}><Checkbox disabled
                                                                checked={get(data, 'data.result.responsibleVehicleInfo.insurantIsOwner')}
@@ -1642,6 +1730,83 @@ const ViewContainer = ({claimFormId = null}) => {
                             </>}
                         </Row>
                 }
+                <Row gutterWidth={60} className={'mt-30'}>
+                    <Col xs={12} className={'mb-15'}><Title>Вред жизни(Потерпевшие)</Title></Col>
+                    <Col xs={12}>
+                        <div className={'horizontal-scroll mt-15 mb-25'}>
+                            <Table bordered hideThead={false}
+                                   thead={['№ ', 'ПИНФЛ', 'Фамилия', 'Имя', 'Отчество']}>
+                                {
+                                    get(data, 'data.result.lifeDamage', []).map((item, index) => <tr>
+
+                                        <td>{index + 1}</td>
+                                        <td>{get(item, 'person.passportData.pinfl')}</td>
+                                        <td>{get(item, 'person.fullName.lastname')}</td>
+                                        <td>{get(item, 'person.fullName.firstname')}</td>
+                                        <td>{get(item, 'person.fullName.middlename')}</td>
+                                    </tr>)
+                                }
+                            </Table>
+                        </div>
+                    </Col>
+                </Row>
+                <Row gutterWidth={60} className={'mt-30'}>
+                    <Col xs={12} className={'mb-15'}><Title>Вред здоровью(Потерпевшие)</Title></Col>
+                    <Col xs={12}>
+                        <div className={'horizontal-scroll mt-15 mb-25'}>
+                            <Table bordered hideThead={false}
+                                   thead={['№ ', 'ПИНФЛ', 'Фамилия', 'Имя', 'Отчество']}>
+                                {
+                                    get(data, 'data.result.healthDamage', []).map((item, index) => <tr>
+
+                                        <td>{index + 1}</td>
+                                        <td>{get(item, 'person.passportData.pinfl')}</td>
+                                        <td>{get(item, 'person.fullName.lastname')}</td>
+                                        <td>{get(item, 'person.fullName.firstname')}</td>
+                                        <td>{get(item, 'person.fullName.middlename')}</td>
+
+                                    </tr>)
+                                }
+                            </Table>
+                        </div>
+                    </Col>
+                </Row>
+                <Row gutterWidth={60} className={'mt-30'}>
+                    <Col xs={12} className={'mb-15'}><Title>Вред ТС(Пострадавшие ТС)</Title></Col>
+                    <Col xs={12}>
+                        <div className={'horizontal-scroll mt-15 mb-25'}>
+                            <Table bordered hideThead={false}
+                                   thead={['№ ', 'Гос.номер', 'Модель', 'Серия тех.паспорта', 'Номер тех.паспорта']}>
+                                {
+                                    get(data, 'data.result.vehicleDamage', []).map((item, index) => <tr>
+                                        <td>{index + 1}</td>
+                                        <td>{get(item, 'vehicle.govNumber')}</td>
+                                        <td>{get(item, 'vehicle.modelCustomName')}</td>
+                                        <td>{get(item, 'vehicle.techPassport.seria')}</td>
+                                        <td>{get(item, 'vehicle.techPassport.number')}</td>
+                                    </tr>)
+                                }
+                            </Table>
+                        </div>
+                    </Col>
+                </Row>
+                <Row gutterWidth={60} className={'mt-30'}>
+                    <Col xs={12} className={'mb-15'}><Title>Вред иному имуществу(Пострадавшее имущество)</Title></Col>
+                    <Col xs={12}>
+                        <div className={'horizontal-scroll mt-15 mb-25'}>
+                            <Table bordered hideThead={false}
+                                   thead={['№ ', 'Описание имущества', 'Размер вреда', 'Action']}>
+                                {
+                                    get(data, 'data.result.otherPropertyDamage', []).map((item, index) => <tr>
+                                        <td>{index + 1}</td>
+                                        <td>{get(item, 'otherPropertyDamage.property')}</td>
+                                        <td>{get(item, 'otherPropertyDamage.claimedDamage')}</td>
+                                    </tr>)
+                                }
+                            </Table>
+                        </div>
+                    </Col>
+                </Row>
             </Form>
         </Section>
     </>);
