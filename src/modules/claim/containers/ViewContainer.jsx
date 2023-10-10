@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {find, get, isEqual, isNil, round} from "lodash";
+import {find, get, isEqual, isNil, round, upperCase} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -351,16 +351,1298 @@ const ViewContainer = ({claimFormId = null}) => {
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
                             <Col xs={5}>Наименование суда:</Col>
-                            <Col xs={7}><Field defaultValue={get(data, 'data.result.courtDecision.court')} property={{hideLabel: true,disabled:true}}
+                            <Col xs={7}><Field defaultValue={get(data, 'data.result.courtDecision.court')}
+                                               property={{hideLabel: true, disabled: true}}
                                                type={'input'}
                                                name={'eventCircumstances.courtDecision.court'}/></Col>
                         </Row>
                     </Col>
                 </Row>
 
+                <Row gutterWidth={60} className={'mt-30'}>
+                    <Col xs={12} className={'mb-25'}><Title>Заявитель</Title></Col>
+                    <Col xs={12}>
+                        <Row>
+                            <Col xs={4}>
+                                <Flex>
+                                    <h4 className={'mr-16'}>Заявитель </h4>
+                                    <Button
 
+                                        gray={!get(data, 'data.result.applicant.person.gender')}
+                                        className={'mr-16'}
+                                        type={'button'}>Физ. лицо</Button>
+                                    <Button
+                                        gray={!get(data, 'data.result.applicant.organization')}
+                                        type={'button'}>Юр.
+                                        лицо</Button>
+                                </Flex>
+                            </Col>
+                            <Col xs={8} className={'text-right'}>
+                                {get(data, 'data.result.applicant.person.gender') && <Flex justify={'flex-end'}>
+                                    <Field
+                                        disabled
+                                        className={'mr-16'} style={{width: 75}}
+                                        property={{
+                                            hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
+                                        }}
+                                        name={'applicant.person.passportData.seria'}
+                                        type={'input-mask'}
+                                        defaultValue={get(data, 'data.result.applicant.person.passportData.seria')}
+                                    />
+                                    <Field disabled property={{
+                                        hideLabel: true,
+                                        mask: '9999999',
+                                        placeholder: '1234567',
+                                        maskChar: '_',
+                                    }} name={'applicant.person.passportData.number'}
+                                           type={'input-mask'}
+                                           defaultValue={get(data, 'data.result.applicant.person.passportData.number')}
+                                    />
+
+                                    <Field className={'ml-15'}
+                                           disabled
+                                           property={{
+                                               hideLabel: true,
+                                               placeholder: 'Дата рождения',
+                                           }}
+                                           name={'applicant.person.birthDate'} type={'datepicker'}
+                                           defaultValue={get(data, 'data.result.applicant.person.birthDate')}
+                                    />
+                                </Flex>}
+                                {get(data, 'data.result.applicant.organization') && <Flex justify={'flex-end'}>
+                                    <Field
+                                        disabled
+                                        defaultValue={get(data, 'data.result.applicant.organization.inn')}
+                                        property={{
+                                            hideLabel: true,
+                                            mask: '999999999',
+                                            placeholder: 'Inn',
+                                            maskChar: '_',
+                                            disabled: true
+                                        }} name={'applicant.organization.inn'} type={'input-mask'}/>
+
+                                </Flex>}
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col xs={12}>
+                        <hr className={'mt-15 mb-15'}/>
+                    </Col>
+                    {get(data, 'data.result.applicant.person.gender') && <>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.applicant.person.fullName.lastname')}
+                                   label={'Lastname'}
+                                   type={'input'}
+                                   name={'applicant.person.fullName.lastname'}
+                                   property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.applicant.person.fullName.firstname')}
+                                   label={'Firstname'}
+                                   type={'input'}
+                                   name={'applicant.person.fullName.firstname'}
+                                   property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.applicant.person.fullName.middlename')}
+                                   label={'Middlename'}
+                                   type={'input'}
+                                   name={'applicant.person.fullName.middlename'}
+                                   property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field disabled params={{required: true}}
+                                   defaultValue={get(data, 'data.result.applicant.person.passportData.startDate')}
+                                   label={'Дата выдачи паспорта'}
+                                   type={'datepicker'}
+                                   name={'applicant.person.passportData.startDate'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field property={{disabled: true}} params={{required: true}}
+                                   defaultValue={get(data, 'data.result.applicant.person.passportData.issuedBy')}
+                                   label={'Кем выдан'}
+                                   type={'input'}
+                                   name={'applicant.person.passportData.issuedBy'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                defaultValue={get(data, 'data.result.applicant.person.gender')}
+                                options={genderList}
+                                label={'Gender'}
+                                type={'select'}
+                                name={'applicant.person.gender'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field property={{disabled: true}}
+                                   defaultValue={get(data, 'data.result.applicant.person.passportData.pinfl')}
+                                   label={'ПИНФЛ'} type={'input'}
+                                   name={'applicant.person.passportData.pinfl'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{
+                                    required: true,
+                                    pattern: {
+                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        message: 'Invalid format'
+                                    }
+                                }}
+                                defaultValue={get(data, 'data.result.applicant.person.phone')}
+                                label={'Phone'}
+                                type={'input'}
+                                property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                name={'applicant.person.phone'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(data, 'data.result.applicant.person.email')}
+                                label={'Email'}
+                                type={'input'}
+                                property={{disabled: true}}
+                                name={'applicant.person.email'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={residentTypeList}
+                                defaultValue={get(data, 'data.result.applicant.person.residentType')}
+                                label={'Resident type'}
+                                type={'select'}
+                                name={'applicant.person.residentType'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                property={{disabled: true}}
+                                defaultValue={get(data, 'data.result.applicant.person.driverLicenseSeria')}
+                                label={'Серия вод. удостоверения'}
+                                type={'input'}
+                                name={'applicant.person.driverLicenseSeria'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                property={{disabled: true}}
+                                defaultValue={get(data, 'data.result.applicant.person.driverLicenseNumber')}
+                                label={'Номер вод. удостоверения'}
+                                type={'input'}
+                                name={'applicant.person.driverLicenseNumber'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(data, 'data.result.applicant.person.countryId', 210)}
+                                label={'Country'}
+                                type={'select'}
+                                options={countryList}
+                                name={'applicant.person.countryId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={regionList}
+                                defaultValue={get(data, 'data.result.applicant.person.regionId')}
+                                label={'Region'}
+                                type={'select'}
+                                name={'applicant.person.regionId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={districtList}
+                                defaultValue={get(data, 'data.result.applicant.person.districtId')}
+                                label={'District'}
+                                type={'select'}
+                                name={'applicant.person.districtId'}/>
+                        </Col>
+
+                        <Col xs={6} className={'mb-25'}>
+                            <Field
+                                noMaxWidth
+                                params={{required: true}}
+                                defaultValue={get(data, 'data.result.applicant.person.address')}
+                                label={'Address'}
+                                type={'input'}
+                                property={{disabled: true}}
+                                name={'applicant.person.address'}/>
+                        </Col>
+                    </>}
+                    {get(data, 'data.result.applicant.organization') && <>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.applicant.organization.name')}
+                                   label={'Наименование'} type={'input'}
+                                   property={{disabled: true}}
+                                   name={'applicant.organization.name'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field defaultValue={get(data, 'data.result.applicant.organization.representativeName')}
+                                   label={'Руководитель'} type={'input'}
+                                   property={{disabled: true}}
+                                   name={'applicant.organization.representativeName'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field defaultValue={get(data, 'data.result.applicant.organization.position')}
+                                   label={'Должность'} type={'input'}
+                                   property={{disabled: true}}
+                                   name={'applicant.organization.position'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(data, 'data.result.applicant.organization.email')}
+                                label={'Email'}
+                                type={'input'}
+                                name={'applicant.organization.email'}
+                                property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field defaultValue={get(data, 'data.result.applicant.organization.phone')} params={{
+                                required: true,
+                                pattern: {
+                                    value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                    message: 'Invalid format'
+                                }
+                            }}
+                                   property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                   label={'Телефон'} type={'input'}
+                                   name={'applicant.organization.phone'}/>
+                        </Col>
+                        <Col xs={3}><Field disabled
+                                           defaultValue={parseInt(get(data, 'data.result.applicant.organization.oked'))}
+                                           label={'Oked'} params={{required: true, valueAsString: true}}
+                                           options={okedList}
+                                           type={'select'}
+                                           name={'applicant.organization.oked'}/></Col>
+
+                        <Col xs={3} className={'mb-25'}>
+                            <Field property={{disabled: true}}
+                                   defaultValue={get(data, 'data.result.applicant.organization.checkingAccount')}
+                                   label={'Расчетный счет'} type={'input'}
+                                   name={'applicant.organization.checkingAccount'}/>
+                        </Col>
+                        <Col xs={3}><Field
+                            defaultValue={get(data, 'data.result.applicant.organization.ownershipFormId')}
+                            label={'Форма собственности'}
+                            options={ownershipFormList}
+                            type={'select'}
+                            disabled
+                            name={'applicant.organization.ownershipFormId'}/></Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                defaultValue={210}
+                                label={'Country'}
+                                type={'select'}
+                                options={countryList}
+                                disabled
+                                name={'applicant.organization.countryId'}/>
+                        </Col>
+                        <Col xs={3}><Field defaultValue={get(data, 'data.result.applicant.organization.regionId')}
+                                           label={'Область'} params={{required: true}} options={regionList}
+                                           type={'select'}
+                                           disabled
+                                           name={'applicant.organization.regionId'}/></Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={districtList}
+                                defaultValue={get(data, 'data.result.applicant.organization.districtId')}
+                                label={'District'}
+                                type={'select'}
+                                name={'applicant.organization.districtId'}/>
+                        </Col>
+                        <Col xs={6} className={'mb-25'}>
+                            <Field
+                                noMaxWidth
+                                params={{required: true}}
+                                property={{disabled: true}}
+                                defaultValue={get(data, 'data.result.applicant.organization.address')}
+                                label={'Address'}
+                                type={'input'}
+                                name={'applicant.organization.address'}/>
+                        </Col>
+                    </>}
+                </Row>
+
+                <Row gutterWidth={60} className={'mt-30'}>
+                    <Col xs={12} className={'mb-25'}><Title>Лицо, ответственное за причиненный вред</Title></Col>
+                    <Col xs={12}>
+                        <Row>
+                            <Col xs={4}>
+                                <Flex>
+                                    <h4 className={'mr-16'}>Лицо, ответственное за причиненный вред </h4>
+                                    <Button
+
+                                        gray={!get(data, 'data.result.responsibleForDamage.person.gender')}
+                                        className={'mr-16'}
+                                        type={'button'}>Физ. лицо</Button>
+                                    <Button
+                                        gray={!get(data, 'data.result.responsibleForDamage.organization')}
+                                        type={'button'}>Юр.
+                                        лицо</Button>
+                                </Flex>
+                            </Col>
+                            <Col xs={8} className={'text-right'}>
+                                {get(data, 'data.result.responsibleForDamage.person.gender') &&
+                                    <Flex justify={'flex-end'}>
+                                        <Field
+                                            disabled
+                                            className={'mr-16'} style={{width: 75}}
+                                            property={{
+                                                hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
+                                            }}
+                                            name={'applicant.person.passportData.seria'}
+                                            type={'input-mask'}
+                                            defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.seria')}
+                                        />
+                                        <Field disabled property={{
+                                            hideLabel: true,
+                                            mask: '9999999',
+                                            placeholder: '1234567',
+                                            maskChar: '_',
+                                        }} name={'applicant.person.passportData.number'}
+                                               type={'input-mask'}
+                                               defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.number')}
+                                        />
+
+                                        <Field className={'ml-15'}
+                                               disabled
+                                               property={{
+                                                   hideLabel: true,
+                                                   placeholder: 'Дата рождения',
+                                               }}
+                                               name={'applicant.person.birthDate'} type={'datepicker'}
+                                               defaultValue={get(data, 'data.result.responsibleForDamage.person.birthDate')}
+                                        />
+                                    </Flex>}
+                                {get(data, 'data.result.responsibleForDamage.organization') &&
+                                    <Flex justify={'flex-end'}>
+                                        <Field
+                                            disabled
+                                            defaultValue={get(data, 'data.result.responsibleForDamage.organization.inn')}
+                                            property={{
+                                                hideLabel: true,
+                                                mask: '999999999',
+                                                placeholder: 'Inn',
+                                                maskChar: '_',
+                                                disabled: true
+                                            }} name={'applicant.organization.inn'} type={'input-mask'}/>
+
+                                    </Flex>}
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col xs={12}>
+                        <hr className={'mt-15 mb-15'}/>
+                    </Col>
+                    {get(data, 'data.result.responsibleForDamage.person.gender') && <>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.lastname')}
+                                   label={'Lastname'}
+                                   type={'input'}
+                                   name={'applicant.person.fullName.lastname'}
+                                   property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.firstname')}
+                                   label={'Firstname'}
+                                   type={'input'}
+                                   name={'applicant.person.fullName.firstname'}
+                                   property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.middlename')}
+                                   label={'Middlename'}
+                                   type={'input'}
+                                   name={'applicant.person.fullName.middlename'}
+                                   property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field disabled params={{required: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.startDate')}
+                                   label={'Дата выдачи паспорта'}
+                                   type={'datepicker'}
+                                   name={'applicant.person.passportData.startDate'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field property={{disabled: true}} params={{required: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.issuedBy')}
+                                   label={'Кем выдан'}
+                                   type={'input'}
+                                   name={'applicant.person.passportData.issuedBy'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.gender')}
+                                options={genderList}
+                                label={'Gender'}
+                                type={'select'}
+                                name={'applicant.person.gender'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field property={{disabled: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.pinfl')}
+                                   label={'ПИНФЛ'} type={'input'}
+                                   name={'applicant.person.passportData.pinfl'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{
+                                    required: true,
+                                    pattern: {
+                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        message: 'Invalid format'
+                                    }
+                                }}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.phone')}
+                                label={'Phone'}
+                                type={'input'}
+                                property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                name={'applicant.person.phone'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.email')}
+                                label={'Email'}
+                                type={'input'}
+                                property={{disabled: true}}
+                                name={'applicant.person.email'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={residentTypeList}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.residentType')}
+                                label={'Resident type'}
+                                type={'select'}
+                                name={'applicant.person.residentType'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                property={{disabled: true}}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.driverLicenseSeria')}
+                                label={'Серия вод. удостоверения'}
+                                type={'input'}
+                                name={'applicant.person.driverLicenseSeria'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                property={{disabled: true}}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.driverLicenseNumber')}
+                                label={'Номер вод. удостоверения'}
+                                type={'input'}
+                                name={'applicant.person.driverLicenseNumber'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.countryId', 210)}
+                                label={'Country'}
+                                type={'select'}
+                                options={countryList}
+                                name={'applicant.person.countryId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={regionList}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.regionId')}
+                                label={'Region'}
+                                type={'select'}
+                                name={'applicant.person.regionId'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={districtList}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.districtId')}
+                                label={'District'}
+                                type={'select'}
+                                name={'applicant.person.districtId'}/>
+                        </Col>
+
+                        <Col xs={6} className={'mb-25'}>
+                            <Field
+                                noMaxWidth
+                                params={{required: true}}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.person.address')}
+                                label={'Address'}
+                                type={'input'}
+                                property={{disabled: true}}
+                                name={'applicant.person.address'}/>
+                        </Col>
+                    </>}
+                    {get(data, 'data.result.responsibleForDamage.organization') && <>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field params={{required: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.organization.name')}
+                                   label={'Наименование'} type={'input'}
+                                   property={{disabled: true}}
+                                   name={'applicant.organization.name'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(data, 'data.result.responsibleForDamage.organization.representativeName')}
+                                label={'Руководитель'} type={'input'}
+                                property={{disabled: true}}
+                                name={'applicant.organization.representativeName'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field defaultValue={get(data, 'data.result.responsibleForDamage.organization.position')}
+                                   label={'Должность'} type={'input'}
+                                   property={{disabled: true}}
+                                   name={'applicant.organization.position'}/>
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                defaultValue={get(data, 'data.result.responsibleForDamage.organization.email')}
+                                label={'Email'}
+                                type={'input'}
+                                name={'applicant.organization.email'}
+                                property={{disabled: true}}
+                            />
+                        </Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field defaultValue={get(data, 'data.result.responsibleForDamage.organization.phone')}
+                                   params={{
+                                       required: true,
+                                       pattern: {
+                                           value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                           message: 'Invalid format'
+                                       }
+                                   }}
+                                   property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                   label={'Телефон'} type={'input'}
+                                   name={'applicant.organization.phone'}/>
+                        </Col>
+                        <Col xs={3}><Field disabled
+                                           defaultValue={parseInt(get(data, 'data.result.responsibleForDamage.organization.oked'))}
+                                           label={'Oked'} params={{required: true, valueAsString: true}}
+                                           options={okedList}
+                                           type={'select'}
+                                           name={'applicant.organization.oked'}/></Col>
+
+                        <Col xs={3} className={'mb-25'}>
+                            <Field property={{disabled: true}}
+                                   defaultValue={get(data, 'data.result.responsibleForDamage.organization.checkingAccount')}
+                                   label={'Расчетный счет'} type={'input'}
+                                   name={'applicant.organization.checkingAccount'}/>
+                        </Col>
+                        <Col xs={3}><Field
+                            defaultValue={get(data, 'data.result.responsibleForDamage.organization.ownershipFormId')}
+                            label={'Форма собственности'}
+                            options={ownershipFormList}
+                            type={'select'}
+                            disabled
+                            name={'applicant.organization.ownershipFormId'}/></Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                params={{required: true}}
+                                defaultValue={210}
+                                label={'Country'}
+                                type={'select'}
+                                options={countryList}
+                                disabled
+                                name={'applicant.organization.countryId'}/>
+                        </Col>
+                        <Col xs={3}><Field
+                            defaultValue={get(data, 'data.result.responsibleForDamage.organization.regionId')}
+                            label={'Область'} params={{required: true}} options={regionList}
+                            type={'select'}
+                            disabled
+                            name={'applicant.organization.regionId'}/></Col>
+                        <Col xs={3} className={'mb-25'}>
+                            <Field
+                                disabled
+                                params={{required: true}}
+                                options={districtList}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.organization.districtId')}
+                                label={'District'}
+                                type={'select'}
+                                name={'applicant.organization.districtId'}/>
+                        </Col>
+                        <Col xs={6} className={'mb-25'}>
+                            <Field
+                                noMaxWidth
+                                params={{required: true}}
+                                property={{disabled: true}}
+                                defaultValue={get(data, 'data.result.responsibleForDamage.organization.address')}
+                                label={'Address'}
+                                type={'input'}
+                                name={'applicant.organization.address'}/>
+                        </Col>
+                    </>}
+                </Row>
+                <Row>
+                    <Col xs={12} className={'mt-30'}><Checkbox disabled
+                                                               checked={get(data, 'data.result.responsibleVehicleInfo.insurantIsOwner')}
+                                                               className={'mr-5'}/><strong>ТС владеет лицо,
+                        ответственное за вред</strong></Col>
+                </Row>
+                {
+                    get(data, 'data.result.responsibleVehicleInfo.insurantIsOwner') ?
+                        <Row gutterWidth={60} className={'mt-30'}>
+                            <Col xs={12} className={'mb-25'}><Title>Владелец ТС</Title></Col>
+                            <Col xs={12}>
+                                <Row>
+                                    <Col xs={4}>
+                                        <Flex>
+                                            <h4 className={'mr-16'}>Лицо, ответственное за причиненный вред </h4>
+                                            <Button
+
+                                                gray={!get(data, 'data.result.responsibleForDamage.person.gender')}
+                                                className={'mr-16'}
+                                                type={'button'}>Физ. лицо</Button>
+                                            <Button
+                                                gray={!get(data, 'data.result.responsibleForDamage.organization')}
+                                                type={'button'}>Юр.
+                                                лицо</Button>
+                                        </Flex>
+                                    </Col>
+                                    <Col xs={8} className={'text-right'}>
+                                        {get(data, 'data.result.responsibleForDamage.person.gender') &&
+                                            <Flex justify={'flex-end'}>
+                                                <Field
+                                                    disabled
+                                                    className={'mr-16'} style={{width: 75}}
+                                                    property={{
+                                                        hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
+                                                    }}
+                                                    name={'applicant.person.passportData.seria'}
+                                                    type={'input-mask'}
+                                                    defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.seria')}
+                                                />
+                                                <Field disabled property={{
+                                                    hideLabel: true,
+                                                    mask: '9999999',
+                                                    placeholder: '1234567',
+                                                    maskChar: '_',
+                                                }} name={'applicant.person.passportData.number'}
+                                                       type={'input-mask'}
+                                                       defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.number')}
+                                                />
+
+                                                <Field className={'ml-15'}
+                                                       disabled
+                                                       property={{
+                                                           hideLabel: true,
+                                                           placeholder: 'Дата рождения',
+                                                       }}
+                                                       name={'applicant.person.birthDate'} type={'datepicker'}
+                                                       defaultValue={get(data, 'data.result.responsibleForDamage.person.birthDate')}
+                                                />
+                                            </Flex>}
+                                        {get(data, 'data.result.responsibleForDamage.organization') &&
+                                            <Flex justify={'flex-end'}>
+                                                <Field
+                                                    disabled
+                                                    defaultValue={get(data, 'data.result.responsibleForDamage.organization.inn')}
+                                                    property={{
+                                                        hideLabel: true,
+                                                        mask: '999999999',
+                                                        placeholder: 'Inn',
+                                                        maskChar: '_',
+                                                        disabled: true
+                                                    }} name={'applicant.organization.inn'} type={'input-mask'}/>
+
+                                            </Flex>}
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col xs={12}>
+                                <hr className={'mt-15 mb-15'}/>
+                            </Col>
+                            {get(data, 'data.result.responsibleForDamage.person.gender') && <>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.lastname')}
+                                           label={'Lastname'}
+                                           type={'input'}
+                                           name={'applicant.person.fullName.lastname'}
+                                           property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.firstname')}
+                                           label={'Firstname'}
+                                           type={'input'}
+                                           name={'applicant.person.fullName.firstname'}
+                                           property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.middlename')}
+                                           label={'Middlename'}
+                                           type={'input'}
+                                           name={'applicant.person.fullName.middlename'}
+                                           property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field disabled params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.startDate')}
+                                           label={'Дата выдачи паспорта'}
+                                           type={'datepicker'}
+                                           name={'applicant.person.passportData.startDate'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field property={{disabled: true}} params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.issuedBy')}
+                                           label={'Кем выдан'}
+                                           type={'input'}
+                                           name={'applicant.person.passportData.issuedBy'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.gender')}
+                                        options={genderList}
+                                        label={'Gender'}
+                                        type={'select'}
+                                        name={'applicant.person.gender'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field property={{disabled: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.pinfl')}
+                                           label={'ПИНФЛ'} type={'input'}
+                                           name={'applicant.person.passportData.pinfl'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        params={{
+                                            required: true,
+                                            pattern: {
+                                                value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                message: 'Invalid format'
+                                            }
+                                        }}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.phone')}
+                                        label={'Phone'}
+                                        type={'input'}
+                                        property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                        name={'applicant.person.phone'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.email')}
+                                        label={'Email'}
+                                        type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.person.email'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={residentTypeList}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.residentType')}
+                                        label={'Resident type'}
+                                        type={'select'}
+                                        name={'applicant.person.residentType'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        property={{disabled: true}}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.driverLicenseSeria')}
+                                        label={'Серия вод. удостоверения'}
+                                        type={'input'}
+                                        name={'applicant.person.driverLicenseSeria'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        property={{disabled: true}}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.driverLicenseNumber')}
+                                        label={'Номер вод. удостоверения'}
+                                        type={'input'}
+                                        name={'applicant.person.driverLicenseNumber'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.countryId', 210)}
+                                        label={'Country'}
+                                        type={'select'}
+                                        options={countryList}
+                                        name={'applicant.person.countryId'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={regionList}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.regionId')}
+                                        label={'Region'}
+                                        type={'select'}
+                                        name={'applicant.person.regionId'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={districtList}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.districtId')}
+                                        label={'District'}
+                                        type={'select'}
+                                        name={'applicant.person.districtId'}/>
+                                </Col>
+
+                                <Col xs={6} className={'mb-25'}>
+                                    <Field
+                                        noMaxWidth
+                                        params={{required: true}}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.address')}
+                                        label={'Address'}
+                                        type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.person.address'}/>
+                                </Col>
+                            </>}
+                            {get(data, 'data.result.responsibleForDamage.organization') && <>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.organization.name')}
+                                           label={'Наименование'} type={'input'}
+                                           property={{disabled: true}}
+                                           name={'applicant.organization.name'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.organization.representativeName')}
+                                        label={'Руководитель'} type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.organization.representativeName'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.organization.position')}
+                                        label={'Должность'} type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.organization.position'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.organization.email')}
+                                        label={'Email'}
+                                        type={'input'}
+                                        name={'applicant.organization.email'}
+                                        property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.organization.phone')}
+                                        params={{
+                                            required: true,
+                                            pattern: {
+                                                value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                message: 'Invalid format'
+                                            }
+                                        }}
+                                        property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                        label={'Телефон'} type={'input'}
+                                        name={'applicant.organization.phone'}/>
+                                </Col>
+                                <Col xs={3}><Field disabled
+                                                   defaultValue={parseInt(get(data, 'data.result.responsibleForDamage.organization.oked'))}
+                                                   label={'Oked'} params={{required: true, valueAsString: true}}
+                                                   options={okedList}
+                                                   type={'select'}
+                                                   name={'applicant.organization.oked'}/></Col>
+
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field property={{disabled: true}}
+                                           defaultValue={get(data, 'data.result.responsibleForDamage.organization.checkingAccount')}
+                                           label={'Расчетный счет'} type={'input'}
+                                           name={'applicant.organization.checkingAccount'}/>
+                                </Col>
+                                <Col xs={3}><Field
+                                    defaultValue={get(data, 'data.result.responsibleForDamage.organization.ownershipFormId')}
+                                    label={'Форма собственности'}
+                                    options={ownershipFormList}
+                                    type={'select'}
+                                    disabled
+                                    name={'applicant.organization.ownershipFormId'}/></Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        params={{required: true}}
+                                        defaultValue={210}
+                                        label={'Country'}
+                                        type={'select'}
+                                        options={countryList}
+                                        disabled
+                                        name={'applicant.organization.countryId'}/>
+                                </Col>
+                                <Col xs={3}><Field
+                                    defaultValue={get(data, 'data.result.responsibleForDamage.organization.regionId')}
+                                    label={'Область'} params={{required: true}} options={regionList}
+                                    type={'select'}
+                                    disabled
+                                    name={'applicant.organization.regionId'}/></Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={districtList}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.organization.districtId')}
+                                        label={'District'}
+                                        type={'select'}
+                                        name={'applicant.organization.districtId'}/>
+                                </Col>
+                                <Col xs={6} className={'mb-25'}>
+                                    <Field
+                                        noMaxWidth
+                                        params={{required: true}}
+                                        property={{disabled: true}}
+                                        defaultValue={get(data, 'data.result.responsibleForDamage.organization.address')}
+                                        label={'Address'}
+                                        type={'input'}
+                                        name={'applicant.organization.address'}/>
+                                </Col>
+                            </>}
+                        </Row> : <Row gutterWidth={60} className={'mt-30'}>
+                            <Col xs={12} className={'mb-25'}><Title>Владелец ТС</Title></Col>
+                            <Col xs={12}>
+                                <Row>
+                                    <Col xs={4}>
+                                        <Flex>
+                                            <h4 className={'mr-16'}>Лицо, ответственное за причиненный вред </h4>
+                                            <Button
+
+                                                gray={!get(data, 'data.result.responsibleVehicleInfo.person.gender')}
+                                                className={'mr-16'}
+                                                type={'button'}>Физ. лицо</Button>
+                                            <Button
+                                                gray={!get(data, 'data.result.responsibleVehicleInfo.organization')}
+                                                type={'button'}>Юр.
+                                                лицо</Button>
+                                        </Flex>
+                                    </Col>
+                                    <Col xs={8} className={'text-right'}>
+                                        {get(data, 'data.result.responsibleVehicleInfo.person.gender') &&
+                                            <Flex justify={'flex-end'}>
+                                                <Field
+                                                    disabled
+                                                    className={'mr-16'} style={{width: 75}}
+                                                    property={{
+                                                        hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
+                                                    }}
+                                                    name={'applicant.person.passportData.seria'}
+                                                    type={'input-mask'}
+                                                    defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.seria')}
+                                                />
+                                                <Field disabled property={{
+                                                    hideLabel: true,
+                                                    mask: '9999999',
+                                                    placeholder: '1234567',
+                                                    maskChar: '_',
+                                                }} name={'applicant.person.passportData.number'}
+                                                       type={'input-mask'}
+                                                       defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.number')}
+                                                />
+
+                                                <Field className={'ml-15'}
+                                                       disabled
+                                                       property={{
+                                                           hideLabel: true,
+                                                           placeholder: 'Дата рождения',
+                                                       }}
+                                                       name={'applicant.person.birthDate'} type={'datepicker'}
+                                                       defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.birthDate')}
+                                                />
+                                            </Flex>}
+                                        {get(data, 'data.result.responsibleForDamage.organization') &&
+                                            <Flex justify={'flex-end'}>
+                                                <Field
+                                                    disabled
+                                                    defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.inn')}
+                                                    property={{
+                                                        hideLabel: true,
+                                                        mask: '999999999',
+                                                        placeholder: 'Inn',
+                                                        maskChar: '_',
+                                                        disabled: true
+                                                    }} name={'applicant.organization.inn'} type={'input-mask'}/>
+
+                                            </Flex>}
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col xs={12}>
+                                <hr className={'mt-15 mb-15'}/>
+                            </Col>
+                            {get(data, 'data.result.responsibleVehicleInfo.person.gender') && <>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.fullName.lastname')}
+                                           label={'Lastname'}
+                                           type={'input'}
+                                           name={'applicant.person.fullName.lastname'}
+                                           property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.fullName.firstname')}
+                                           label={'Firstname'}
+                                           type={'input'}
+                                           name={'applicant.person.fullName.firstname'}
+                                           property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.fullName.middlename')}
+                                           label={'Middlename'}
+                                           type={'input'}
+                                           name={'applicant.person.fullName.middlename'}
+                                           property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field disabled params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.startDate')}
+                                           label={'Дата выдачи паспорта'}
+                                           type={'datepicker'}
+                                           name={'applicant.person.passportData.startDate'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field property={{disabled: true}} params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.issuedBy')}
+                                           label={'Кем выдан'}
+                                           type={'input'}
+                                           name={'applicant.person.passportData.issuedBy'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.gender')}
+                                        options={genderList}
+                                        label={'Gender'}
+                                        type={'select'}
+                                        name={'applicant.person.gender'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field property={{disabled: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.pinfl')}
+                                           label={'ПИНФЛ'} type={'input'}
+                                           name={'applicant.person.passportData.pinfl'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        params={{
+                                            required: true,
+                                            pattern: {
+                                                value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                message: 'Invalid format'
+                                            }
+                                        }}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.phone')}
+                                        label={'Phone'}
+                                        type={'input'}
+                                        property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                        name={'applicant.person.phone'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.email')}
+                                        label={'Email'}
+                                        type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.person.email'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={residentTypeList}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.residentType')}
+                                        label={'Resident type'}
+                                        type={'select'}
+                                        name={'applicant.person.residentType'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        property={{disabled: true}}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.driverLicenseSeria')}
+                                        label={'Серия вод. удостоверения'}
+                                        type={'input'}
+                                        name={'applicant.person.driverLicenseSeria'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        property={{disabled: true}}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.driverLicenseNumber')}
+                                        label={'Номер вод. удостоверения'}
+                                        type={'input'}
+                                        name={'applicant.person.driverLicenseNumber'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.countryId', 210)}
+                                        label={'Country'}
+                                        type={'select'}
+                                        options={countryList}
+                                        name={'applicant.person.countryId'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={regionList}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.regionId')}
+                                        label={'Region'}
+                                        type={'select'}
+                                        name={'applicant.person.regionId'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={districtList}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.districtId')}
+                                        label={'District'}
+                                        type={'select'}
+                                        name={'applicant.person.districtId'}/>
+                                </Col>
+
+                                <Col xs={6} className={'mb-25'}>
+                                    <Field
+                                        noMaxWidth
+                                        params={{required: true}}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.address')}
+                                        label={'Address'}
+                                        type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.person.address'}/>
+                                </Col>
+                            </>}
+                            {get(data, 'data.result.responsibleVehicleInfo.organization') && <>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field params={{required: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.name')}
+                                           label={'Наименование'} type={'input'}
+                                           property={{disabled: true}}
+                                           name={'applicant.organization.name'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.representativeName')}
+                                        label={'Руководитель'} type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.organization.representativeName'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.position')}
+                                        label={'Должность'} type={'input'}
+                                        property={{disabled: true}}
+                                        name={'applicant.organization.position'}/>
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.email')}
+                                        label={'Email'}
+                                        type={'input'}
+                                        name={'applicant.organization.email'}
+                                        property={{disabled: true}}
+                                    />
+                                </Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.phone')}
+                                           params={{
+                                               required: true,
+                                               pattern: {
+                                                   value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                   message: 'Invalid format'
+                                               }
+                                           }}
+                                           property={{placeholder: '998XXXXXXXXX', disabled: true}}
+                                           label={'Телефон'} type={'input'}
+                                           name={'applicant.organization.phone'}/>
+                                </Col>
+                                <Col xs={3}><Field disabled
+                                                   defaultValue={parseInt(get(data, 'data.result.responsibleVehicleInfo.organization.oked'))}
+                                                   label={'Oked'} params={{required: true, valueAsString: true}}
+                                                   options={okedList}
+                                                   type={'select'}
+                                                   name={'applicant.organization.oked'}/></Col>
+
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field property={{disabled: true}}
+                                           defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.checkingAccount')}
+                                           label={'Расчетный счет'} type={'input'}
+                                           name={'applicant.organization.checkingAccount'}/>
+                                </Col>
+                                <Col xs={3}><Field
+                                    defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.ownershipFormId')}
+                                    label={'Форма собственности'}
+                                    options={ownershipFormList}
+                                    type={'select'}
+                                    disabled
+                                    name={'applicant.organization.ownershipFormId'}/></Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        params={{required: true}}
+                                        defaultValue={210}
+                                        label={'Country'}
+                                        type={'select'}
+                                        options={countryList}
+                                        disabled
+                                        name={'applicant.organization.countryId'}/>
+                                </Col>
+                                <Col xs={3}><Field
+                                    defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.regionId')}
+                                    label={'Область'} params={{required: true}} options={regionList}
+                                    type={'select'}
+                                    disabled
+                                    name={'applicant.organization.regionId'}/></Col>
+                                <Col xs={3} className={'mb-25'}>
+                                    <Field
+                                        disabled
+                                        params={{required: true}}
+                                        options={districtList}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.districtId')}
+                                        label={'District'}
+                                        type={'select'}
+                                        name={'applicant.organization.districtId'}/>
+                                </Col>
+                                <Col xs={6} className={'mb-25'}>
+                                    <Field
+                                        noMaxWidth
+                                        params={{required: true}}
+                                        property={{disabled: true}}
+                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.address')}
+                                        label={'Address'}
+                                        type={'input'}
+                                        name={'applicant.organization.address'}/>
+                                </Col>
+                            </>}
+                        </Row>
+                }
             </Form>
-
         </Section>
     </>);
 };
