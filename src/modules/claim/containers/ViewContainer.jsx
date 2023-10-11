@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {find, get, isEqual, isNil, round, upperCase} from "lodash";
+import {get, isEqual} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -21,9 +21,6 @@ import {useTranslation} from "react-i18next";
 import dayjs from "dayjs";
 import Checkbox from "rc-checkbox";
 import Table from "../../../components/table";
-import NumberFormat from "react-number-format";
-import {Eye, Trash2} from "react-feather";
-import Modal from "../../../components/modal";
 import CarNumber from "../../../components/car-number";
 
 const ViewContainer = ({claimFormId = null}) => {
@@ -52,14 +49,6 @@ const ViewContainer = ({claimFormId = null}) => {
         },
         enabled: !!(claimFormId)
     })
-
-    const {data: filials} = useGetAllQuery({key: KEYS.agencies, url: URLS.agencies})
-    const filialList = getSelectOptionsListFromData(get(filials, `data.result`, []), 'id', 'name')
-
-    const {data: insuranceTerms, isLoading: isLoadingInsuranceTerms} = useGetAllQuery({
-        key: KEYS.insuranceTerms, url: URLS.insuranceTerms
-    })
-    const insuranceTermsList = getSelectOptionsListFromData(get(insuranceTerms, `data.result`, []), 'id', 'name')
 
     const {data: region, isLoading: isLoadingRegion} = useGetAllQuery({
         key: KEYS.regions, url: URLS.regions
@@ -122,16 +111,57 @@ const ViewContainer = ({claimFormId = null}) => {
 
     const {
         mutate: sendFond, isLoading: isLoadingFond
-    } = usePostQuery({listKeyId: KEYS.osgopView})
+    } = usePostQuery({listKeyId: KEYS.view})
     const {
         mutate: confirmPayedRequest, isLoading: isLoadingConfirmPayed
-    } = usePostQuery({listKeyId: KEYS.osgopView})
+    } = usePostQuery({listKeyId: KEYS.view})
 
-    const {mutate: deleteRequest, isLoading: deleteLoading} = useDeleteQuery({listKeyId: KEYS.osgopDelete})
+    const {mutate: deleteRequest, isLoading: deleteLoading} = useDeleteQuery({listKeyId: KEYS.remove})
+
+    const acceptDecision = () => {
+        confirmPayedRequest({
+                url: URLS.decision, attributes: {
+                    claimFormId: parseInt(claimFormId)
+                }
+            },
+            {
+                onSuccess: ({data}) => {
+
+                }
+            }
+        )
+    }
+
+    const cancelDecision = () => {
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            backdrop: 'rgba(0,0,0,0.9)',
+            background: 'none',
+            title: t('Are you sure?'),
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#13D6D1',
+            confirmButtonText: t('Yes'),
+            cancelButtonText: t('No'),
+            customClass: {
+                title: 'title-color',
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteRequest({url: `${URLS.cancelDecision}?claimFormId=${claimFormId}`}, {
+                    onSuccess: () => {
+                        navigate('/claim')
+                    }
+                })
+            }
+        });
+    }
 
     const send = () => {
         sendFond({
-                url: `${URLS.osgopSendFond}?claimFormId=${claimFormId}`, attributes: {}
+                url: `${URLS.send}?claimFormId=${claimFormId}`, attributes: {}
             },
             {
                 onSuccess: ({data}) => {
@@ -141,23 +171,6 @@ const ViewContainer = ({claimFormId = null}) => {
         )
     }
 
-    const confirmPayed = () => {
-        confirmPayedRequest({
-                url: URLS.osgopConfirmPayment, attributes: {
-                    uuid: get(data, 'data.result.uuid'),
-                    paidAt: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-                    insurancePremium: get(data, 'data.result.premium', 0),
-                    startDate: get(data, 'data.result.contractStartDate'),
-                    endDate: get(data, 'data.result.contractEndDate')
-                }
-            },
-            {
-                onSuccess: ({data}) => {
-
-                }
-            }
-        )
-    }
 
     const remove = () => {
         Swal.fire({
@@ -177,16 +190,16 @@ const ViewContainer = ({claimFormId = null}) => {
             },
         }).then((result) => {
             if (result.isConfirmed) {
-                deleteRequest({url: `${URLS.osgopDelete}?claimFormId=${claimFormId}`}, {
+                deleteRequest({url: `${URLS.remove}?claimFormId=${claimFormId}`}, {
                     onSuccess: () => {
-                        navigate('/osgop')
+                        navigate('/claim')
                     }
                 })
             }
         });
     }
 
-    if (isLoading || isLoadingRegion || isLoadingInsuranceTerms || isLoadingCountry) {
+    if (isLoading || isLoadingRegion  || isLoadingCountry) {
         return <OverlayLoader/>
     }
 
@@ -211,19 +224,25 @@ const ViewContainer = ({claimFormId = null}) => {
                 <Button onClick={remove}
                         danger type={'button'}
                         className={'mr-16'}>Удалить</Button>
-                {/*<Button onClick={() => navigate(`/osgop/update/${claimFormId}`)} yellow type={'button'}*/}
-                {/*        className={'mr-16'}>Изменить</Button>*/}
             </>}
-                <Button
-                    onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => send() : () => {
+                {!get(data, 'data.result.decisionId') && <Button
+                    onClick={isEqual(get(data, 'data.result.status'), 'new') ? () => acceptDecision() : () => {
                     }}
-                    gray={!(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited'))}
+                    gray={!(isEqual(get(data, 'data.result.status'), 'new'))}
+                    type={'button'} className={'mr-16'}>Принять решение</Button>}
+
+                {get(data, 'data.result.decisionId') && <Button
+                    onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => cancelDecision() : () => {
+                    }}
+                    danger
+                    type={'button'} className={'mr-16'}>Отменить решение</Button>}
+                <Button
+                    onClick={(isEqual(get(data, 'data.result.status'), 'new') && get(data, 'data.result.decisionId')) ? () => send() : () => {
+                    }}
+                    gray={!(isEqual(get(data, 'data.result.status'), 'new') && get(data, 'data.result.decisionId'))}
                     type={'button'} className={'mr-16'}>Отправить в
                     Фонд</Button>
-                <Button onClick={isEqual(get(data, 'data.result.status'), 'sent') ? () => confirmPayed() : () => {
-                }}
-                        type={'button'} gray={!isEqual(get(data, 'data.result.status'), 'sent')} className={'mr-16'}>Подтвердить
-                    оплату</Button></Flex>}>
+            </Flex>}>
                 <Row gutterWidth={60} className={'mt-32'}>
                     <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
                         <Row align={'center'} className={'mb-25'}>
@@ -1795,12 +1814,12 @@ const ViewContainer = ({claimFormId = null}) => {
                     <Col xs={12}>
                         <div className={'horizontal-scroll mt-15 mb-25'}>
                             <Table bordered hideThead={false}
-                                   thead={['№ ', 'Описание имущества', 'Размер вреда', 'Action']}>
+                                   thead={['№ ', 'Описание имущества', 'Размер вреда']}>
                                 {
                                     get(data, 'data.result.otherPropertyDamage', []).map((item, index) => <tr>
                                         <td>{index + 1}</td>
-                                        <td>{get(item, 'otherPropertyDamage.property')}</td>
-                                        <td>{get(item, 'otherPropertyDamage.claimedDamage')}</td>
+                                        <td>{get(item, 'property')}</td>
+                                        <td>{get(item, 'claimedDamage')}</td>
                                     </tr>)
                                 }
                             </Table>
