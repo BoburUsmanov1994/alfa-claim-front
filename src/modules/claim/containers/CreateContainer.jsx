@@ -491,7 +491,7 @@ const CreateContainer = () => {
         } = data
         const {ownerPerson, ownerOrganization, ...responsibleVehicleInfoRest} = responsibleVehicleInfo;
         createRequest({
-                url: URLS.create, attributes: {
+                url: URLS.create, attributes: responsibleVehicleInfo?.vehicleTypeId ? {
                     ...rest,
                     responsibleVehicleInfo: insurantIsOwner ? {
                         ...responsibleVehicleInfoRest,
@@ -509,7 +509,15 @@ const CreateContainer = () => {
                     healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
                     vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
                     otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage'))
-                }
+                }:
+                    {
+                        ...rest,
+                        responsibleForDamage: {...responsibleForDamage, regionId: get(responsible, 'regionId')},
+                        lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
+                        healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
+                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
+                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage'))
+                    }
             },
             {
                 onSuccess: ({data: response}) => {
