@@ -11,6 +11,7 @@ const Styled = styled.div`
     color: #000;
     font-family: 'Gilroy-Bold', sans-serif;
     margin-bottom: 0;
+    
   }
   .line{
     height: 1px;

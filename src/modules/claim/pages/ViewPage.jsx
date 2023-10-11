@@ -14,15 +14,17 @@ const Styled = styled.div`
     margin-bottom: 0;
   }
 
+
   .rodal-dialog {
     height: unset !important;
-    max-height: unset !important;
+    max-height: 80vh !important;
     top: 50% !important;
     bottom: unset !important;
     transform: translateY(-50%);
     min-width: 1000px !important;
     max-width: 60% !important;
   }
+
 `;
 const ViewPage = ({...rest}) => {
     const {claimFormId  = null} = useParams();

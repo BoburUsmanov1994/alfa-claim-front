@@ -492,24 +492,24 @@ const CreateContainer = () => {
         const {ownerPerson, ownerOrganization, ...responsibleVehicleInfoRest} = responsibleVehicleInfo;
         createRequest({
                 url: URLS.create, attributes: responsibleVehicleInfo?.vehicleTypeId ? {
-                    ...rest,
-                    responsibleVehicleInfo: insurantIsOwner ? {
-                        ...responsibleVehicleInfoRest,
-                        insurantIsOwner: true,
-                        govNumber: govNumber
-                    } : {
-                        ...responsibleVehicleInfoRest,
-                        ownerPerson,
-                        insurantIsOwner: false,
-                        ownerOrganization,
-                        govNumber: govNumber
-                    },
-                    responsibleForDamage: {...responsibleForDamage, regionId: get(responsible, 'regionId')},
-                    lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
-                    healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
-                    vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
-                    otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage'))
-                }:
+                        ...rest,
+                        responsibleVehicleInfo: insurantIsOwner ? {
+                            ...responsibleVehicleInfoRest,
+                            insurantIsOwner: true,
+                            govNumber: govNumber
+                        } : {
+                            ...responsibleVehicleInfoRest,
+                            ownerPerson,
+                            insurantIsOwner: false,
+                            ownerOrganization,
+                            govNumber: govNumber
+                        },
+                        responsibleForDamage: {...responsibleForDamage, regionId: get(responsible, 'regionId')},
+                        lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
+                        healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
+                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
+                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage'))
+                    } :
                     {
                         ...rest,
                         responsibleForDamage: {...responsibleForDamage, regionId: get(responsible, 'regionId')},
@@ -521,8 +521,8 @@ const CreateContainer = () => {
             },
             {
                 onSuccess: ({data: response}) => {
-                    if (get(response, 'result.osgop_formId')) {
-                        navigate(`/claim/view/${get(response, 'result.osgop_formId')}`);
+                    if (get(response, 'result.claimFormId')) {
+                        navigate(`/claim/view/${get(response, 'result.claimFormId')}`);
                     } else {
                         navigate(`/claim`);
                     }
@@ -535,8 +535,6 @@ const CreateContainer = () => {
     if (isLoadingRegion) {
         return <OverlayLoader/>
     }
-
-    console.log('responsible', responsible, insurantIsOwner, otherParams)
 
     return (<>
         {(isLoadingCountry || isLoadingPersonalInfo || isLoadingOrganizationInfo || isLoadingVehicleInfo || isLoadingPost) &&
