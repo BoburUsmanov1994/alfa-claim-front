@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useStore} from "../../../store";
-import {find, get, isEqual, upperCase} from "lodash";
+import {get, isEqual, upperCase} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -22,7 +22,6 @@ import Table from "../../../components/table";
 import {Trash2} from "react-feather";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
-import CarNumber from "../../../components/car-number"
 import Checkbox from "rc-checkbox";
 
 const CreateContainer = () => {
@@ -303,7 +302,7 @@ const CreateContainer = () => {
 
     const {
         mutate: createRequest, isLoading: isLoadingPost
-    } = usePostQuery({listKeyId: KEYS.osgopCreate})
+    } = usePostQuery({listKeyId: KEYS.create})
 
     const getInfo = (type = 'applicant') => {
         getPersonalInfoRequest({
@@ -473,6 +472,9 @@ const CreateContainer = () => {
         if (isEqual(name, 'responsibleVehicleInfo.techPassport.seria')) {
             setTechPassportSeria(value)
         }
+        if (isEqual(name, 'responsibleVehicleInfo.govNumber')) {
+            setGovNumber(value)
+        }
         setOtherParams(prev => ({...prev, [name]: value}))
     }
 
@@ -495,14 +497,12 @@ const CreateContainer = () => {
                         ...rest,
                         responsibleVehicleInfo: insurantIsOwner ? {
                             ...responsibleVehicleInfoRest,
-                            insurantIsOwner: true,
-                            govNumber: govNumber
+                            insurantIsOwner: true
                         } : {
                             ...responsibleVehicleInfoRest,
                             ownerPerson,
                             insurantIsOwner: false,
-                            ownerOrganization,
-                            govNumber: govNumber
+                            ownerOrganization
                         },
                         responsibleForDamage: {...responsibleForDamage, regionId: get(responsible, 'regionId')},
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
@@ -535,7 +535,7 @@ const CreateContainer = () => {
     if (isLoadingRegion) {
         return <OverlayLoader/>
     }
-
+    console.log('otherParms', otherParams)
     return (<>
         {(isLoadingCountry || isLoadingPersonalInfo || isLoadingOrganizationInfo || isLoadingVehicleInfo || isLoadingPost) &&
             <OverlayLoader/>}
@@ -624,6 +624,7 @@ const CreateContainer = () => {
                                     <Col xs={5}>Дата и время события: </Col>
                                     <Col xs={7}><Field
                                         params={{required: true}}
+                                        dateFormat={"YYYY-MM-DD HH:mm:ss"}
                                         property={{
                                             hideLabel: true,
                                             dateFormat: 'dd.MM.yyyy HH:mm:ss',
@@ -661,7 +662,8 @@ const CreateContainer = () => {
                                     <Col xs={5}>Дата решения суда: </Col>
                                     <Col xs={7}><Field
                                         params={{required: true}}
-                                        property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} type={'datepicker'}
+                                        property={{hideLabel: true}}
+                                        type={'datepicker'}
                                         name={'eventCircumstances.courtDecision.courtDecisionDate'}/></Col>
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
@@ -803,7 +805,7 @@ const CreateContainer = () => {
                                         params={{
                                             required: true,
                                             pattern: {
-                                                value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                                 message: 'Invalid format'
                                             }
                                         }}
@@ -901,7 +903,7 @@ const CreateContainer = () => {
                                     <Field defaultValue={get(applicant, 'organization.phone')} params={{
                                         required: true,
                                         pattern: {
-                                            value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                            value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                             message: 'Invalid format'
                                         }
                                     }}
@@ -1089,7 +1091,7 @@ const CreateContainer = () => {
                                         params={{
                                             required: true,
                                             pattern: {
-                                                value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                                 message: 'Invalid format'
                                             }
                                         }}
@@ -1188,7 +1190,7 @@ const CreateContainer = () => {
                                     <Field defaultValue={get(responsible, 'organization.phone')} params={{
                                         required: true,
                                         pattern: {
-                                            value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                            value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                             message: 'Invalid format'
                                         }
                                     }}
@@ -1247,8 +1249,12 @@ const CreateContainer = () => {
                             <Col xs={12} className={'mb-15'}><Title>ТС виновного лица:</Title></Col>
 
                             <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
-                                <div className={'mb-15'}>Государственный номер</div>
-                                <div className={'mb-25'}><CarNumber getGovNumber={setGovNumber}/></div>
+                                <Row align={'center'} className={'mb-25'}>
+                                    <Col xs={5}>Государственный номер:</Col>
+                                    <Col xs={7}><Field defaultValue={techPassportSeria} property={{hideLabel: true}}
+                                                       type={'input'}
+                                                       name={'responsibleVehicleInfo.govNumber'}/></Col>
+                                </Row>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Серия тех.паспорта:</Col>
                                     <Col xs={7}><Field defaultValue={techPassportSeria} property={{hideLabel: true}}
@@ -1459,7 +1465,7 @@ const CreateContainer = () => {
                                     <Field
                                         params={{
                                             pattern: {
-                                                value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                                 message: 'Invalid format'
                                             }
                                         }}
@@ -1562,7 +1568,7 @@ const CreateContainer = () => {
                                         defaultValue={get(insurantIsOwner ? otherParams : {}, 'responsibleForDamage.organization.phone')}
                                         params={{
                                             pattern: {
-                                                value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                                value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                                 message: 'Invalid format'
                                             }
                                         }}
@@ -2029,7 +2035,7 @@ const CreateContainer = () => {
                                     params={{
                                         required: true,
                                         pattern: {
-                                            value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                            value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                             message: 'Invalid format'
                                         }
                                     }}
@@ -2126,7 +2132,7 @@ const CreateContainer = () => {
                                 <Field defaultValue={get(vehicleDamage, 'organization.phone')} params={{
                                     required: true,
                                     pattern: {
-                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                         message: 'Invalid format'
                                     }
                                 }}
@@ -2291,7 +2297,7 @@ const CreateContainer = () => {
                                 params={{
                                     required: true,
                                     pattern: {
-                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                         message: 'Invalid format'
                                     }
                                 }}
@@ -2495,7 +2501,7 @@ const CreateContainer = () => {
                                 params={{
                                     required: true,
                                     pattern: {
-                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                         message: 'Invalid format'
                                     }
                                 }}
@@ -2755,7 +2761,7 @@ const CreateContainer = () => {
                                     params={{
                                         required: true,
                                         pattern: {
-                                            value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                            value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                             message: 'Invalid format'
                                         }
                                     }}
@@ -2852,7 +2858,7 @@ const CreateContainer = () => {
                                 <Field defaultValue={get(propertyDamage, 'organization.phone')} params={{
                                     required: true,
                                     pattern: {
-                                        value: /^998(9[012345789]|6[125679]|7[01234569])[0-9]{7}$/,
+                                        value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                         message: 'Invalid format'
                                     }
                                 }}

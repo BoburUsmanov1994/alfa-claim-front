@@ -94,14 +94,14 @@ const NumberFormatInput = ({
                     name={name}
                     render={({messages = `${label ?? name} is required`}) => {
 
-                        if (errors[name].type == 'required') {
+                        if (errors[name].type === 'required') {
                             messages = `${label ?? name} is required`;
                         }
-                        if (errors[name].type == 'pattern') {
+                        if (errors[name].type === 'pattern') {
                             messages = `${label ?? name} is not valid`;
                         }
-                        if (errors[name].type == 'manual') {
-                            messages = `${label ?? name} ${errors[name].message}`;
+                        if (errors[name].type === 'manual') {
+                            messages = `${label ?? name} ${errors[name]?.message}`;
                         }
                         return <small className="form-error-message"> {messages}</small>;
                     }}

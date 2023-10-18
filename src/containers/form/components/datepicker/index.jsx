@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import Label from "../../../../components/ui/label";
-import {get, isEmpty, isFunction} from "lodash";
+import {get, isEmpty, isFunction, isNil} from "lodash";
 import {ErrorMessage} from "@hookform/error-message";
 import {Calendar} from "react-feather";
 import dayjs from "dayjs";
@@ -61,7 +61,12 @@ const CustomDatepicker = ({
     const [startDate, setStartDate] = useState(new Date());
 
     useEffect(() => {
-        setValue(name, dayjs(startDate).format(get(property, 'dateFormat', dateFormat)))
+        if(startDate=="Invalid Date" || startDate == null){
+            setValue(name, null)
+        }else{
+            setValue(name, dayjs(startDate).format(dateFormat))
+        }
+
         if (get(property, 'onChange') && isFunction(get(property, 'onChange'))) {
             get(property, 'onChange')(startDate)
         }
@@ -74,6 +79,10 @@ const CustomDatepicker = ({
             }
         }
     }, [defaultValue])
+
+    useEffect(() => {
+        getValueFromField(getValues(name), name);
+    }, [watch(name)]);
     return (
         <Styled showTime={get(property, 'showTimeSelect')} {...rest}>
             <div className="form-group">
@@ -84,10 +93,14 @@ const CustomDatepicker = ({
                         calendarStartDay={1}
                         dateFormat={get(property, 'dateFormat', 'dd.MM.yyyy')}
                         className={`custom-datepicker ${!isEmpty(errors) ? "error" : ''}`}
-                        selected={dayjs(startDate).toDate()}
+                        selected={!isNil(startDate) ? dayjs(startDate).toDate() : null}
                         onChange={(date) => {
                             if (dayjs(date).isValid()) {
                                 setStartDate(date)
+                            }else if(date == null){
+                                setStartDate(null)
+                            }else {
+                                setStartDate(null)
                             }
                         }}
                         showTimeSelect={get(property, 'showTimeSelect')}
