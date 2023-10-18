@@ -61,7 +61,7 @@ const CustomDatepicker = ({
     const [startDate, setStartDate] = useState(new Date());
 
     useEffect(() => {
-        setValue(name, dayjs(startDate).format(dateFormat))
+        setValue(name, dayjs(startDate).format(get(property, 'dateFormat', dateFormat)))
         if (get(property, 'onChange') && isFunction(get(property, 'onChange'))) {
             get(property, 'onChange')(startDate)
         }
