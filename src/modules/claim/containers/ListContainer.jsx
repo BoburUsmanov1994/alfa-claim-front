@@ -7,6 +7,7 @@ import {URLS} from "../../../constants/url";
 import Field from "../../../containers/form/field";
 import {useTranslation} from "react-i18next";
 import NumberFormat from "react-number-format";
+import dayjs from "dayjs";
 
 const ListContainer = ({...rest}) => {
     const {t} = useTranslation()
@@ -64,29 +65,19 @@ const ListContainer = ({...rest}) => {
                         id: 66,
                         key: 'eventCircumstances.eventDateTime',
                         title: 'Дата события',
+                        render: ({value})=>dayjs(value).format("YYYY-MM-DD")
                     },
                     {
                         id: 67,
                         key: 'eventCircumstances.eventDateTime',
                         title: 'Время события',
-                    },
-                    {
-                        id: 68,
-                        key: 'eventCircumstances.eventDateTime',
-                        title: '',
+                        render: ({value})=>dayjs(value).format("HH:mm")
                     },
                     {
                         id: 7,
                         key: 'sum',
-                        title: 'Insurance sum',
+                        title: 'Сумма выплаты',
                         render: ({value}) => <NumberFormat displayType={'text'} thousandSeparator={' '} value={value}/>
-                    },
-                    {
-                        id: 8,
-                        key: 'premium',
-                        title: 'Оплачено',
-                        render: ({value, row}) => get(row, 'status') == 'payed' ?
-                            <NumberFormat displayType={'text'} thousandSeparator={' '} value={value}/> : 0
                     },
                     {
                         id: 9,

@@ -483,7 +483,7 @@ const CreateContainer = () => {
         setOtherParams(prev => ({...prev, [name]: value}))
     }
 
-    console.log('vehicleDamage', vehicleDamage)
+    console.log('propertyDamage', propertyDamage)
     const create = ({data}) => {
         let {
             insuranceSumForPassenger,
@@ -541,7 +541,21 @@ const CreateContainer = () => {
                         },
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
-                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
+                        vehicleDamage: get(vehicleDamage, 'list', [])?.length < 2 ? get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerOrganization: undefined
+                            }
+                        }) : ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerOrganization: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: undefined
+                            }
+                        })):get(vehicleDamage, 'list', []).map(_item => !get(_item, 'vehicleDamage.vehicle.ownerOrganization.inn') ? ({
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
@@ -556,7 +570,7 @@ const CreateContainer = () => {
                                 ownerPerson: undefined
                             }
                         })),
-                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
+                        otherPropertyDamage: get(propertyDamage, 'list', [])?.length < 2 ? get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
                             ...get(_item, 'otherPropertyDamage'),
                             ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
                             ownerOrganization: undefined
@@ -564,6 +578,14 @@ const CreateContainer = () => {
                             ...get(_item, 'otherPropertyDamage'),
                             ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
                             ownerPerson: undefined
+                        })):get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage.ownerOrganization.inn') ? ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
+                            ownerPerson: undefined
+                        }) : ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
+                            ownerOrganization: undefined
                         }))
                     } :
                     {
@@ -586,7 +608,21 @@ const CreateContainer = () => {
                         },
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
-                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
+                        vehicleDamage: get(vehicleDamage, 'list', [])?.length < 2 ? get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerOrganization: undefined
+                            }
+                        }) : ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerOrganization: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: undefined
+                            }
+                        })):get(vehicleDamage, 'list', []).map(_item => !get(_item, 'vehicleDamage.vehicle.ownerOrganization.inn') ? ({
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
@@ -601,7 +637,7 @@ const CreateContainer = () => {
                                 ownerPerson: undefined
                             }
                         })),
-                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
+                        otherPropertyDamage: get(propertyDamage, 'list', [])?.length<2 ? get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
                             ...get(_item, 'otherPropertyDamage'),
                             ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
                             ownerOrganization: undefined
@@ -609,6 +645,14 @@ const CreateContainer = () => {
                             ...get(_item, 'otherPropertyDamage'),
                             ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
                             ownerPerson: undefined
+                        })):get(propertyDamage, 'list', []).map(_item => get(_item, 'ownerOrganization.inn') ? ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
+                            ownerPerson: undefined
+                        }) : ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
+                            ownerOrganization: undefined
                         }))
                     }
             },

@@ -70,6 +70,11 @@ const ViewContainer = ({claimFormId = null}) => {
     })
     const residentTypeList = getSelectOptionsListFromData(get(residentTypes, `data.result`, []), 'id', 'name')
 
+    const {data: insuranceTypes} = useGetAllQuery({
+        key: KEYS.insuranceTypes, url: URLS.insuranceTypes
+    })
+    const insuranceTypeList = getSelectOptionsListFromData(get(insuranceTypes, `data.result`, []), 'id', 'name')
+
     const {data: country, isLoading: isLoadingCountry} = useGetAllQuery({
         key: KEYS.countries, url: URLS.countries
     })
@@ -276,6 +281,13 @@ const ViewContainer = ({claimFormId = null}) => {
                                 params={{required: true}}
                                 property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} disabled type={'datepicker'}
                                 name={'claimDate'}/></Col>
+                        </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Виды страхования:</Col>
+                            <Col xs={7}><Field disabled defaultValue={get(data, 'data.result.insuranceType')} options={insuranceTypeList} params={{required: true}}
+                                               label={'Виды страхования'} property={{hideLabel: true}}
+                                               type={'select'}
+                                               name={'insuranceType'}/></Col>
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
                             <Col xs={5}>Серия полиса:</Col>
