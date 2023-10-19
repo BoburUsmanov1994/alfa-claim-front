@@ -53,9 +53,9 @@ const Switcher = ({
 
     useEffect(() => {
         if (checked) {
-            setValue(name, get(last(options), 'value', true))
+            setValue(name, String(get(last(options), 'value', true)))
         } else {
-            setValue(name, get(head(options), 'value', false))
+            setValue(name, String(get(head(options), 'value', false)))
         }
 
     }, [checked])

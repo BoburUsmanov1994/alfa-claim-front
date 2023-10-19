@@ -545,7 +545,7 @@ const CreateContainer = () => {
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
-                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: get(get(_item, 'vehicleDamage.vehicle'), 'ownerPerson'),
                                 ownerOrganization: undefined
                             }
                         }) : ({
@@ -559,18 +559,18 @@ const CreateContainer = () => {
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
-                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: get(get(_item, 'vehicleDamage.vehicle'), 'ownerPerson'),
                                 ownerOrganization: undefined
                             }
                         }) : ({
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
-                                ownerOrganization: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerOrganization: get(get(_item, 'vehicleDamage.vehicle'), 'ownerPerson'),
                                 ownerPerson: undefined
                             }
                         })),
-                        otherPropertyDamage: get(propertyDamage, 'list', [])?.length < 2 ? get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
+                        otherPropertyDamage: get(propertyDamage, 'list', [])?.length<2 ? (get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
                             ...get(_item, 'otherPropertyDamage'),
                             ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
                             ownerOrganization: undefined
@@ -578,15 +578,15 @@ const CreateContainer = () => {
                             ...get(_item, 'otherPropertyDamage'),
                             ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
                             ownerPerson: undefined
-                        })):get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage.ownerOrganization.inn') ? ({
+                        }))):(get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage.ownerOrganization.inn') ? ({
                             ...get(_item, 'otherPropertyDamage'),
-                            ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
+                            ownerOrganization: get(_item, 'otherPropertyDamage.ownerOrganization'),
                             ownerPerson: undefined
                         }) : ({
                             ...get(_item, 'otherPropertyDamage'),
-                            ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
+                            ownerPerson: get(_item, 'otherPropertyDamage.ownerPerson'),
                             ownerOrganization: undefined
-                        }))
+                        })))
                     } :
                     {
                         ...rest,
@@ -612,7 +612,7 @@ const CreateContainer = () => {
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
-                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: get(get(_item, 'vehicleDamage.vehicle'), 'ownerPerson'),
                                 ownerOrganization: undefined
                             }
                         }) : ({
@@ -626,18 +626,18 @@ const CreateContainer = () => {
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
-                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: get(get(_item, 'vehicleDamage.vehicle'), 'ownerPerson'),
                                 ownerOrganization: undefined
                             }
                         }) : ({
                             ...get(_item, 'vehicleDamage'),
                             vehicle: {
                                 ...get(_item, 'vehicleDamage.vehicle'),
-                                ownerOrganization: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerOrganization: get(get(_item, 'vehicleDamage.vehicle'), 'ownerPerson'),
                                 ownerPerson: undefined
                             }
                         })),
-                        otherPropertyDamage: get(propertyDamage, 'list', [])?.length<2 ? get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
+                        otherPropertyDamage: get(propertyDamage, 'list', [])?.length<2 ? (get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
                             ...get(_item, 'otherPropertyDamage'),
                             ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
                             ownerOrganization: undefined
@@ -645,15 +645,15 @@ const CreateContainer = () => {
                             ...get(_item, 'otherPropertyDamage'),
                             ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
                             ownerPerson: undefined
-                        })):get(propertyDamage, 'list', []).map(_item => get(_item, 'ownerOrganization.inn') ? ({
+                        }))):(get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage.ownerOrganization.inn') ? ({
                             ...get(_item, 'otherPropertyDamage'),
-                            ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
+                            ownerOrganization: get(_item, 'otherPropertyDamage.ownerOrganization'),
                             ownerPerson: undefined
                         }) : ({
                             ...get(_item, 'otherPropertyDamage'),
-                            ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
+                            ownerPerson: get(_item, 'otherPropertyDamage.ownerPerson'),
                             ownerOrganization: undefined
-                        }))
+                        })))
                     }
             },
             {
@@ -672,7 +672,6 @@ const CreateContainer = () => {
     if (isLoadingRegion) {
         return <OverlayLoader/>
     }
-    console.log('otherParms', otherParams)
     return (<>
         {(isLoadingCountry || isLoadingPersonalInfo || isLoadingOrganizationInfo || isLoadingVehicleInfo || isLoadingPost) &&
             <OverlayLoader/>}
@@ -1462,6 +1461,7 @@ const CreateContainer = () => {
                                     </Col>
                                     <Col xs={4} className="mb-25">
                                         <Field
+                                            params={{valueAsString:true}}
                                             label={'Иностранный'} type={'switch'}
                                             name={'responsibleVehicleInfo.isForeign'}/>
                                     </Col>
@@ -2036,6 +2036,7 @@ const CreateContainer = () => {
                         </Col>
                         <Col xs={4} className={'mt-15'}>
                             <Field
+                                params={{valueAsString:true}}
                                 label={'Иностранный'} type={'switch'}
                                 name={'vehicleDamage.vehicle.isForeign'}/>
                         </Col>
