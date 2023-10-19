@@ -14,7 +14,7 @@ const Styled = styled.div`
     bottom: unset !important;
     transform: translateY(-50%);
     min-width: 1000px !important;
-    max-width: 60% !important;
+    max-width: 70% !important;
   }
 
 `;

@@ -239,13 +239,15 @@ const ViewContainer = ({claimFormId = null}) => {
                     onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => cancelDecision() : () => {
                     }}
                     danger
-                    type={'button'} className={'mr-16'}>Отменить решение</Button><Button yellow
-                                                                                         onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => setOpenEditModal(true) : () => {
-                                                                                         }}
-                                                                                         danger
-                                                                                         type={'button'}
-                                                                                         className={'mr-16'}>Редактирование
-                    решения</Button></>
+                    type={'button'} className={'mr-16'}>Отменить решение</Button>
+                    {/*<Button yellow*/}
+                    {/*                                                                     onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => setOpenEditModal(true) : () => {*/}
+                    {/*                                                                     }}*/}
+                    {/*                                                                     danger*/}
+                    {/*                                                                     type={'button'}*/}
+                    {/*                                                                     className={'mr-16'}>Редактирование*/}
+                    {/*решения</Button>*/}
+                </>
                 }
                 <Button
                     onClick={(isEqual(get(data, 'data.result.status'), 'new') && get(data, 'data.result.decisionId')) ? () => send() : () => {
@@ -568,6 +570,7 @@ const ViewContainer = ({claimFormId = null}) => {
                         </Col>
                         <Col xs={3} className={'mb-25'}>
                             <Field
+                                disabled
                                 defaultValue={get(data, 'data.result.applicant.person.countryId', 210)}
                                 label={'Country'}
                                 type={'select'}
@@ -669,6 +672,7 @@ const ViewContainer = ({claimFormId = null}) => {
                             name={'applicant.organization.ownershipFormId'}/></Col>
                         <Col xs={3} className={'mb-25'}>
                             <Field
+
                                 params={{required: true}}
                                 defaultValue={210}
                                 label={'Country'}
@@ -885,6 +889,7 @@ const ViewContainer = ({claimFormId = null}) => {
                         </Col>
                         <Col xs={3} className={'mb-25'}>
                             <Field
+                                disabled
                                 defaultValue={get(data, 'data.result.responsibleForDamage.person.countryId', 210)}
                                 label={'Country'}
                                 type={'select'}
@@ -1028,10 +1033,15 @@ const ViewContainer = ({claimFormId = null}) => {
                     <Col xs={12} className={'mb-15'}><Title>ТС виновного лица:</Title></Col>
 
                     <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
-                        <div className={'mb-15'}>Государственный номер</div>
-                        <div className={'mb-25'}><CarNumber disabled
-                                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.govNumber')}/>
-                        </div>
+
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>Государственный номер</Col>
+                            <Col xs={7}><Field
+                                defaultValue={get(data, 'data.result.responsibleVehicleInfo.govNumber')}
+                                property={{hideLabel: true, disabled: true}}
+                                type={'input'}
+                                name={'data.result.responsibleVehicleInfo.govNumber'}/></Col>
+                        </Row>
                         <Row align={'center'} className={'mb-25'}>
                             <Col xs={5}>Серия тех.паспорта:</Col>
                             <Col xs={7}><Field
@@ -1299,6 +1309,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
+                                        disabled
                                         defaultValue={get(data, 'data.result.responsibleForDamage.person.countryId', 210)}
                                         label={'Country'}
                                         type={'select'}
@@ -1620,6 +1631,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
+                                        disabled
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.countryId', 210)}
                                         label={'Country'}
                                         type={'select'}
@@ -1883,7 +1895,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 <Col xs={11}>
                                     <Row>
                                         <Col xs={3}>
-                                            <Field name={`lifePayouts[${count}].payoutSum`} type={'input'}
+                                            <Field name={`lifePayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
@@ -1933,7 +1945,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 <Col xs={11}>
                                     <Row>
                                         <Col xs={3}>
-                                            <Field name={`healthPayouts[${count}].payoutSum`}
+                                            <Field name={`healthPayouts[${count}].payoutSum`} property={{type:'number'}}
                                                    type={'input'}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
@@ -1980,7 +1992,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 <Col xs={11}>
                                     <Row>
                                         <Col xs={3}>
-                                            <Field name={`otherPropertyPayouts[${count}].payoutSum`} type={'input'}
+                                            <Field name={`otherPropertyPayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
@@ -2058,7 +2070,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 <Col xs={11}>
                                     <Row>
                                         <Col xs={3}>
-                                            <Field name={`lifePayouts[${count}].payoutSum`} type={'input'}
+                                            <Field name={`lifePayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
@@ -2108,7 +2120,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 <Col xs={11}>
                                     <Row>
                                         <Col xs={3}>
-                                            <Field name={`healthPayouts[${count}].payoutSum`}
+                                            <Field name={`healthPayouts[${count}].payoutSum`} property={{type:'number'}}
                                                    type={'input'}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
@@ -2155,7 +2167,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                 <Col xs={11}>
                                     <Row>
                                         <Col xs={3}>
-                                            <Field name={`otherPropertyPayouts[${count}].payoutSum`} type={'input'}
+                                            <Field name={`otherPropertyPayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
                                         </Col>

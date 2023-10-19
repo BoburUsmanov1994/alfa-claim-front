@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useStore} from "../../../store";
-import {get, isEqual, upperCase} from "lodash";
+import {get,  isEqual, upperCase} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -478,45 +478,90 @@ const CreateContainer = () => {
         setOtherParams(prev => ({...prev, [name]: value}))
     }
 
+    console.log('vehicleDamage',vehicleDamage)
     const create = ({data}) => {
         debugger
-        const {
+        let {
             insuranceSumForPassenger,
             passengerCapacity,
             birthDate,
             passportNumber,
             passportSeries,
             inn,
-            responsibleForDamage,
+            responsibleForDamage: responsibleForDamageData,
             responsibleVehicleInfo,
+            applicant: applicantData,
             ...rest
         } = data
-        const {ownerPerson, ownerOrganization, ...responsibleVehicleInfoRest} = responsibleVehicleInfo;
+        const {
+            ownerPerson: responsibleOwnerPerson,
+            ownerOrganization: responsibleOwnerOrganization,
+            ...responsibleVehicleInfoRest
+        } = responsibleVehicleInfo;
+        const {person: applicantPerson, organization: applicantOrganization, ...applicantDataRest} = applicantData;
+        const {
+            person: responsibleForDamagePerson,
+            organization: responsibleForDamageOrganization,
+            ...responsibleForDamageDataRest
+        } = responsibleForDamageData;
         createRequest({
                 url: URLS.create, attributes: responsibleVehicleInfo?.vehicleTypeId ? {
                         ...rest,
-                        responsibleVehicleInfo: insurantIsOwner ? {
+                        applicant: isEqual(get(applicant, 'type'), 'person') ? {
+                            ...applicantDataRest,
+                            person: applicantPerson
+                        } : {
+                            ...applicantDataRest,
+                            organization: applicantOrganization
+                        },
+                        responsibleVehicleInfo: (insurantIsOwner || !responsibleOwnerPerson.gender || !responsibleOwnerOrganization.inn) ? {
                             ...responsibleVehicleInfoRest,
                             insurantIsOwner: true
+                        } : isEqual(get(owner, 'type'), 'person') ? {
+                            ...responsibleVehicleInfoRest,
+                            ownerPerson: responsibleOwnerPerson,
+                            insurantIsOwner: false,
                         } : {
                             ...responsibleVehicleInfoRest,
-                            ownerPerson,
+                            ownerOrganization: responsibleOwnerOrganization,
                             insurantIsOwner: false,
-                            ownerOrganization
                         },
-                        responsibleForDamage: {...responsibleForDamage, regionId: get(responsible, 'regionId')},
+                        responsibleForDamage: isEqual(get(responsible, 'type'), 'person') ? {
+                            ...responsibleForDamageDataRest,
+                            person: responsibleForDamagePerson,
+                            regionId: get(responsible, 'regionId')
+                        } : {
+                            ...responsibleForDamageDataRest,
+                            organization: responsibleForDamageOrganization,
+                            regionId: get(responsible, 'regionId')
+                        },
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
-                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
-                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage'))
+                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage,'type'),'person') ? ({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerPerson:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerOrganization:undefined}}):({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerOrganization:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerPerson:undefined}})),
+                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage,'type'),'person') ? ({...get(_item, 'otherPropertyDamage'),ownerPerson:get(get(_item, 'otherPropertyDamage'),'ownerPerson'),ownerOrganization:undefined}):({...get(_item, 'otherPropertyDamage'),ownerOrganization:get(get(_item, 'otherPropertyDamage'),'ownerOrganization'),ownerPerson:undefined}))
                     } :
                     {
                         ...rest,
-                        responsibleForDamage: {...responsibleForDamage, regionId: get(responsible, 'regionId')},
+                        applicant: isEqual(get(applicant, 'type'), 'person') ? {
+                            ...applicantDataRest,
+                            person: applicantPerson
+                        } : {
+                            ...applicantDataRest,
+                            organization: applicantOrganization
+                        },
+                        responsibleForDamage: isEqual(get(responsible, 'type'), 'person') ? {
+                            ...responsibleForDamageDataRest,
+                            person: responsibleForDamagePerson,
+                            regionId: get(responsible, 'regionId')
+                        } : {
+                            ...responsibleForDamageDataRest,
+                            organization: responsibleForDamageOrganization,
+                            regionId: get(responsible, 'regionId')
+                        },
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
-                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => get(_item, 'vehicleDamage')),
-                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => get(_item, 'otherPropertyDamage'))
+                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage,'type'),'person') ? ({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerPerson:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerOrganization:undefined}}):({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerOrganization:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerPerson:undefined}})),
+                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage,'type'),'person') ? ({...get(_item, 'otherPropertyDamage'),ownerPerson:get(get(_item, 'otherPropertyDamage'),'ownerPerson'),ownerOrganization:undefined}):({...get(_item, 'otherPropertyDamage'),ownerOrganization:get(get(_item, 'otherPropertyDamage'),'ownerOrganization'),ownerPerson:undefined}))
                     }
             },
             {
@@ -606,7 +651,7 @@ const CreateContainer = () => {
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Тип местности претензии:</Col>
-                                    <Col xs={7}><Field options={areaTypesList}
+                                    <Col xs={7}><Field params={{required: true}} options={areaTypesList}
                                                        label={'Тип местности претензии'} property={{hideLabel: true}}
                                                        type={'select'}
                                                        name={'areaTypeId'}/></Col>
@@ -1251,7 +1296,7 @@ const CreateContainer = () => {
                             <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Государственный номер:</Col>
-                                    <Col xs={7}><Field defaultValue={techPassportSeria} property={{hideLabel: true}}
+                                    <Col xs={7}><Field defaultValue={govNumber} property={{hideLabel: true}}
                                                        type={'input'}
                                                        name={'responsibleVehicleInfo.govNumber'}/></Col>
                                 </Row>
@@ -1310,17 +1355,16 @@ const CreateContainer = () => {
                                                name={'responsibleVehicleInfo.engineNumber'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={get(vehicle, 'fullWeight')}
-                                               label={'Объем'}
-                                               type={'input'}
-                                               name={'responsibleVehicleInfo.fullWeight'}/>
-                                    </Col>
-                                    <Col xs={4} className="mb-25">
                                         <Field defaultValue={parseInt(get(vehicle, 'seats'))}
                                                property={{type: 'number'}}
                                                label={'Количество мест сидения'}
                                                type={'input'}
                                                name={'responsibleVehicleInfo.numberOfSeats'}/>
+                                    </Col>
+                                    <Col xs={4} className="mb-25">
+                                        <Field
+                                            label={'Иностранный'} type={'switch'}
+                                            name={'responsibleVehicleInfo.isForeign'}/>
                                     </Col>
                                 </Row>
                             </Col>
@@ -1772,7 +1816,7 @@ const CreateContainer = () => {
                         <Col xs={12} className={' mt-15'}>
                             <Row>
                                 <Col xs={3}>
-                                    <Field params={{required: true}}
+                                    <Field params={{required: true}} property={{type:'number'}}
                                            label={'Заявленный размер вреда'}
                                            type={'input'}
                                            name={'vehicleDamage.claimedDamage'}/>
@@ -2243,7 +2287,7 @@ const CreateContainer = () => {
                                    name={'lifeDamage.deathCertificate'}/>
                         </Col>
                         <Col xs={3} className={'mb-25'}>
-                            <Field params={{required: true}}
+                            <Field params={{required: true}} property={{type:'number'}}
                                    label={'Заявленный размер вреда'}
                                    type={'input'}
                                    name={'lifeDamage.claimedDamage'}/>
@@ -2423,7 +2467,7 @@ const CreateContainer = () => {
                         </Col>
 
                         <Col xs={3} className={'mb-25'}>
-                            <Field params={{required: true}}
+                            <Field params={{valueAsNumber:true,required: true}} property={{type:'number'}}
                                    label={'Заявленный размер вреда'}
                                    type={'input'}
                                    name={'healthDamage.claimedDamage'}/>
@@ -2601,7 +2645,7 @@ const CreateContainer = () => {
                                            name={'otherPropertyDamage.property'}/>
                                 </Col>
                                 <Col xs={3}>
-                                    <Field params={{required: true}}
+                                    <Field params={{ required: true}} property={{type:'number'}}
                                            label={'Заявленный размер вреда'}
                                            type={'input'}
                                            name={'otherPropertyDamage.claimedDamage'}/>

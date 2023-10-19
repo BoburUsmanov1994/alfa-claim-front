@@ -38,7 +38,7 @@ const Input = ({
                    errors,
                    params,
                    property,
-                   defaultValue,
+                   defaultValue = null,
                    getValues,
                    watch,
                    label,
@@ -69,7 +69,7 @@ const Input = ({
                     disabled={get(property, "disabled")}
                     defaultValue={defaultValue}
                     min={0}
-                    max={get(property,'max',25)}
+                    max={get(property,'max',250000000000000000)}
                 /> : <input
                     className={classNames('form-input',{error:get(errors,`${name}`,false)})}
                     name={name}
