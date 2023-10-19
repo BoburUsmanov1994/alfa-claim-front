@@ -2466,7 +2466,7 @@ const CreateContainer = () => {
                         </Col>
 
                         <Col xs={3} className={'mb-25'}>
-                            <Field params={{valueAsNumber:true,required: true}} property={{type:'number'}}
+                            <Field params={{required: true}} property={{type:'number'}}
                                    label={'Заявленный размер вреда'}
                                    type={'input'}
                                    name={'healthDamage.claimedDamage'}/>
