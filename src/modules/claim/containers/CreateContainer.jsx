@@ -480,7 +480,6 @@ const CreateContainer = () => {
 
     console.log('vehicleDamage',vehicleDamage)
     const create = ({data}) => {
-        debugger
         let {
             insuranceSumForPassenger,
             passengerCapacity,
