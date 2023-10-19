@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useStore} from "../../../store";
-import {get,  isEqual, upperCase} from "lodash";
+import {get, isEqual, upperCase} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -143,6 +143,11 @@ const CreateContainer = () => {
         key: KEYS.residentTypes, url: URLS.residentTypes
     })
     const residentTypeList = getSelectOptionsListFromData(get(residentTypes, `data.result`, []), 'id', 'name')
+
+    const {data: insuranceTypes} = useGetAllQuery({
+        key: KEYS.insuranceTypes, url: URLS.insuranceTypes
+    })
+    const insuranceTypeList = getSelectOptionsListFromData(get(insuranceTypes, `data.result`, []), 'id', 'name')
 
 
     const {data: vehicleTypes} = useGetAllQuery({
@@ -478,7 +483,7 @@ const CreateContainer = () => {
         setOtherParams(prev => ({...prev, [name]: value}))
     }
 
-    console.log('vehicleDamage',vehicleDamage)
+    console.log('vehicleDamage', vehicleDamage)
     const create = ({data}) => {
         let {
             insuranceSumForPassenger,
@@ -536,8 +541,30 @@ const CreateContainer = () => {
                         },
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
-                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage,'type'),'person') ? ({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerPerson:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerOrganization:undefined}}):({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerOrganization:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerPerson:undefined}})),
-                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage,'type'),'person') ? ({...get(_item, 'otherPropertyDamage'),ownerPerson:get(get(_item, 'otherPropertyDamage'),'ownerPerson'),ownerOrganization:undefined}):({...get(_item, 'otherPropertyDamage'),ownerOrganization:get(get(_item, 'otherPropertyDamage'),'ownerOrganization'),ownerPerson:undefined}))
+                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerOrganization: undefined
+                            }
+                        }) : ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerOrganization: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: undefined
+                            }
+                        })),
+                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
+                            ownerOrganization: undefined
+                        }) : ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
+                            ownerPerson: undefined
+                        }))
                     } :
                     {
                         ...rest,
@@ -559,8 +586,30 @@ const CreateContainer = () => {
                         },
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
-                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage,'type'),'person') ? ({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerPerson:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerOrganization:undefined}}):({...get(_item, 'vehicleDamage'),vehicle:{...get(_item, 'vehicleDamage.vehicle'),ownerOrganization:get(get(_item, 'vehicleDamage'),'ownerPerson'),ownerPerson:undefined}})),
-                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage,'type'),'person') ? ({...get(_item, 'otherPropertyDamage'),ownerPerson:get(get(_item, 'otherPropertyDamage'),'ownerPerson'),ownerOrganization:undefined}):({...get(_item, 'otherPropertyDamage'),ownerOrganization:get(get(_item, 'otherPropertyDamage'),'ownerOrganization'),ownerPerson:undefined}))
+                        vehicleDamage: get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerPerson: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerOrganization: undefined
+                            }
+                        }) : ({
+                            ...get(_item, 'vehicleDamage'),
+                            vehicle: {
+                                ...get(_item, 'vehicleDamage.vehicle'),
+                                ownerOrganization: get(get(_item, 'vehicleDamage'), 'ownerPerson'),
+                                ownerPerson: undefined
+                            }
+                        })),
+                        otherPropertyDamage: get(propertyDamage, 'list', []).map(_item => isEqual(get(propertyDamage, 'type'), 'person') ? ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerPerson: get(get(_item, 'otherPropertyDamage'), 'ownerPerson'),
+                            ownerOrganization: undefined
+                        }) : ({
+                            ...get(_item, 'otherPropertyDamage'),
+                            ownerOrganization: get(get(_item, 'otherPropertyDamage'), 'ownerOrganization'),
+                            ownerPerson: undefined
+                        }))
                     }
             },
             {
@@ -618,6 +667,13 @@ const CreateContainer = () => {
                                         params={{required: true}}
                                         property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} type={'datepicker'}
                                         name={'claimDate'}/></Col>
+                                </Row>
+                                <Row align={'center'} className={'mb-25'}>
+                                    <Col xs={5}>Виды страхования:</Col>
+                                    <Col xs={7}><Field options={insuranceTypeList} params={{required: true}}
+                                                       label={'Виды страхования'} property={{hideLabel: true}}
+                                                       type={'select'}
+                                                       name={'insuranceType'}/></Col>
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Серия полиса:</Col>
@@ -1815,7 +1871,7 @@ const CreateContainer = () => {
                         <Col xs={12} className={' mt-15'}>
                             <Row>
                                 <Col xs={3}>
-                                    <Field params={{required: true}} property={{type:'number'}}
+                                    <Field params={{required: true}} property={{type: 'number'}}
                                            label={'Заявленный размер вреда'}
                                            type={'input'}
                                            name={'vehicleDamage.claimedDamage'}/>
@@ -2286,7 +2342,7 @@ const CreateContainer = () => {
                                    name={'lifeDamage.deathCertificate'}/>
                         </Col>
                         <Col xs={3} className={'mb-25'}>
-                            <Field params={{required: true}} property={{type:'number'}}
+                            <Field params={{required: true}} property={{type: 'number'}}
                                    label={'Заявленный размер вреда'}
                                    type={'input'}
                                    name={'lifeDamage.claimedDamage'}/>
@@ -2466,7 +2522,7 @@ const CreateContainer = () => {
                         </Col>
 
                         <Col xs={3} className={'mb-25'}>
-                            <Field params={{required: true}} property={{type:'number'}}
+                            <Field params={{required: true}} property={{type: 'number'}}
                                    label={'Заявленный размер вреда'}
                                    type={'input'}
                                    name={'healthDamage.claimedDamage'}/>
@@ -2644,7 +2700,7 @@ const CreateContainer = () => {
                                            name={'otherPropertyDamage.property'}/>
                                 </Col>
                                 <Col xs={3}>
-                                    <Field params={{ required: true}} property={{type:'number'}}
+                                    <Field params={{required: true}} property={{type: 'number'}}
                                            label={'Заявленный размер вреда'}
                                            type={'input'}
                                            name={'otherPropertyDamage.claimedDamage'}/>

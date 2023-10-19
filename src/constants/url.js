@@ -35,4 +35,5 @@ export const URLS = {
     okeds: 'api/references/okeds',
     activityAndRisk: 'api/references/activity-and-risks',
     decisions: 'api/references/decisions',
+    insuranceTypes: 'api/references/insurance-types',
 }

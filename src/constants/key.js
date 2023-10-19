@@ -33,4 +33,5 @@ export const KEYS = {
     osgorCalculate: 'osgorCalculate',
     agents: 'agents',
     decisions: 'decisions',
+    insuranceTypes: 'insuranceTypes',
 }
