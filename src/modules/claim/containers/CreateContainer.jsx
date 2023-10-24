@@ -1055,7 +1055,7 @@ const CreateContainer = () => {
                                            label={'Телефон'} type={'input'}
                                            name={'applicant.organization.phone'}/>
                                 </Col>
-                                <Col xs={3}><Field defaultValue={parseInt(get(applicant, 'organization.oked'))}
+                                <Col xs={3}><Field defaultValue={get(applicant, 'organization.oked')}
                                                    label={'Oked'} params={{required: true, valueAsString: true}}
                                                    options={okedList}
                                                    type={'select'}
@@ -1342,7 +1342,7 @@ const CreateContainer = () => {
                                            label={'Телефон'} type={'input'}
                                            name={'responsibleForDamage.organization.phone'}/>
                                 </Col>
-                                <Col xs={3}><Field defaultValue={parseInt(get(responsible, 'organization.oked'))}
+                                <Col xs={3}><Field defaultValue={get(responsible, 'organization.oked')}
                                                    label={'Oked'} params={{required: true, valueAsString: true}}
                                                    options={okedList}
                                                    type={'select'}
@@ -1721,7 +1721,7 @@ const CreateContainer = () => {
                                         name={'responsibleVehicleInfo.ownerOrganization.phone'}/>
                                 </Col>
                                 <Col xs={3}><Field
-                                    defaultValue={parseInt(get(insurantIsOwner ? responsible : owner, 'organization.oked'))}
+                                    defaultValue={get(insurantIsOwner ? responsible : owner, 'organization.oked')}
                                     label={'Oked'} params={{valueAsString: true}}
                                     options={okedList}
                                     type={'select'}
@@ -2286,7 +2286,7 @@ const CreateContainer = () => {
                                        name={'vehicleDamage.vehicle.ownerOrganization.phone'}/>
                             </Col>
                             <Col xs={3} className={'mb-25'}><Field
-                                defaultValue={parseInt(get(vehicleDamage, 'organization.oked'))}
+                                defaultValue={get(vehicleDamage, 'organization.oked')}
                                 label={'Oked'} params={{required: true, valueAsString: true}}
                                 options={okedList}
                                 type={'select'}
@@ -3012,7 +3012,7 @@ const CreateContainer = () => {
                                        name={'otherPropertyDamage.ownerOrganization.phone'}/>
                             </Col>
                             <Col xs={3} className={'mb-25'}><Field
-                                defaultValue={parseInt(get(propertyDamage, 'organization.oked'))}
+                                defaultValue={get(propertyDamage, 'organization.oked')}
                                 label={'Oked'} params={{required: true, valueAsString: true}}
                                 options={okedList}
                                 type={'select'}
