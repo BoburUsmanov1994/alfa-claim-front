@@ -25,7 +25,7 @@ const MainLayout = ({...rest}) => {
     const token = get(JSON.parse(storage.get('settings')), 'state.translateToken', null) ;
     const {data, isLoading} = useGetAllQueryAlfa({
         key: KEYS.getMeAlfa, url: URLS.getMeAlfa, cb: {
-            success: ({users:result}) => {
+            success: ({user:result}) => {
                 setUser(result)
             }
         },
