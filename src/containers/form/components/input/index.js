@@ -68,6 +68,7 @@ const Input = ({
                     type={'number'}
                     disabled={get(property, "disabled")}
                     defaultValue={defaultValue}
+                    step={0.01}
                     min={0}
                     max={get(property,'max',250000000000000000)}
                 /> : <input
