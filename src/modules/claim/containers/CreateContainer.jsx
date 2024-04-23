@@ -519,7 +519,7 @@ const CreateContainer = () => {
                             ...applicantDataRest,
                             organization: applicantOrganization
                         },
-                        responsibleVehicleInfo: (insurantIsOwner || !responsibleOwnerPerson.gender || !responsibleOwnerOrganization.inn) ? {
+                        responsibleVehicleInfo: (insurantIsOwner || !responsibleOwnerPerson.gender || !responsibleOwnerOrganization?.inn) ? {
                             ...responsibleVehicleInfoRest,
                             insurantIsOwner: true
                         } : isEqual(get(owner, 'type'), 'person') ? {
