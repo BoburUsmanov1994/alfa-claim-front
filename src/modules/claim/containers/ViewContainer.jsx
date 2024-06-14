@@ -23,6 +23,7 @@ import Table from "../../../components/table";
 import CarNumber from "../../../components/car-number";
 import Modal from "../../../components/modal";
 import {Minus, Plus} from "react-feather";
+import dayjs from "dayjs";
 
 const ViewContainer = ({claimFormId = null}) => {
     const {t} = useTranslation()
@@ -389,7 +390,7 @@ const ViewContainer = ({claimFormId = null}) => {
                             <Col xs={5}>Дата решения суда: </Col>
                             <Col xs={7}><Field
                                 disabled
-                                defaultValue={get(data, 'data.result.courtDecision.courtDecisionDate')}
+                                defaultValue={get(data, 'data.result.eventCircumstances.courtDecision.courtDecisionDate')}
                                 params={{required: true}}
                                 property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} type={'datepicker'}
                                 name={'eventCircumstances.courtDecision.courtDecisionDate'}/></Col>
