@@ -388,12 +388,12 @@ const ViewContainer = ({claimFormId = null}) => {
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
                             <Col xs={5}>Дата решения суда: </Col>
-                            <Col xs={7}><Field
+                            <Col xs={7}>{get(data, 'data.result.eventCircumstances.courtDecision.courtDecisionDate') && <Field
                                 disabled
                                 defaultValue={get(data, 'data.result.eventCircumstances.courtDecision.courtDecisionDate')}
                                 params={{required: true}}
                                 property={{hideLabel: true, dateFormat: 'dd.MM.yyyy'}} type={'datepicker'}
-                                name={'eventCircumstances.courtDecision.courtDecisionDate.test'}/></Col>
+                                name={'eventCircumstances.courtDecision.courtDecisionDate.test'}/>}</Col>
                         </Row>
                         <Row align={'center'} className={'mb-25'}>
                             <Col xs={5}>Наименование суда:</Col>
