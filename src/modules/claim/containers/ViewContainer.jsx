@@ -1871,24 +1871,30 @@ const ViewContainer = ({claimFormId = null}) => {
                     <Row align={'end'}>
                         <Col xs={12} className={' mt-15'}>
                             <Row>
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Field params={{required: true}}
                                            label={'Принятое решение'}
                                            type={'select'}
                                            options={decisionList}
                                            name={'decision.decisionId'}/>
                                 </Col>
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Field
                                         label={'Причина отказа'}
                                         type={'input'}
                                         name={'decision.rejectionReason'}/>
                                 </Col>
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Field params={{required: true}}
                                            label={'Номер протокола'}
                                            type={'input'}
                                            name={'decision.reasonForPayment'}/>
+                                </Col>
+                                <Col xs={3}>
+                                    <Field params={{required: true}}
+                                           label={'Дата решения'}
+                                           type={'datepicker'}
+                                           name={'decision.decisionDate'}/>
                                 </Col>
                             </Row>
                         </Col>
