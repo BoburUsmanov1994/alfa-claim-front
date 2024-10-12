@@ -721,15 +721,21 @@ const CreateContainer = () => {
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Серия полиса:</Col>
-                                    <Col xs={7}><Field params={{required: true}} property={{hideLabel: true}}
+                                    <Col xs={7}><Field  property={{hideLabel: true}}
                                                        type={'input'}
                                                        name={'polisSeria'}/></Col>
                                 </Row>
                                 <Row align={'center'} className={'mb-25'}>
                                     <Col xs={5}>Номер полиса: </Col>
-                                    <Col xs={7}><Field params={{required: true}} property={{hideLabel: true}}
+                                    <Col xs={7}><Field  property={{hideLabel: true}}
                                                        type={'input'}
                                                        name={'polisNumber'}/></Col>
+                                </Row>
+                                <Row align={'center'} className={'mb-25'}>
+                                    <Col xs={5}>UUID полиса: </Col>
+                                    <Col xs={7}><Field  property={{hideLabel: true}}
+                                                        type={'input'}
+                                                        name={'polisUuid'}/></Col>
                                 </Row>
                             </Col>
                             <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>

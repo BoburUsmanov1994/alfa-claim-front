@@ -304,6 +304,13 @@ const ViewContainer = ({claimFormId = null}) => {
                                                type={'input'}
                                                name={'polisNumber'}/></Col>
                         </Row>
+                        <Row align={'center'} className={'mb-25'}>
+                            <Col xs={5}>UUID полиса: </Col>
+                            <Col xs={7}><Field defaultValue={get(data, 'data.result.polisUuid')}
+                                                property={{hideLabel: true, disabled: true}}
+                                               type={'input'}
+                                               name={'polisUuid'}/></Col>
+                        </Row>
                     </Col>
                     <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
 
