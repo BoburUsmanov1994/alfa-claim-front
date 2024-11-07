@@ -1460,7 +1460,7 @@ const CreateContainer = () => {
                                                name={'responsibleVehicleInfo.engineNumber'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={parseInt(get(vehicle, 'seats'))}
+                                        <Field    params={{valueAsNumber: true}} defaultValue={parseInt(get(vehicle, 'seats'))}
                                                property={{type: 'number'}}
                                                label={'Количество мест сидения'}
                                                type={'input'}
