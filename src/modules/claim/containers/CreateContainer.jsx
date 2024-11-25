@@ -1441,7 +1441,7 @@ const CreateContainer = () => {
                                                name={'responsibleVehicleInfo.vehicleTypeId'}/>
                                     </Col>
                                     <Col xs={4} className="mb-25">
-                                        <Field defaultValue={get(vehicle, 'issueYear')}
+                                        <Field params={{valueAsNumber:true}} defaultValue={get(vehicle, 'issueYear')}
                                                property={{mask: '9999', maskChar: '_'}}
                                                label={'Год'}
                                                type={'input-mask'}
@@ -2032,7 +2032,7 @@ const CreateContainer = () => {
                                 name={'vehicleDamage.vehicle.numberOfSeats'}/>
                         </Col>
                         <Col xs={4} className={'mt-15'}>
-                            <Field params={{required: true}} defaultValue={get(vehicleDamage, 'vehicle.issueYear')}
+                            <Field params={{required: true,valueAsNumber:true}} defaultValue={get(vehicleDamage, 'vehicle.issueYear')}
                                    label={'Год выпуска'} type={'input'}
                                    name={'vehicleDamage.vehicle.issueYear'}/>
                         </Col>
