@@ -1176,7 +1176,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                     property={{
                                                         hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
                                                     }}
-                                                    name={'applicant.person.passportData.seria'}
+                                                    name={'responsibleVehicleInfo.person.passportData.seria'}
                                                     type={'input-mask'}
                                                     defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.seria')}
                                                 />
@@ -1185,7 +1185,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                     mask: '9999999',
                                                     placeholder: '1234567',
                                                     maskChar: '_',
-                                                }} name={'applicant.person.passportData.number'}
+                                                }} name={'responsibleVehicleInfo.person.passportData.number'}
                                                        type={'input-mask'}
                                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.number')}
                                                 />
@@ -1196,7 +1196,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                            hideLabel: true,
                                                            placeholder: 'Дата рождения',
                                                        }}
-                                                       name={'applicant.person.birthDate'} type={'datepicker'}
+                                                       name={'responsibleVehicleInfo.person.birthDate'} type={'datepicker'}
                                                        defaultValue={get(data, 'data.result.responsibleForDamage.person.birthDate')}
                                                 />
                                             </Flex>}
@@ -1211,7 +1211,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                         placeholder: 'Inn',
                                                         maskChar: '_',
                                                         disabled: true
-                                                    }} name={'applicant.organization.inn'} type={'input-mask'}/>
+                                                    }} name={'responsibleVehicleInfo.organization.inn'} type={'input-mask'}/>
 
                                             </Flex>}
                                     </Col>
@@ -1226,7 +1226,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.lastname')}
                                            label={'Lastname'}
                                            type={'input'}
-                                           name={'applicant.person.fullName.lastname'}
+                                           name={'responsibleVehicleInfo.person.fullName.lastname'}
                                            property={{disabled: true}}
                                     />
                                 </Col>
@@ -1235,7 +1235,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.firstname')}
                                            label={'Firstname'}
                                            type={'input'}
-                                           name={'applicant.person.fullName.firstname'}
+                                           name={'responsibleVehicleInfo.person.fullName.firstname'}
                                            property={{disabled: true}}
                                     />
                                 </Col>
@@ -1244,7 +1244,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleForDamage.person.fullName.middlename')}
                                            label={'Middlename'}
                                            type={'input'}
-                                           name={'applicant.person.fullName.middlename'}
+                                           name={'responsibleVehicleInfo.person.fullName.middlename'}
                                            property={{disabled: true}}
                                     />
                                 </Col>
@@ -1253,14 +1253,14 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.startDate')}
                                            label={'Дата выдачи паспорта'}
                                            type={'datepicker'}
-                                           name={'applicant.person.passportData.startDate'}/>
+                                           name={'responsibleVehicleInfo.person.passportData.startDate'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field property={{disabled: true}} params={{required: true}}
                                            defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.issuedBy')}
                                            label={'Кем выдан'}
                                            type={'input'}
-                                           name={'applicant.person.passportData.issuedBy'}/>
+                                           name={'responsibleVehicleInfo.person.passportData.issuedBy'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1270,13 +1270,13 @@ const ViewContainer = ({claimFormId = null}) => {
                                         options={genderList}
                                         label={'Gender'}
                                         type={'select'}
-                                        name={'applicant.person.gender'}/>
+                                        name={'responsibleVehicleInfo.person.gender'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field property={{disabled: true}}
                                            defaultValue={get(data, 'data.result.responsibleForDamage.person.passportData.pinfl')}
                                            label={'ПИНФЛ'} type={'input'}
-                                           name={'applicant.person.passportData.pinfl'}/>
+                                           name={'responsibleVehicleInfo.person.passportData.pinfl'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1299,7 +1299,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         label={'Email'}
                                         type={'input'}
                                         property={{disabled: true}}
-                                        name={'applicant.person.email'}/>
+                                        name={'responsibleVehicleInfo.person.email'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1309,7 +1309,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleForDamage.person.residentType')}
                                         label={'Resident type'}
                                         type={'select'}
-                                        name={'applicant.person.residentType'}/>
+                                        name={'responsibleVehicleInfo.person.residentType'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1317,7 +1317,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleForDamage.person.driverLicenseSeria')}
                                         label={'Серия вод. удостоверения'}
                                         type={'input'}
-                                        name={'applicant.person.driverLicenseSeria'}/>
+                                        name={'responsibleVehicleInfo.person.driverLicenseSeria'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1325,7 +1325,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleForDamage.person.driverLicenseNumber')}
                                         label={'Номер вод. удостоверения'}
                                         type={'input'}
-                                        name={'applicant.person.driverLicenseNumber'}/>
+                                        name={'responsibleVehicleInfo.person.driverLicenseNumber'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1334,7 +1334,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         label={'Country'}
                                         type={'select'}
                                         options={countryList}
-                                        name={'applicant.person.countryId'}/>
+                                        name={'responsibleVehicleInfo.person.countryId'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1344,7 +1344,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleForDamage.person.regionId')}
                                         label={'Region'}
                                         type={'select'}
-                                        name={'applicant.person.regionId'}/>
+                                        name={'responsibleVehicleInfo.person.regionId'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1354,7 +1354,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleForDamage.person.districtId')}
                                         label={'District'}
                                         type={'select'}
-                                        name={'applicant.person.districtId'}/>
+                                        name={'responsibleVehicleInfo.person.districtId'}/>
                                 </Col>
 
                                 <Col xs={6} className={'mb-25'}>
@@ -1365,7 +1365,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         label={'Address'}
                                         type={'input'}
                                         property={{disabled: true}}
-                                        name={'applicant.person.address'}/>
+                                        name={'responsibleVehicleInfo.person.address'}/>
                                 </Col>
                             </>}
                             {get(data, 'data.result.responsibleForDamage.organization') && <>
@@ -1374,28 +1374,28 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleForDamage.organization.name')}
                                            label={'Наименование'} type={'input'}
                                            property={{disabled: true}}
-                                           name={'applicant.organization.name'}/>
+                                           name={'responsibleVehicleInfo.organization.name'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         defaultValue={get(data, 'data.result.responsibleForDamage.organization.representativeName')}
                                         label={'Руководитель'} type={'input'}
                                         property={{disabled: true}}
-                                        name={'applicant.organization.representativeName'}/>
+                                        name={'responsibleVehicleInfo.organization.representativeName'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         defaultValue={get(data, 'data.result.responsibleForDamage.organization.position')}
                                         label={'Должность'} type={'input'}
                                         property={{disabled: true}}
-                                        name={'applicant.organization.position'}/>
+                                        name={'responsibleVehicleInfo.organization.position'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         defaultValue={get(data, 'data.result.responsibleForDamage.organization.email')}
                                         label={'Email'}
                                         type={'input'}
-                                        name={'applicant.organization.email'}
+                                        name={'responsibleVehicleInfo.organization.email'}
                                         property={{disabled: true}}
                                     />
                                 </Col>
@@ -1411,7 +1411,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         }}
                                         property={{placeholder: '998XXXXXXXXX', disabled: true}}
                                         label={'Телефон'} type={'input'}
-                                        name={'applicant.organization.phone'}/>
+                                        name={'responsibleVehicleInfo.organization.phone'}/>
                                 </Col>
                                 <Col xs={3}><Field disabled
                                                    defaultValue={parseInt(get(data, 'data.result.responsibleForDamage.organization.oked'))}
@@ -1424,7 +1424,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                     <Field property={{disabled: true}}
                                            defaultValue={get(data, 'data.result.responsibleForDamage.organization.checkingAccount')}
                                            label={'Расчетный счет'} type={'input'}
-                                           name={'applicant.organization.checkingAccount'}/>
+                                           name={'responsibleVehicleInfo.organization.checkingAccount'}/>
                                 </Col>
                                 <Col xs={3}><Field
                                     defaultValue={get(data, 'data.result.responsibleForDamage.organization.ownershipFormId')}
@@ -1432,7 +1432,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                     options={ownershipFormList}
                                     type={'select'}
                                     disabled
-                                    name={'applicant.organization.ownershipFormId'}/></Col>
+                                    name={'responsibleVehicleInfo.organization.ownershipFormId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         params={{required: true}}
@@ -1441,14 +1441,14 @@ const ViewContainer = ({claimFormId = null}) => {
                                         type={'select'}
                                         options={countryList}
                                         disabled
-                                        name={'applicant.organization.countryId'}/>
+                                        name={'responsibleVehicleInfo.organization.countryId'}/>
                                 </Col>
                                 <Col xs={3}><Field
                                     defaultValue={get(data, 'data.result.responsibleForDamage.organization.regionId')}
                                     label={'Область'} params={{required: true}} options={regionList}
                                     type={'select'}
                                     disabled
-                                    name={'applicant.organization.regionId'}/></Col>
+                                    name={'responsibleVehicleInfo.organization.regionId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         disabled
@@ -1457,7 +1457,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleForDamage.organization.districtId')}
                                         label={'District'}
                                         type={'select'}
-                                        name={'applicant.organization.districtId'}/>
+                                        name={'responsibleVehicleInfo.organization.districtId'}/>
                                 </Col>
                                 <Col xs={6} className={'mb-25'}>
                                     <Field
@@ -1467,7 +1467,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleForDamage.organization.address')}
                                         label={'Address'}
                                         type={'input'}
-                                        name={'applicant.organization.address'}/>
+                                        name={'responsibleVehicleInfo.organization.address'}/>
                                 </Col>
                             </>}
                         </Row> :
@@ -1498,7 +1498,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                     property={{
                                                         hideLabel: true, mask: 'aa', placeholder: 'AA', maskChar: '_',
                                                     }}
-                                                    name={'applicant.person.passportData.seria'}
+                                                    name={'responsibleVehicleInfo.person.passportData.seria'}
                                                     type={'input-mask'}
                                                     defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.seria')}
                                                 />
@@ -1507,7 +1507,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                     mask: '9999999',
                                                     placeholder: '1234567',
                                                     maskChar: '_',
-                                                }} name={'applicant.person.passportData.number'}
+                                                }} name={'responsibleVehicleInfo.person.passportData.number'}
                                                        type={'input-mask'}
                                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.number')}
                                                 />
@@ -1518,7 +1518,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                            hideLabel: true,
                                                            placeholder: 'Дата рождения',
                                                        }}
-                                                       name={'applicant.person.birthDate'} type={'datepicker'}
+                                                       name={'responsibleVehicleInfo.person.birthDate'} type={'datepicker'}
                                                        defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.birthDate')}
                                                 />
                                             </Flex>}
@@ -1533,7 +1533,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                                         placeholder: 'Inn',
                                                         maskChar: '_',
                                                         disabled: true
-                                                    }} name={'applicant.organization.inn'} type={'input-mask'}/>
+                                                    }} name={'responsibleVehicleInfo.organization.inn'} type={'input-mask'}/>
 
                                             </Flex>}
                                     </Col>
@@ -1548,7 +1548,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.fullName.lastname')}
                                            label={'Lastname'}
                                            type={'input'}
-                                           name={'applicant.person.fullName.lastname'}
+                                           name={'responsibleVehicleInfo.person.fullName.lastname'}
                                            property={{disabled: true}}
                                     />
                                 </Col>
@@ -1557,7 +1557,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.fullName.firstname')}
                                            label={'Firstname'}
                                            type={'input'}
-                                           name={'applicant.person.fullName.firstname'}
+                                           name={'responsibleVehicleInfo.person.fullName.firstname'}
                                            property={{disabled: true}}
                                     />
                                 </Col>
@@ -1566,7 +1566,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.fullName.middlename')}
                                            label={'Middlename'}
                                            type={'input'}
-                                           name={'applicant.person.fullName.middlename'}
+                                           name={'responsibleVehicleInfo.person.fullName.middlename'}
                                            property={{disabled: true}}
                                     />
                                 </Col>
@@ -1575,14 +1575,14 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.startDate')}
                                            label={'Дата выдачи паспорта'}
                                            type={'datepicker'}
-                                           name={'applicant.person.passportData.startDate'}/>
+                                           name={'responsibleVehicleInfo.person.passportData.startDate'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field property={{disabled: true}} params={{required: true}}
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.issuedBy')}
                                            label={'Кем выдан'}
                                            type={'input'}
-                                           name={'applicant.person.passportData.issuedBy'}/>
+                                           name={'responsibleVehicleInfo.person.passportData.issuedBy'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1592,13 +1592,13 @@ const ViewContainer = ({claimFormId = null}) => {
                                         options={genderList}
                                         label={'Gender'}
                                         type={'select'}
-                                        name={'applicant.person.gender'}/>
+                                        name={'responsibleVehicleInfo.person.gender'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field property={{disabled: true}}
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.passportData.pinfl')}
                                            label={'ПИНФЛ'} type={'input'}
-                                           name={'applicant.person.passportData.pinfl'}/>
+                                           name={'responsibleVehicleInfo.person.passportData.pinfl'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1613,7 +1613,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         label={'Phone'}
                                         type={'input'}
                                         property={{placeholder: '998XXXXXXXXX', disabled: true}}
-                                        name={'applicant.person.phone'}/>
+                                        name={'responsibleVehicleInfo.person.phone'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1631,7 +1631,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.residentType')}
                                         label={'Resident type'}
                                         type={'select'}
-                                        name={'applicant.person.residentType'}/>
+                                        name={'responsibleVehicleInfo.person.residentType'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1639,7 +1639,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.driverLicenseSeria')}
                                         label={'Серия вод. удостоверения'}
                                         type={'input'}
-                                        name={'applicant.person.driverLicenseSeria'}/>
+                                        name={'responsibleVehicleInfo.person.driverLicenseSeria'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1647,7 +1647,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.driverLicenseNumber')}
                                         label={'Номер вод. удостоверения'}
                                         type={'input'}
-                                        name={'applicant.person.driverLicenseNumber'}/>
+                                        name={'responsibleVehicleInfo.person.driverLicenseNumber'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1656,7 +1656,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         label={'Country'}
                                         type={'select'}
                                         options={countryList}
-                                        name={'applicant.person.countryId'}/>
+                                        name={'responsibleVehicleInfo.person.countryId'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1666,7 +1666,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.regionId')}
                                         label={'Region'}
                                         type={'select'}
-                                        name={'applicant.person.regionId'}/>
+                                        name={'responsibleVehicleInfo.person.regionId'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
@@ -1676,7 +1676,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.person.districtId')}
                                         label={'District'}
                                         type={'select'}
-                                        name={'applicant.person.districtId'}/>
+                                        name={'responsibleVehicleInfo.person.districtId'}/>
                                 </Col>
 
                                 <Col xs={6} className={'mb-25'}>
@@ -1687,7 +1687,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         label={'Address'}
                                         type={'input'}
                                         property={{disabled: true}}
-                                        name={'applicant.person.address'}/>
+                                        name={'responsibleVehicleInfo.person.address'}/>
                                 </Col>
                             </>}
                             {get(data, 'data.result.responsibleVehicleInfo.organization') && <>
@@ -1696,28 +1696,28 @@ const ViewContainer = ({claimFormId = null}) => {
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.name')}
                                            label={'Наименование'} type={'input'}
                                            property={{disabled: true}}
-                                           name={'applicant.organization.name'}/>
+                                           name={'responsibleVehicleInfo.organization.name'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.representativeName')}
                                         label={'Руководитель'} type={'input'}
                                         property={{disabled: true}}
-                                        name={'applicant.organization.representativeName'}/>
+                                        name={'responsibleVehicleInfo.organization.representativeName'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.position')}
                                         label={'Должность'} type={'input'}
                                         property={{disabled: true}}
-                                        name={'applicant.organization.position'}/>
+                                        name={'responsibleVehicleInfo.organization.position'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.email')}
                                         label={'Email'}
                                         type={'input'}
-                                        name={'applicant.organization.email'}
+                                        name={'responsibleVehicleInfo.organization.email'}
                                         property={{disabled: true}}
                                     />
                                 </Col>
@@ -1732,20 +1732,20 @@ const ViewContainer = ({claimFormId = null}) => {
                                            }}
                                            property={{placeholder: '998XXXXXXXXX', disabled: true}}
                                            label={'Телефон'} type={'input'}
-                                           name={'applicant.organization.phone'}/>
+                                           name={'responsibleVehicleInfo.organization.phone'}/>
                                 </Col>
                                 <Col xs={3}><Field disabled
                                                    defaultValue={parseInt(get(data, 'data.result.responsibleVehicleInfo.organization.oked'))}
                                                    label={'Oked'} params={{required: true, valueAsString: true}}
                                                    options={okedList}
                                                    type={'select'}
-                                                   name={'applicant.organization.oked'}/></Col>
+                                                   name={'responsibleVehicleInfo.organization.oked'}/></Col>
 
                                 <Col xs={3} className={'mb-25'}>
                                     <Field property={{disabled: true}}
                                            defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.checkingAccount')}
                                            label={'Расчетный счет'} type={'input'}
-                                           name={'applicant.organization.checkingAccount'}/>
+                                           name={'responsibleVehicleInfo.organization.checkingAccount'}/>
                                 </Col>
                                 <Col xs={3}><Field
                                     defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.ownershipFormId')}
@@ -1753,7 +1753,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                     options={ownershipFormList}
                                     type={'select'}
                                     disabled
-                                    name={'applicant.organization.ownershipFormId'}/></Col>
+                                    name={'responsibleVehicleInfo.organization.ownershipFormId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         params={{required: true}}
@@ -1762,14 +1762,14 @@ const ViewContainer = ({claimFormId = null}) => {
                                         type={'select'}
                                         options={countryList}
                                         disabled
-                                        name={'applicant.organization.countryId'}/>
+                                        name={'responsibleVehicleInfo.organization.countryId'}/>
                                 </Col>
                                 <Col xs={3}><Field
                                     defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.regionId')}
                                     label={'Область'} params={{required: true}} options={regionList}
                                     type={'select'}
                                     disabled
-                                    name={'applicant.organization.regionId'}/></Col>
+                                    name={'responsibleVehicleInfo.organization.regionId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         disabled
@@ -1778,7 +1778,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.districtId')}
                                         label={'District'}
                                         type={'select'}
-                                        name={'applicant.organization.districtId'}/>
+                                        name={'responsibleVehicleInfo.organization.districtId'}/>
                                 </Col>
                                 <Col xs={6} className={'mb-25'}>
                                     <Field
@@ -1788,7 +1788,7 @@ const ViewContainer = ({claimFormId = null}) => {
                                         defaultValue={get(data, 'data.result.responsibleVehicleInfo.organization.address')}
                                         label={'Address'}
                                         type={'input'}
-                                        name={'applicant.organization.address'}/>
+                                        name={'responsibleVehicleInfo.organization.address'}/>
                                 </Col>
                             </>}
                         </Row>)
