@@ -20,10 +20,8 @@ import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
 import Checkbox from "rc-checkbox";
 import Table from "../../../components/table";
-import CarNumber from "../../../components/car-number";
 import Modal from "../../../components/modal";
 import {Minus, Plus} from "react-feather";
-import dayjs from "dayjs";
 
 const ViewContainer = ({claimFormId = null}) => {
     const {t} = useTranslation()
@@ -359,12 +357,12 @@ const ViewContainer = ({claimFormId = null}) => {
                         danger type={'button'}
                         className={'mr-16'}>Удалить</Button>
             </>}
-                {!includes(['sent','sent_decision','sent_payment','add_payment'],get(data, 'data.result.status')) && <Button
+                {includes(['new','edited'],get(data, 'data.result.status')) && <Button
                     onClick={send}
                     type={'button'} className={'mr-16'}>Отправить в
                     Фонд</Button>}
 
-                {!get(data, 'data.result.decisionId') && includes(['sent'], get(data, 'data.result.status')) && <><Button gray
+                {  !get(data, 'data.result.decisionId') && includes(['sent','cancel_decision'], get(data, 'data.result.status')) && <><Button gray
                     onClick={() => setOpen(true) }
                     type={'button'} className={'mr-16'} yellow>Принять решение</Button>
 
@@ -374,20 +372,20 @@ const ViewContainer = ({claimFormId = null}) => {
 
 
 
-                {get(data, 'data.result.decisionId') && includes(['add_decision','new','edited'],get(data, 'data.result.status')) && <Button
+                {get(data, 'data.result.decisionId') && includes(['sent','add_decision'],get(data, 'data.result.status')) && <Button
                     onClick={cancelDecision}
                     danger
                     type={'button'} className={'mr-16'}>Отменить решение</Button>
 
                 }
                 {
-                    get(data, 'data.result.decisionId') && includes(['sent'], get(data, 'data.result.status')) && <Button
+                    get(data, 'data.result.decisionId') && includes(['add_decision','sent'], get(data, 'data.result.status')) && <Button
                         onClick={ () => setOpenEditModal(true) }
                         yellow
                         type={'button'} className={'mr-16'}>Редактировать решение</Button>
                 }
                 {
-                    get(data, 'data.result.decisionId') && includes(['sent'],get(data, 'data.result.status')) && <Button
+                    get(data, 'data.result.decisionId') && includes(['sent','add_decision'],get(data, 'data.result.status')) && <Button
                         onClick={sendDecision}
                         green
                         type={'button'} className={'mr-16'}>Отправка решение</Button>
