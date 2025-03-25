@@ -28,6 +28,9 @@ const GlobalStyles = createGlobalStyle`
   a {
     text-decoration: none;
   }
+  .pagination{
+    display: flex;
+  }
 
   body {
     color: #707070;

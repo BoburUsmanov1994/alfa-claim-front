@@ -11,6 +11,7 @@ export const URLS = {
     decision: 'api/claim/decision',
     cancelDecision: 'api/claim/cancel-decision',
     editDecision: 'api/claim/edit-decision',
+    sendDecision: 'api/claim/send-decision',
     personalInfoProvider: 'api/provider/personal-info',
     personalInfoNonCitizenProvider: 'api/provider/personal-info-non-citizen',
     organizationInfoProvider: 'api/provider/organization-info',
@@ -36,4 +37,8 @@ export const URLS = {
     activityAndRisk: 'api/references/activity-and-risks',
     decisions: 'api/references/decisions',
     insuranceTypes: 'api/references/insurance-types',
+    payment: 'api/claim/payment',
+    editPayment: 'api/claim/edit-payment',
+    cancelPayment: 'api/claim/cancel-payment',
+    sendPayment: 'api/claim/send-payment',
 }

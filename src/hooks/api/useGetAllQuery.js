@@ -18,7 +18,7 @@ const useGetAllQuery = ({
                             },
                         }) => {
 
-    const {isLoading, isError, data, error, isFetching} = useQuery([key, params], () => request.get(url, params), {
+    const {isLoading, isError, data, error, isFetching,...rest} = useQuery([key, params], () => request.get(url, params), {
         onSuccess: ({data}) => {
             cb?.success(data)
         },
@@ -32,6 +32,7 @@ const useGetAllQuery = ({
     });
 
     return {
+        ...rest,
         isLoading,
         isError,
         data,

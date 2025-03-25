@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useStore} from "../../../store";
-import {get, isEqual, upperCase} from "lodash";
+import {get, isEqual, isNil, upperCase} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -483,8 +483,6 @@ const CreateContainer = () => {
         setOtherParams(prev => ({...prev, [name]: value}))
     }
 
-    console.log('propertyDamage', propertyDamage)
-    console.log('vehicleDamage', vehicleDamage)
     const create = ({data}) => {
         let {
             insuranceSumForPassenger,
@@ -509,6 +507,8 @@ const CreateContainer = () => {
             organization: responsibleForDamageOrganization,
             ...responsibleForDamageDataRest
         } = responsibleForDamageData;
+        console.log('responsibleForDamageOrganization',responsibleForDamageOrganization)
+
         createRequest({
                 url: URLS.create, attributes: responsibleVehicleInfo?.vehicleTypeId ? {
                         ...rest,
@@ -531,15 +531,15 @@ const CreateContainer = () => {
                             ownerOrganization: responsibleOwnerOrganization,
                             insurantIsOwner: false,
                         },
-                        responsibleForDamage: isEqual(get(responsible, 'type'), 'person') ? {
+                        responsibleForDamage: isEqual(get(responsible, 'type'), 'person') ? (!isNil(responsibleForDamagePerson.passportData.pinfl) ? {
                             ...responsibleForDamageDataRest,
                             person: responsibleForDamagePerson,
-                            regionId: get(responsible, 'regionId')
-                        } : {
+                            regionId: get(responsible, 'regionId'),
+                        }: undefined) : (!isNil(responsibleForDamageOrganization.inn) ? {
                             ...responsibleForDamageDataRest,
                             organization: responsibleForDamageOrganization,
                             regionId: get(responsible, 'regionId')
-                        },
+                        } : undefined),
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
                         vehicleDamage: get(vehicleDamage, 'list', [])?.length < 2 ? get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
@@ -598,15 +598,15 @@ const CreateContainer = () => {
                             ...applicantDataRest,
                             organization: applicantOrganization
                         },
-                        responsibleForDamage: isEqual(get(responsible, 'type'), 'person') ? {
+                        responsibleForDamage: isEqual(get(responsible, 'type'), 'person') ? (!isNil(responsibleForDamagePerson.passportData.pinfl) ? {
                             ...responsibleForDamageDataRest,
                             person: responsibleForDamagePerson,
                             regionId: get(responsible, 'regionId')
-                        } : {
+                        }:undefined) : (!isNil(responsibleForDamageOrganization.inn) ? {
                             ...responsibleForDamageDataRest,
                             organization: responsibleForDamageOrganization,
                             regionId: get(responsible, 'regionId')
-                        },
+                        }:undefined),
                         lifeDamage: get(lifeDamage, 'list', []).map(_item => get(_item, 'lifeDamage')),
                         healthDamage: get(healthDamage, 'list', []).map(_item => get(_item, 'healthDamage')),
                         vehicleDamage: get(vehicleDamage, 'list', [])?.length < 2 ? get(vehicleDamage, 'list', []).map(_item => isEqual(get(vehicleDamage, 'type'), 'person') ? ({
@@ -1190,41 +1190,40 @@ const CreateContainer = () => {
                             </Col>
                             {isEqual(get(responsible, 'type'), 'person') && <>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}}
+                                    <Field
                                            defaultValue={get(responsible, 'person.lastNameLatin')}
                                            label={'Lastname'}
                                            type={'input'}
                                            name={'responsibleForDamage.person.fullName.lastname'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}}
+                                    <Field
                                            defaultValue={get(responsible, 'person.firstNameLatin')}
                                            label={'Firstname'}
                                            type={'input'}
                                            name={'responsibleForDamage.person.fullName.firstname'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}}
+                                    <Field
                                            defaultValue={get(responsible, 'person.middleNameLatin')}
                                            label={'Middlename'}
                                            type={'input'}
                                            name={'responsibleForDamage.person.fullName.middlename'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}} defaultValue={get(responsible, 'person.startDate')}
+                                    <Field  defaultValue={get(responsible, 'person.startDate')}
                                            label={'Дата выдачи паспорта'}
                                            type={'datepicker'}
                                            name={'responsibleForDamage.person.passportData.startDate'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}} defaultValue={get(responsible, 'person.issuedBy')}
+                                    <Field  defaultValue={get(responsible, 'person.issuedBy')}
                                            label={'Кем выдан'}
                                            type={'input'}
                                            name={'responsibleForDamage.person.passportData.issuedBy'}/>
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         defaultValue={get(responsible, 'person.gender')}
                                         options={genderList}
                                         label={'Gender'}
@@ -1239,7 +1238,6 @@ const CreateContainer = () => {
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
                                         params={{
-                                            required: true,
                                             pattern: {
                                                 value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                                 message: 'Invalid format'
@@ -1260,7 +1258,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={residentTypeList}
                                         defaultValue={get(responsible, 'person.residentType')}
                                         label={'Resident type'}
@@ -1289,7 +1286,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={regionList}
                                         defaultValue={get(responsible, 'person.regionId')}
                                         label={'Region'}
@@ -1298,7 +1294,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={responsibleDistrictList}
                                         defaultValue={get(responsible, 'person.districtId')}
                                         label={'District'}
@@ -1308,7 +1303,6 @@ const CreateContainer = () => {
                                 <Col xs={6} className={'mb-25'}>
                                     <Field
                                         noMaxWidth
-                                        params={{required: true}}
                                         defaultValue={get(responsible, 'person.address')}
                                         label={'Address'}
                                         type={'input'}
@@ -1318,7 +1312,7 @@ const CreateContainer = () => {
                             </>}
                             {isEqual(get(responsible, 'type'), 'organization') && <>
                                 <Col xs={3} className={'mb-25'}>
-                                    <Field params={{required: true}}
+                                    <Field
                                            defaultValue={get(responsible, 'organization.name')}
                                            label={'Наименование'} type={'input'}
                                            name={'responsibleForDamage.organization.name'}/>
@@ -1338,7 +1332,6 @@ const CreateContainer = () => {
                                 </Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field defaultValue={get(responsible, 'organization.phone')} params={{
-                                        required: true,
                                         pattern: {
                                             value: /^998(9[012345789]|6[125679]|7[01234569]|3[01234569])[0-9]{7}$/,
                                             message: 'Invalid format'
@@ -1349,7 +1342,7 @@ const CreateContainer = () => {
                                            name={'responsibleForDamage.organization.phone'}/>
                                 </Col>
                                 <Col xs={3}><Field defaultValue={get(responsible, 'organization.oked')}
-                                                   label={'Oked'} params={{required: true, valueAsString: true}}
+                                                   label={'Oked'} params={{valueAsString: true}}
                                                    options={okedList}
                                                    type={'select'}
                                                    name={'responsibleForDamage.organization.oked'}/></Col>
@@ -1364,19 +1357,17 @@ const CreateContainer = () => {
                                                    name={'responsibleForDamage.organization.ownershipFormId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         defaultValue={get(responsible, 'organization.birthCountry', 210)}
                                         label={'Country'}
                                         type={'select'}
                                         options={countryList}
                                         name={'responsibleForDamage.organization.countryId'}/>
                                 </Col>
-                                <Col xs={3}><Field label={'Область'} params={{required: true}} options={regionList}
+                                <Col xs={3}><Field label={'Область'}  options={regionList}
                                                    type={'select'}
                                                    name={'responsibleForDamage.organization.regionId'}/></Col>
                                 <Col xs={3} className={'mb-25'}>
                                     <Field
-                                        params={{required: true}}
                                         options={responsibleDistrictList}
                                         defaultValue={get(responsible, 'organization.districtId')}
                                         label={'District'}
@@ -1386,7 +1377,6 @@ const CreateContainer = () => {
                                 <Col xs={6} className={'mb-25'}>
                                     <Field
                                         noMaxWidth
-                                        params={{required: true}}
                                         defaultValue={get(responsible, 'organization.address')}
                                         label={'Address'}
                                         type={'input'}

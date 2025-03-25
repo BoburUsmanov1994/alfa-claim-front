@@ -34,4 +34,10 @@ export const KEYS = {
     agents: 'agents',
     decisions: 'decisions',
     insuranceTypes: 'insuranceTypes',
+    sendDecision: 'sendDecision',
+    decision: 'decision',
+    payment: 'payment',
+    editPayment: 'editPayment',
+    cancelPayment: 'cancelPayment',
+    sendPayment: 'sendPayment',
 }

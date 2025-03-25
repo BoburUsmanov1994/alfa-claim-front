@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {get, isEqual, range} from "lodash";
+import {get, includes, isEqual, range} from "lodash";
 import Panel from "../../../components/panel";
 import Search from "../../../components/search";
 import {Col, Row} from "react-grid-system";
@@ -9,7 +9,7 @@ import Button from "../../../components/ui/button";
 import Form from "../../../containers/form/form";
 import Flex from "../../../components/flex";
 import Field from "../../../containers/form/field";
-import {useDeleteQuery, useGetAllQuery, usePostQuery} from "../../../hooks/api";
+import {useDeleteQuery, useGetAllQuery, usePostQuery, usePutQuery} from "../../../hooks/api";
 import {KEYS} from "../../../constants/key";
 import {URLS} from "../../../constants/url";
 import {getSelectOptionsListFromData} from "../../../utils";
@@ -32,6 +32,8 @@ const ViewContainer = ({claimFormId = null}) => {
     }))
     const [open, setOpen] = useState(false)
     const [openEditModal, setOpenEditModal] = useState(false)
+    const [openPaymentModal, setOpenPaymentModal] = useState(false)
+    const [openPaymentEditModal, setOpenPaymentEditModal] = useState(false)
     const [lifePayoutsCount, setLifePayoutsCount] = useState(0)
     const [healthPayoutsCount, setHealthPayoutsCount] = useState(0)
     const [otherPropertyPayoutsCount, setOtherPropertyPayoutsCount] = useState(0)
@@ -45,7 +47,7 @@ const ViewContainer = ({claimFormId = null}) => {
     useEffect(() => {
         setBreadcrumbs(breadcrumbs)
     }, [])
-    const {data, isLoading} = useGetAllQuery({
+    const {data, isLoading,refetch} = useGetAllQuery({
         key: KEYS.view,
         url: URLS.view,
         params: {
@@ -108,6 +110,25 @@ const ViewContainer = ({claimFormId = null}) => {
     })
     const decisionList = getSelectOptionsListFromData(get(decisions, `data.result`, []), 'id', 'name')
 
+    const {data: decision} = useGetAllQuery({
+        key: [KEYS.decision,claimFormId], url: URLS.decision,
+        params:{
+            params:{
+                claimFormId
+            }
+        },
+        hideErrorMsg:true
+    })
+    const {data: paymentData} = useGetAllQuery({
+        key: [KEYS.payment,claimFormId], url: URLS.payment,
+        params:{
+            params:{
+                claimFormId
+            }
+        },
+        hideErrorMsg:true
+    })
+
     const {data: district} = useGetAllQuery({
         key: [KEYS.districts],
         url: URLS.districts,
@@ -123,6 +144,18 @@ const ViewContainer = ({claimFormId = null}) => {
     } = usePostQuery({listKeyId: KEYS.view})
 
     const {mutate: deleteRequest, isLoading: deleteLoading} = useDeleteQuery({listKeyId: KEYS.remove})
+    const {mutate: editDecisionRequest} = usePutQuery({listKeyId: [KEYS.decision,claimFormId]})
+    const {
+        mutate: sendDecisionRequest, isLoading: isLoadingSendDecision
+    } = usePostQuery({listKeyId: KEYS.view})
+    const {
+        mutate: paymentRequest, isLoading: isLoadingPayment
+    } = usePostQuery({listKeyId: KEYS.view})
+
+    const {mutate: editPaymentRequest} = usePutQuery({listKeyId: [KEYS.payment,claimFormId]})
+    const {
+        mutate: sendPaymentRequest, isLoading: isLoadingSendPayment
+    } = usePostQuery({listKeyId: KEYS.view})
 
     const acceptDecision = ({data}) => {
         confirmPayedRequest({
@@ -132,14 +165,27 @@ const ViewContainer = ({claimFormId = null}) => {
                 }
             },
             {
-                onSuccess: ({data}) => {
+                onSuccess: () => {
                     setOpen(false);
-                    setLifePayoutsCount(0);
-                    setHealthPayoutsCount(0);
-                    setOtherPropertyPayoutsCount(0);
                 }
             }
         )
+    }
+
+    const editDecision = ({data}) => {
+        editDecisionRequest({url:URLS.editDecision,attributes:{claimFormId: parseInt(claimFormId), ...data}},{onSuccess:()=>{
+            refetch()
+                setOpenEditModal(false)
+            }})
+    }
+    const sendDecision = () => {
+        sendDecisionRequest({
+            url:`${URLS.sendDecision}?claimFormId=${claimFormId}`
+        },{
+            onSuccess:()=>{
+                refetch()
+            }
+        })
     }
 
     const cancelDecision = () => {
@@ -162,7 +208,7 @@ const ViewContainer = ({claimFormId = null}) => {
             if (result.isConfirmed) {
                 deleteRequest({url: `${URLS.cancelDecision}?claimFormId=${claimFormId}`}, {
                     onSuccess: () => {
-                        navigate('/claim')
+                        refetch()
                     }
                 })
             }
@@ -172,13 +218,79 @@ const ViewContainer = ({claimFormId = null}) => {
     const send = () => {
         sendFond({
                 url: `${URLS.send}?claimFormId=${claimFormId}`, attributes: {}
-            },
-            {
-                onSuccess: ({data}) => {
-
-                }
             }
         )
+    }
+
+    const payment = ({data}) => {
+        paymentRequest({
+            url:URLS.payment,attributes:{
+                ...data,
+                claimFormId: parseInt(claimFormId),
+            }
+        },{
+            onSuccess: () => {
+                refetch()
+                setOpenPaymentModal(false);
+                setLifePayoutsCount(0);
+                setHealthPayoutsCount(0);
+                setOtherPropertyPayoutsCount(0);
+            }
+        })
+    }
+
+    const sendPayment = () => {
+        sendPaymentRequest({
+            url:`${URLS.sendPayment}?claimFormId=${claimFormId}`
+        },{
+            onSuccess:()=>{
+                refetch()
+            }
+        })
+    }
+
+    const editPayment = ({data}) => {
+        editPaymentRequest({
+            url:URLS.editPayment,
+            attributes:{
+...data,
+                claimFormId: parseInt(claimFormId),
+            }
+        },{
+            onSuccess:()=>{
+                refetch()
+                setOpenPaymentEditModal(false);
+                setLifePayoutsCount(0);
+                setHealthPayoutsCount(0);
+                setOtherPropertyPayoutsCount(0);
+            }
+        })
+    }
+    const cancelPayment = () => {
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            backdrop: 'rgba(0,0,0,0.9)',
+            background: 'none',
+            title: t('Are you sure?'),
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#13D6D1',
+            confirmButtonText: t('Yes'),
+            cancelButtonText: t('No'),
+            customClass: {
+                title: 'title-color',
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteRequest({url: `${URLS.cancelPayment}?claimFormId=${claimFormId}`}, {
+                    onSuccess: () => {
+                        refetch()
+                    }
+                })
+            }
+        });
     }
 
 
@@ -208,14 +320,26 @@ const ViewContainer = ({claimFormId = null}) => {
             }
         });
     }
+    useEffect(() => {
+        if(openPaymentEditModal && get(paymentData,'data.result')){
+            if(get(paymentData,'data.result.healthPayouts',[])?.length > 0){
+                setHealthPayoutsCount(get(paymentData,'data.result.healthPayouts',[])?.length)
+            }
+            if(get(paymentData,'data.result.lifePayouts',[])?.length > 0){
+                setLifePayoutsCount(get(paymentData,'data.result.lifePayouts',[])?.length)
+            }
+            if(get(paymentData,'data.result.otherPropertyPayouts',[])?.length > 0){
+                setOtherPropertyPayoutsCount(get(paymentData,'data.result.otherPropertyPayouts',[])?.length)
+            }
+        }
+    }, [paymentData,openPaymentEditModal]);
 
     if (isLoading || isLoadingRegion || isLoadingCountry) {
         return <OverlayLoader/>
     }
-
-
+    console.log('paymentData',paymentData)
     return (<>
-        {(isLoadingFond || deleteLoading || isLoadingConfirmPayed) && <OverlayLoader/>}
+        {(isLoadingFond || deleteLoading || isLoadingConfirmPayed || isLoadingSendDecision) && <OverlayLoader/>}
         <Panel>
             <Row>
                 <Col xs={12}>
@@ -235,32 +359,61 @@ const ViewContainer = ({claimFormId = null}) => {
                         danger type={'button'}
                         className={'mr-16'}>Удалить</Button>
             </>}
-                {!get(data, 'data.result.decisionId') && <Button
-                    onClick={isEqual(get(data, 'data.result.status'), 'new') ? () => setOpen(true) : () => {
-                    }}
-                    gray={!(isEqual(get(data, 'data.result.status'), 'new'))}
-                    type={'button'} className={'mr-16'}>Принять решение</Button>}
+                {!includes(['sent','sent_decision','sent_payment','add_payment'],get(data, 'data.result.status')) && <Button
+                    onClick={send}
+                    type={'button'} className={'mr-16'}>Отправить в
+                    Фонд</Button>}
 
-                {get(data, 'data.result.decisionId') && <><Button
-                    onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => cancelDecision() : () => {
-                    }}
+                {!get(data, 'data.result.decisionId') && includes(['sent'], get(data, 'data.result.status')) && <><Button gray
+                    onClick={() => setOpen(true) }
+                    type={'button'} className={'mr-16'} yellow>Принять решение</Button>
+
+               </>
+
+                }
+
+
+
+                {get(data, 'data.result.decisionId') && includes(['add_decision','new','edited'],get(data, 'data.result.status')) && <Button
+                    onClick={cancelDecision}
                     danger
                     type={'button'} className={'mr-16'}>Отменить решение</Button>
-                    {/*<Button yellow*/}
-                    {/*                                                                     onClick={(isEqual(get(data, 'data.result.status'), 'new') || isEqual(get(data, 'data.result.status'), 'edited')) ? () => setOpenEditModal(true) : () => {*/}
-                    {/*                                                                     }}*/}
-                    {/*                                                                     danger*/}
-                    {/*                                                                     type={'button'}*/}
-                    {/*                                                                     className={'mr-16'}>Редактирование*/}
-                    {/*решения</Button>*/}
-                </>
+
                 }
-                <Button
-                    onClick={(isEqual(get(data, 'data.result.status'), 'new') && get(data, 'data.result.decisionId')) ? () => send() : () => {
-                    }}
-                    gray={!(isEqual(get(data, 'data.result.status'), 'new') && get(data, 'data.result.decisionId'))}
-                    type={'button'} className={'mr-16'}>Отправить в
-                    Фонд</Button>
+                {
+                    get(data, 'data.result.decisionId') && includes(['sent'], get(data, 'data.result.status')) && <Button
+                        onClick={ () => setOpenEditModal(true) }
+                        yellow
+                        type={'button'} className={'mr-16'}>Редактировать решение</Button>
+                }
+                {
+                    get(data, 'data.result.decisionId') && includes(['sent'],get(data, 'data.result.status')) && <Button
+                        onClick={sendDecision}
+                        green
+                        type={'button'} className={'mr-16'}>Отправка решение</Button>
+                }
+                {includes(['sent_decision'],get(data, 'data.result.status')) && <Button
+                    onClick={()=>setOpenPaymentModal(true)}
+                    green
+                    type={'button'} className={'mr-16'}>Оплата</Button>}
+                { includes(['add_payment'],get(data, 'data.result.status')) && <Button
+                    onClick={cancelPayment}
+                    danger
+                    type={'button'} className={'mr-16'}>Отменить оплаты</Button>
+
+                }
+                {
+                    includes(['add_payment'], get(data, 'data.result.status')) && <Button
+                        onClick={ () => setOpenPaymentEditModal(true) }
+                        yellow
+                        type={'button'} className={'mr-16'}>Редактировать оплаты</Button>
+                }
+                {includes(['add_payment'],get(data, 'data.result.status')) && <Button
+                    onClick={sendPayment}
+                    green
+                    type={'button'} className={'mr-16'}>Отправить оплаты</Button>}
+
+
             </Flex>}>
                 <Row gutterWidth={60} className={'mt-32'}>
                     <Col xs={4} style={{borderRight: '1px solid #DFDFDF'}}>
@@ -1906,186 +2059,213 @@ const ViewContainer = ({claimFormId = null}) => {
                             </Row>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <Row className={"mb-15 mt-15"}>
-                                <Col xs={8}>
-                                    <Title block sm>Выплата по жизни:</Title>
-                                </Col>
-                                <Col xs={4} className={"text-right"}>
-                                    <Button onClick={() => setLifePayoutsCount(prev => ++prev)} sm type={"button"}
-                                            inline><Plus/></Button>
-                                </Col>
-                            </Row>
-                            {range(0, lifePayoutsCount).map((count, i) => <Row className={'mb-15'} align={'flex-end'}>
-                                <Col xs={11}>
-                                    <Row>
-                                        <Col xs={3}>
-                                            <Field name={`lifePayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
-                                                   label={'Размер выплаты'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`lifePayouts[${count}].payoutDate`} type={'datepicker'}
-                                                   label={'Дата выплаты'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`lifePayouts[${count}].paymentOrderNumber`} type={'input'}
-                                                   label={'Номер платежного поручения'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`lifePayouts[${count}].recipient`} type={'input'}
-                                                   label={'ФИО получателя'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={6} className={'mt-15'}>
-                                            <Field name={`lifePayouts[${count}].inheritanceDocumentNumberAndDate`}
-                                                   type={'input'}
-                                                   label={'Номер и дата документа, подтверждающего наследство или правопреемство'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                                <Col xs={1} className={'text-right'}>
-                                    <Button onClick={() => setLifePayoutsCount(prev => --prev)} sm type={"button"}
-                                            danger inline><Minus/></Button>
-                                </Col>
 
-                            </Row>)}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <Row className={"mb-15 mt-15"}>
-                                <Col xs={8}>
-                                    <Title block sm>Выплата по здоровью:</Title>
-                                </Col>
-                                <Col xs={4} className={"text-right"}>
-                                    <Button onClick={() => setHealthPayoutsCount(prev => ++prev)} sm type={"button"}
-                                            inline><Plus/></Button>
-                                </Col>
-                            </Row>
-                            {range(0, healthPayoutsCount).map((count, i) => <Row className={'mb-15'} align={'flex-end'}>
-                                <Col xs={11}>
-                                    <Row>
-                                        <Col xs={3}>
-                                            <Field name={`healthPayouts[${count}].payoutSum`} property={{type:'number'}}
-                                                   type={'input'}
-                                                   label={'Размер выплаты'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`healthPayouts[${count}].payoutDate`} type={'datepicker'}
-                                                   label={'Дата выплаты'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`healthPayouts[${count}].paymentOrderNumber`} type={'input'}
-                                                   label={'Номер платежного поручения'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`healthPayouts[${count}].recipient`} type={'input'}
-                                                   label={'ФИО получателя'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                                <Col xs={1} className={'text-right'}>
-                                    <Button onClick={() => setHealthPayoutsCount(prev => --prev)} sm type={"button"}
-                                            danger inline><Minus/></Button>
-                                </Col>
-
-                            </Row>)}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12}>
-                            <Row className={"mb-15 mt-15"}>
-                                <Col xs={8}>
-                                    <Title block sm>Выплата по иному имуществу:</Title>
-                                </Col>
-                                <Col xs={4} className={"text-right"}>
-                                    <Button onClick={() => setOtherPropertyPayoutsCount(prev => ++prev)} sm
-                                            type={"button"}
-                                            inline><Plus/></Button>
-                                </Col>
-                            </Row>
-                            {range(0, otherPropertyPayoutsCount).map((count, i) => <Row className={'mb-15'}
-                                                                                        align={'flex-end'}>
-                                <Col xs={11}>
-                                    <Row>
-                                        <Col xs={3}>
-                                            <Field name={`otherPropertyPayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
-                                                   label={'Размер выплаты'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`otherPropertyPayouts[${count}].payoutDate`}
-                                                   type={'datepicker'}
-                                                   label={'Дата выплаты'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`otherPropertyPayouts[${count}].paymentOrderNumber`}
-                                                   type={'input'}
-                                                   label={'Номер платежного поручения'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                        <Col xs={3}>
-                                            <Field name={`otherPropertyPayouts[${count}].recipient`} type={'input'}
-                                                   label={'ФИО получателя'}
-                                                   params={{required: true}}/>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                                <Col xs={1} className={'text-right'}>
-                                    <Button onClick={() => setOtherPropertyPayoutsCount(prev => --prev)} sm
-                                            type={"button"}
-                                            danger inline><Minus/></Button>
-                                </Col>
-
-                            </Row>)}
-                        </Col>
-                    </Row>
                 </Form>
             </Modal>
             <Modal title={'Редактирование решения'} hide={() => setOpenEditModal(false)} visible={openEditModal}>
                 <Form
-                    formRequest={acceptDecision}
-                    footer={<Flex className={'mt-32'}><Button>Принять</Button></Flex>}>
+                    formRequest={editDecision}
+                    footer={<Flex className={'mt-32'}><Button>Сохранять</Button></Flex>}>
                     <Row align={'end'}>
                         <Col xs={12} className={' mt-15'}>
                             <Row>
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Field params={{required: true}}
                                            label={'Принятое решение'}
                                            type={'select'}
                                            options={decisionList}
+                                           defaultValue={get(decision,'data.result.decision.decisionId')}
                                            name={'decision.decisionId'}/>
                                 </Col>
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Field
                                         label={'Причина отказа'}
                                         type={'input'}
+                                        defaultValue={get(decision,'data.result.decision.rejectionReason')}
                                         name={'decision.rejectionReason'}/>
                                 </Col>
-                                <Col xs={4}>
+                                <Col xs={3}>
                                     <Field params={{required: true}}
                                            label={'Номер протокола'}
                                            type={'input'}
+                                           defaultValue={get(decision,'data.result.decision.reasonForPayment')}
                                            name={'decision.reasonForPayment'}/>
+                                </Col>
+                                <Col xs={3}>
+                                    <Field params={{required: true}}
+                                           label={'Дата решения'}
+                                           type={'datepicker'}
+                                           defaultValue={get(decision,'data.result.decision.decisionDate')}
+                                           name={'decision.decisionDate'}/>
                                 </Col>
                             </Row>
                         </Col>
                     </Row>
+
+                </Form>
+            </Modal>
+            <Modal title={'Оплата'} hide={() => setOpenPaymentModal(false)} visible={openPaymentModal}>
+                <Form
+                    formRequest={payment}
+                    footer={<Flex className={'mt-32'}><Button>Сохранить</Button></Flex>}>
+
+                  <Row>
+                    <Col xs={12}>
+                        <Row className={"mb-15 mt-15"}>
+                            <Col xs={8}>
+                                <h2 >Выплата по жизни:</h2>
+                            </Col>
+                            <Col xs={4} className={"text-right"}>
+                                <Button onClick={() => setLifePayoutsCount(prev => ++prev)} sm type={"button"}
+                                        inline><Plus/></Button>
+                            </Col>
+                        </Row>
+                        {range(0, lifePayoutsCount).map((count, i) => <Row className={'mb-15'} align={'flex-end'}>
+                            <Col xs={11}>
+                                <Row>
+                                    <Col xs={3}>
+                                        <Field name={`lifePayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
+                                               label={'Размер выплаты'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`lifePayouts[${count}].payoutDate`} type={'datepicker'}
+                                               label={'Дата выплаты'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`lifePayouts[${count}].paymentOrderNumber`} type={'input'}
+                                               label={'Номер платежного поручения'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`lifePayouts[${count}].recipient`} type={'input'}
+                                               label={'ФИО получателя'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={6} className={'mt-15'}>
+                                        <Field name={`lifePayouts[${count}].inheritanceDocumentNumberAndDate`}
+                                               type={'input'}
+                                               label={'Номер и дата документа, подтверждающего наследство или правопреемство'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col xs={1} className={'text-right'}>
+                                <Button onClick={() => setLifePayoutsCount(prev => --prev)} sm type={"button"}
+                                        danger inline><Minus/></Button>
+                            </Col>
+
+                        </Row>)}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <Row className={"mb-15 mt-15"}>
+                            <Col xs={8}>
+                                <h2>Выплата по здоровью:</h2>
+                            </Col>
+                            <Col xs={4} className={"text-right"}>
+                                <Button onClick={() => setHealthPayoutsCount(prev => ++prev)} sm type={"button"}
+                                        inline><Plus/></Button>
+                            </Col>
+                        </Row>
+                        {range(0, healthPayoutsCount).map((count, i) => <Row className={'mb-15'} align={'flex-end'}>
+                            <Col xs={11}>
+                                <Row>
+                                    <Col xs={3}>
+                                        <Field name={`healthPayouts[${count}].payoutSum`} property={{type:'number'}}
+                                               type={'input'}
+                                               label={'Размер выплаты'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`healthPayouts[${count}].payoutDate`} type={'datepicker'}
+                                               label={'Дата выплаты'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`healthPayouts[${count}].paymentOrderNumber`} type={'input'}
+                                               label={'Номер платежного поручения'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`healthPayouts[${count}].recipient`} type={'input'}
+                                               label={'ФИО получателя'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col xs={1} className={'text-right'}>
+                                <Button onClick={() => setHealthPayoutsCount(prev => --prev)} sm type={"button"}
+                                        danger inline><Minus/></Button>
+                            </Col>
+
+                        </Row>)}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <Row className={"mb-15 mt-15"}>
+                            <Col xs={8}>
+                                <h2>Выплата по иному имуществу:</h2>
+                            </Col>
+                            <Col xs={4} className={"text-right"}>
+                                <Button onClick={() => setOtherPropertyPayoutsCount(prev => ++prev)} sm
+                                        type={"button"}
+                                        inline><Plus/></Button>
+                            </Col>
+                        </Row>
+                        {range(0, otherPropertyPayoutsCount).map((count, i) => <Row className={'mb-15'}
+                                                                                    align={'flex-end'}>
+                            <Col xs={11}>
+                                <Row>
+                                    <Col xs={3}>
+                                        <Field name={`otherPropertyPayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
+                                               label={'Размер выплаты'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`otherPropertyPayouts[${count}].payoutDate`}
+                                               type={'datepicker'}
+                                               label={'Дата выплаты'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`otherPropertyPayouts[${count}].paymentOrderNumber`}
+                                               type={'input'}
+                                               label={'Номер платежного поручения'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Field name={`otherPropertyPayouts[${count}].recipient`} type={'input'}
+                                               label={'ФИО получателя'}
+                                               params={{required: true}}/>
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col xs={1} className={'text-right'}>
+                                <Button onClick={() => setOtherPropertyPayoutsCount(prev => --prev)} sm
+                                        type={"button"}
+                                        danger inline><Minus/></Button>
+                            </Col>
+
+                        </Row>)}
+                    </Col>
+                </Row>
+                </Form>
+            </Modal>
+
+            <Modal title={'Редактировать оплаты'} hide={() => setOpenPaymentEditModal(false)} visible={openPaymentEditModal}>
+                <Form
+                    formRequest={editPayment}
+                    footer={<Flex className={'mt-32'}><Button>Сохранить</Button></Flex>}>
+
                     <Row>
                         <Col xs={12}>
                             <Row className={"mb-15 mt-15"}>
                                 <Col xs={8}>
-                                    <Title block sm>Выплата по жизни:</Title>
+                                    <h2 >Выплата по жизни:</h2>
                                 </Col>
                                 <Col xs={4} className={"text-right"}>
                                     <Button onClick={() => setLifePayoutsCount(prev => ++prev)} sm type={"button"}
@@ -2097,26 +2277,31 @@ const ViewContainer = ({claimFormId = null}) => {
                                     <Row>
                                         <Col xs={3}>
                                             <Field name={`lifePayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
+                                                   defaultValue={get(paymentData,`data.result.lifePayouts[${count}].payoutSum`)}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`lifePayouts[${count}].payoutDate`} type={'datepicker'}
+                                                   defaultValue={get(paymentData,`data.result.lifePayouts[${count}].payoutDate`)}
                                                    label={'Дата выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`lifePayouts[${count}].paymentOrderNumber`} type={'input'}
+                                                   defaultValue={get(paymentData,`data.result.lifePayouts[${count}].paymentOrderNumber`)}
                                                    label={'Номер платежного поручения'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`lifePayouts[${count}].recipient`} type={'input'}
+                                                   defaultValue={get(paymentData,`data.result.lifePayouts[${count}].recipient`)}
                                                    label={'ФИО получателя'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={6} className={'mt-15'}>
                                             <Field name={`lifePayouts[${count}].inheritanceDocumentNumberAndDate`}
+                                                   defaultValue={get(paymentData,`data.result.lifePayouts[${count}].inheritanceDocumentNumberAndDate`)}
                                                    type={'input'}
                                                    label={'Номер и дата документа, подтверждающего наследство или правопреемство'}
                                                    params={{required: true}}/>
@@ -2135,7 +2320,7 @@ const ViewContainer = ({claimFormId = null}) => {
                         <Col xs={12}>
                             <Row className={"mb-15 mt-15"}>
                                 <Col xs={8}>
-                                    <Title block sm>Выплата по здоровью:</Title>
+                                    <h2>Выплата по здоровью:</h2>
                                 </Col>
                                 <Col xs={4} className={"text-right"}>
                                     <Button onClick={() => setHealthPayoutsCount(prev => ++prev)} sm type={"button"}
@@ -2147,22 +2332,26 @@ const ViewContainer = ({claimFormId = null}) => {
                                     <Row>
                                         <Col xs={3}>
                                             <Field name={`healthPayouts[${count}].payoutSum`} property={{type:'number'}}
+                                                   defaultValue={get(paymentData,`data.result.healthPayouts[${count}].payoutSum`)}
                                                    type={'input'}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`healthPayouts[${count}].payoutDate`} type={'datepicker'}
+                                                   defaultValue={get(paymentData,`data.result.healthPayouts[${count}].payoutDate`)}
                                                    label={'Дата выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`healthPayouts[${count}].paymentOrderNumber`} type={'input'}
+                                                   defaultValue={get(paymentData,`data.result.healthPayouts[${count}].paymentOrderNumber`)}
                                                    label={'Номер платежного поручения'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`healthPayouts[${count}].recipient`} type={'input'}
+                                                   defaultValue={get(paymentData,`data.result.healthPayouts[${count}].recipient`)}
                                                    label={'ФИО получателя'}
                                                    params={{required: true}}/>
                                         </Col>
@@ -2180,7 +2369,7 @@ const ViewContainer = ({claimFormId = null}) => {
                         <Col xs={12}>
                             <Row className={"mb-15 mt-15"}>
                                 <Col xs={8}>
-                                    <Title block sm>Выплата по иному имуществу:</Title>
+                                    <h2>Выплата по иному имуществу:</h2>
                                 </Col>
                                 <Col xs={4} className={"text-right"}>
                                     <Button onClick={() => setOtherPropertyPayoutsCount(prev => ++prev)} sm
@@ -2194,23 +2383,27 @@ const ViewContainer = ({claimFormId = null}) => {
                                     <Row>
                                         <Col xs={3}>
                                             <Field name={`otherPropertyPayouts[${count}].payoutSum`} type={'input'} property={{type:'number'}}
+                                                   defaultValue={get(paymentData,`data.result.otherPropertyPayouts[${count}].payoutSum`)}
                                                    label={'Размер выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`otherPropertyPayouts[${count}].payoutDate`}
+                                                   defaultValue={get(paymentData,`data.result.otherPropertyPayouts[${count}].payoutDate`)}
                                                    type={'datepicker'}
                                                    label={'Дата выплаты'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`otherPropertyPayouts[${count}].paymentOrderNumber`}
+                                                   defaultValue={get(paymentData,`data.result.otherPropertyPayouts[${count}].paymentOrderNumber`)}
                                                    type={'input'}
                                                    label={'Номер платежного поручения'}
                                                    params={{required: true}}/>
                                         </Col>
                                         <Col xs={3}>
                                             <Field name={`otherPropertyPayouts[${count}].recipient`} type={'input'}
+                                                   defaultValue={get(paymentData,`data.result.otherPropertyPayouts[${count}].recipient`)}
                                                    label={'ФИО получателя'}
                                                    params={{required: true}}/>
                                         </Col>
