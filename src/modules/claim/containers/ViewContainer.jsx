@@ -335,7 +335,7 @@ const ViewContainer = ({claimFormId = null}) => {
     if (isLoading || isLoadingRegion || isLoadingCountry) {
         return <OverlayLoader/>
     }
-    console.log('paymentData',paymentData)
+
     return (<>
         {(isLoadingFond || deleteLoading || isLoadingConfirmPayed || isLoadingSendDecision) && <OverlayLoader/>}
         <Panel>
@@ -390,7 +390,7 @@ const ViewContainer = ({claimFormId = null}) => {
                         green
                         type={'button'} className={'mr-16'}>Отправка решение</Button>
                 }
-                {includes(['sent_decision'],get(data, 'data.result.status')) && <Button
+                {includes(['sent_decision','cancel_payment'],get(data, 'data.result.status')) && <Button
                     onClick={()=>setOpenPaymentModal(true)}
                     green
                     type={'button'} className={'mr-16'}>Оплата</Button>}

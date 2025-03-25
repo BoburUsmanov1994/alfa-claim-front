@@ -40,16 +40,16 @@ const GridTableBody = ({
                     <td>{viewUrl && <Eye
                         onClick={() => navigate(`${viewUrl}/${dataKey ? get(tr, dataKey, null) : get(tr, '_id', null)}`)}
                         className={'cursor-pointer mr-10'} size={20} color={'#78716c'}/>}
-                        {!includes(['payed','sent'],get(tr,'status')) && <>
-                        {/*<Edit*/}
-                        {/*onClick={() => {*/}
-                        {/*    if (updateUrl) {*/}
-                        {/*        navigate(`${updateUrl}/${dataKey ? get(tr, dataKey, null) : get(tr, '_id', null)}`)*/}
-                        {/*        return*/}
-                        {/*    }*/}
-                        {/*    openEditModal(get(tr, '_id', null))*/}
-                        {/*}} className={'cursor-pointer mr-10'} size={20}*/}
-                        {/*color={'#13D6D1'}/>*/}
+                        {includes(['new'],get(tr,'status')) && <>
+                        <Edit
+                        onClick={() => {
+                            if (updateUrl) {
+                                navigate(`${updateUrl}/${dataKey ? get(tr, dataKey, null) : get(tr, '_id', null)}`)
+                                return
+                            }
+                            openEditModal(get(tr, '_id', null))
+                        }} className={'cursor-pointer mr-10'} size={20}
+                        color={'#13D6D1'}/>
                         <Trash2 onClick={() => remove(dataKey ? get(tr, dataKey, null) : get(tr, '_id', null))}
                                 className={'cursor-pointer '} size={20} color={'#dc2626'}/>
                         </>}

@@ -8,6 +8,7 @@ import IsGuest from "../services/auth/IsGuest";
 import NotFoundPage from "../modules/auth/pages/NotFoundPage";
 import {OverlayLoader} from "../components/loader";
 import LogOutPage from "../modules/auth/pages/LogOutPage";
+import UpdatePage from "../modules/claim/pages/UpdatePage";
 
 
 const ListPage = lazy(() => import("../modules/claim/pages/ListPage"));
@@ -25,6 +26,7 @@ const Router = ({...rest}) => {
                                 <Route index element={<ListPage/>}/>
                                 <Route path={"create"} element={<CreatePage/>}/>
                                 <Route path={"view/:claimFormId"} element={<ViewPage/>}/>
+                                <Route path={"update/:claimFormId"} element={<UpdatePage/>}/>
                             </Route>
                             <Route path="/auth/logout" element={<LogOutPage/>}/>
                             <Route path={"auth/*"} element={<Navigate to={'/claim'} replace/>}/>
