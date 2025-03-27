@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useStore} from "../../../store";
 import {get} from "lodash";
 import GridView from "../../../containers/grid-view/grid-view";
@@ -8,10 +8,19 @@ import Field from "../../../containers/form/field";
 import {useTranslation} from "react-i18next";
 import NumberFormat from "react-number-format";
 import dayjs from "dayjs";
+import {Col, Row} from "react-grid-system";
+import Button from "../../../components/ui/button";
+import {Filter, Trash} from "react-feather";
+import {useNavigate} from "react-router-dom";
+import Form from "../../../containers/form/form";
+import {Flex} from "@chakra-ui/react";
 
 const ListContainer = ({...rest}) => {
     const {t} = useTranslation()
+    const navigate = useNavigate();
+    const [filter, setFilter] = useState({
 
+    });
     const setBreadcrumbs = useStore(state => get(state, 'setBreadcrumbs', () => {
     }))
     const breadcrumbs = useMemo(() => [
@@ -39,6 +48,7 @@ const ListContainer = ({...rest}) => {
     return (
         <>
             <GridView
+
                 ModalBody={ModalBody}
                 tableHeaderData={[
                     {
@@ -86,7 +96,7 @@ const ListContainer = ({...rest}) => {
                     },
 
                 ]}
-                keyId={KEYS.list}
+                keyId={[KEYS.list,filter]}
                 url={URLS.list}
                 title={t('Claims')}
                 responseDataKey={'result.docs'}
@@ -97,6 +107,35 @@ const ListContainer = ({...rest}) => {
                 dataKey={'claimFormId'}
                 deleteUrl={URLS.remove}
                 deleteParam={'claimFormId'}
+params={{...filter}}
+                extraFilters={<Form formRequest={({data: {...rest} = {}}) => {
+                setFilter(rest);
+            }}
+                                                 mainClassName={'mt-15'}>
+
+                 <Row align={'flex-end'}>
+                    <Col xs={3}>
+                        <Field label={t('Claim number')} type={'input'}
+                               name={'claimNumber'}
+                               defaultValue={get(filter, 'claimNumber')}
+
+                        />
+                    </Col>
+
+                    <Col xs={6}>
+                        <div className="mb-25">
+
+                            <Button htmlType={'submit'}><Flex justify={'center'}><Filter size={18}/><span
+                                style={{marginLeft: '5px'}}>{t("ПРИМЕНИТЬ")}</span></Flex></Button>
+                            <Button onClick={() => {
+                                navigate(0)
+                            }} className={'ml-15'} danger type={'button'}><Flex justify={'center'}><Trash
+                                size={18}/><span
+                                style={{marginLeft: '5px'}}>{t("ОЧИСТИТЬ")}</span></Flex></Button>
+                        </div>
+                    </Col>
+                </Row>
+            </Form>}
 
             />
         </>

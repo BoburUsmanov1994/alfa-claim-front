@@ -76,6 +76,8 @@ const GridView = ({
                       dataKey = null,
                       deleteUrl = null,
                       deleteParam = null,
+                      extraFilters=<></>,
+                      params={}
                   }) => {
     const navigate = useNavigate()
     const [searchParams, setSearchBarParams] = useSearchParams();
@@ -88,8 +90,9 @@ const GridView = ({
         key: keyId, url,
         params: {
           params:{
+              ...params,
               skip:page-1,
-              limit: 20
+              limit: 20,
           }
         }
     })
@@ -216,6 +219,9 @@ const GridView = ({
                                 </ul>
                             </Dropdown>}
                         </Flex>
+                    </Col>
+                    <Col xs={12}>
+                        {extraFilters}
                     </Col>
                     <Col xs={12}>
                         <GridModal
