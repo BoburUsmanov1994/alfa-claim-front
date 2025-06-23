@@ -77,7 +77,8 @@ const GridView = ({
                       deleteUrl = null,
                       deleteParam = null,
                       extraFilters=<></>,
-                      params={}
+                      params={},
+                      hideActionColumn=false
                   }) => {
     const navigate = useNavigate()
     const [searchParams, setSearchBarParams] = useSearchParams();
@@ -250,6 +251,7 @@ const GridView = ({
                         tableBodyData={get(data, `data[${responseDataKey}]`, [])}
                         isFetching={isFetching}
                         dataKey={dataKey}
+                        hideActionColumn={hideActionColumn}
                     /></div>
                     <Pagination page={page} setPage={setPage} totalItems={get(data, `data.result.count`, 0)}/>
                 </>}

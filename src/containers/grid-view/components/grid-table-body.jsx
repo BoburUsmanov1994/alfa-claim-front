@@ -16,7 +16,8 @@ const GridTableBody = ({
                            viewUrl = null,
                            updateUrl = null,
                            dataKey = null,
-                           pageSize=20
+                           pageSize=20,
+                           hideActionColumn=false
                        }) => {
     const navigate = useNavigate();
     return (
@@ -37,7 +38,7 @@ const GridTableBody = ({
                                 get(tr, get(td, 'key'))}
                         </td>)
                     }
-                    <td>{viewUrl && <Eye
+                    {!hideActionColumn && <td>{viewUrl && <Eye
                         onClick={() => navigate(`${viewUrl}/${dataKey ? get(tr, dataKey, null) : get(tr, '_id', null)}`)}
                         className={'cursor-pointer mr-10'} size={20} color={'#78716c'}/>}
                         {includes(['new'],get(tr,'status')) && <>
@@ -53,7 +54,7 @@ const GridTableBody = ({
                         <Trash2 onClick={() => remove(dataKey ? get(tr, dataKey, null) : get(tr, '_id', null))}
                                 className={'cursor-pointer '} size={20} color={'#dc2626'}/>
                         </>}
-                    </td>
+                    </td>}
                 </tr>)
             }
         </>

@@ -73,6 +73,7 @@ const GridTable = ({
                        viewUrl = null,
                        updateUrl = null,
                        dataKey = null,
+                       hideActionColumn=false,
                        ...rest
                    }) => {
     const {t} = useTranslation()
@@ -90,11 +91,11 @@ const GridTable = ({
                     </th>)
 
                 }
-                <th>{t("Actions")}</th>
+                {!hideActionColumn && <th>{t("Actions")}</th>}
             </tr>
             </thead>
             <tbody className={'table-body'}>
-            <TableBody dataKey={dataKey} viewUrl={viewUrl} updateUrl={updateUrl} page={page} remove={remove} openEditModal={openEditModal} tableHeaderData={tableHeaderData}
+            <TableBody hideActionColumn={hideActionColumn} dataKey={dataKey} viewUrl={viewUrl} updateUrl={updateUrl} page={page} remove={remove} openEditModal={openEditModal} tableHeaderData={tableHeaderData}
                        tableBodyData={tableBodyData}/>
             </tbody>
         </Styled>

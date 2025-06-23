@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
 import {get} from "lodash";
 import {ErrorMessage} from "@hookform/error-message";
@@ -6,8 +6,6 @@ import Label from "../../../../components/ui/label";
 import classNames from "classnames";
 import Dropzone from 'react-dropzone'
 import {Paperclip} from "react-feather";
-import {usePostQuery} from "../../../../hooks/api";
-import {URLS} from "../../../../constants/url"
 
 const Styled = styled.div`
   .form-input {
@@ -52,7 +50,7 @@ const Styled = styled.div`
     }
   }
 `;
-const CustomDropzone = ({
+const Upload = ({
                             register,
                             disabled = false,
                             name,
@@ -68,42 +66,20 @@ const CustomDropzone = ({
                             },
                             ...rest
                         }) => {
-    const {mutate: uploadFile, isLoading} = usePostQuery({listKeyId: get(property, 'key')})
-
+    const [file, setFile] = useState(null);
     useEffect(() => {
-        setValue(name, defaultValue)
-    }, [defaultValue])
-
-    useEffect(() => {
-        getValueFromField(getValues(name), name);
-    }, [watch(name)]);
-
-    const upload = (files) => {
-        const formData = new FormData();
-        formData.append('file', files[0]);
-
-        uploadFile({
-            url: get(property, 'url', URLS.contractform), attributes: formData, config: {
-                headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            }
-        }, {
-            onSuccess: ({data}) => {
-                setValue(name, get(data,'data._id'))
-            },
-            onError: () => {
-
-            }
-        })
-    }
+        if(file){
+            setValue(name,file)
+        }
+    },[file])
+    console.log('file',file)
     return (
         <Styled {...rest}>
 
             <div className="form-group">
                 {!get(property, 'hideLabel', false) && <Label
                     className={classNames({required: get(property, 'hasRequiredLabel', false)})}>{label ?? name}</Label>}
-                <Dropzone onDrop={acceptedFiles => upload(acceptedFiles)}>
+                <Dropzone onDrop={acceptedFiles => setFile(acceptedFiles[0])}>
                     {({getRootProps, getInputProps}) => (
                         <section>
                             <div {...getRootProps()}>
@@ -113,6 +89,7 @@ const CustomDropzone = ({
                         </section>
                     )}
                 </Dropzone>
+                <p>{file?.path}</p>
                 <ErrorMessage
                     errors={errors}
                     name={name}
@@ -135,4 +112,4 @@ const CustomDropzone = ({
     );
 };
 
-export default CustomDropzone;
+export default Upload;

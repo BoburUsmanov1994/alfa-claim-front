@@ -9,6 +9,7 @@ import NotFoundPage from "../modules/auth/pages/NotFoundPage";
 import {OverlayLoader} from "../components/loader";
 import LogOutPage from "../modules/auth/pages/LogOutPage";
 import UpdatePage from "../modules/claim/pages/UpdatePage";
+import NbuListPage from "../modules/claim/pages/NbuListPage";
 
 
 const ListPage = lazy(() => import("../modules/claim/pages/ListPage"));
@@ -22,6 +23,7 @@ const Router = ({...rest}) => {
                 <IsAuth>
                     <Routes>
                         <Route path={"/"} element={<MainLayout/>}>
+                            <Route path={"nbu"} element={<NbuListPage/>}/>
                             <Route path={"claim"}>
                                 <Route index element={<ListPage/>}/>
                                 <Route path={"create"} element={<CreatePage/>}/>

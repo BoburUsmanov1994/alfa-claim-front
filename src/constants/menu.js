@@ -4,5 +4,10 @@ export const menuData = [
         title: 'Claims',
         path: '/claim',
     },
+    {
+        id: 2,
+        title: 'Claims (NBU)',
+        path: '/nbu',
+    },
 
 ]

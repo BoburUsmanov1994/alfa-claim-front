@@ -11,6 +11,7 @@ import NumberFormatInput from "./components/number-format-input";
 import RadioGroupComponent from "./components/radio-group";
 import InputRange from "./components/input-range";
 import CustomDatepicker from "./components/datepicker";
+import Upload from "./components/upload";
 
 const StyledField = styled.div`
   //margin-bottom: 25px;
@@ -38,6 +39,9 @@ const Field = ({type, ...rest}) => {
                                                                                             getValueFromField={getValueFromField}/>}</FormConsumer>;
                         case 'dropzone':
                             return <FormConsumer>{({attrs, getValueFromField}) => <CustomDropzone {...rest} {...attrs}
+                                                                                                  getValueFromField={getValueFromField}/>}</FormConsumer>;
+                        case 'upload':
+                            return <FormConsumer>{({attrs, getValueFromField}) => <Upload {...rest} {...attrs}
                                                                                                   getValueFromField={getValueFromField}/>}</FormConsumer>;
                         case 'number-format-input':
                             return <FormConsumer>{({attrs, getValueFromField}) => <NumberFormatInput {...rest} {...attrs}

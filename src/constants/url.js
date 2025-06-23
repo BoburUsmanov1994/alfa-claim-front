@@ -41,4 +41,8 @@ export const URLS = {
     editPayment: 'api/claim/edit-payment',
     cancelPayment: 'api/claim/cancel-payment',
     sendPayment: 'api/claim/send-payment',
+    uploadClaimNbu: 'api/claim/nbu',
+    uploadApplicantClaimNbu: 'api/claim/nbu/upload-application',
+    uploadDecisionClaimNbu: 'api/claim/nbu/upload-decision',
+    uploadPaymentClaimNbu: 'api/claim/nbu/upload-payment',
 }
