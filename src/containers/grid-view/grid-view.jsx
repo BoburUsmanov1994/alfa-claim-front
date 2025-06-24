@@ -182,11 +182,11 @@ const GridView = ({
         <Styled>
             <Panel>
                 <Row>
-                    <Col xs={10}>
+                    <Col xs={createUrl ? 10 : 12}>
                         <Search/>
                     </Col>
                     <Col xs={2} className={'text-right'}>
-                        <Button lg onClick={() => {
+                        {createUrl && <Button lg onClick={() => {
                             if (createUrl) {
                                 navigate(createUrl)
                                 return
@@ -196,6 +196,7 @@ const GridView = ({
                         }}>
                             {t("Добавить")}
                         </Button>
+                        }
                     </Col>
                 </Row>
             </Panel>

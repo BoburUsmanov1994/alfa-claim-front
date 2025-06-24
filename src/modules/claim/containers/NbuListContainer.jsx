@@ -175,8 +175,8 @@ const NbuListContainer = () => {
                 title={t('Claims (NBU)')}
                 responseDataKey={'result.docs'}
                 // viewUrl={'/claim/view'}
-                createUrl={'/claim/create'}
-                updateUrl={'/claim/update'}
+                // createUrl={'/claim/create'}
+                // updateUrl={'/claim/update'}
                 isHideColumn
                 dataKey={'claimMainNumber'}
                 deleteUrl={URLS.remove}
