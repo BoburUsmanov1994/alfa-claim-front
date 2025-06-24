@@ -50,7 +50,9 @@ const getFieldType = (type = 'String') => {
     return 'input';
 }
 const saveFile = (file, name = dayjs(), extension = 'xlsx') => {
-    const blob = new Blob([file]);
+    const blob = new Blob([file],{
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `${name}.${extension}`;

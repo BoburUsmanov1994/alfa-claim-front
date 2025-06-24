@@ -50,13 +50,18 @@ const NbuListContainer = () => {
        formData.append("claimDate", get(data,'claimDate'));
        formData.append("claimNumber", get(data,'claimNumber'));
         uploadClaim({
-            url: URLS.uploadClaimNbu, attributes: formData,config:{params:{
-                    responseType: 'blob'
-                }}
+            url: URLS.uploadClaimNbu, attributes: formData,
+            config: {
+                responseType:'blob',
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
         },{
-            onSuccess: (data) => {
+            onSuccess: (res) => {
+                console.log('res',res)
                 setClaim({})
-                saveFile(get(data,'data'))
+                saveFile(get(res,'data'))
             }
         })
     }
@@ -118,7 +123,7 @@ const NbuListContainer = () => {
     return (
         <>
             <GridView
-                hideActionColumn
+
                 ModalBody={ModalBody}
                 tableHeaderData={[
                     {
@@ -172,6 +177,7 @@ const NbuListContainer = () => {
                 responseDataKey={'result.docs'}
                 isHideColumn
                 dataKey={'claimMainNumber'}
+                viewUrl={'/nbu/view'}
                 deleteUrl={URLS.remove}
                 deleteParam={'claimFormId'}
                 params={{isNbuClaim: true, ...filter}}

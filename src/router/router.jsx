@@ -10,6 +10,7 @@ import {OverlayLoader} from "../components/loader";
 import LogOutPage from "../modules/auth/pages/LogOutPage";
 import UpdatePage from "../modules/claim/pages/UpdatePage";
 import NbuListPage from "../modules/claim/pages/NbuListPage";
+import NbuViewPage from "../modules/claim/pages/NbuViewPage";
 
 
 const ListPage = lazy(() => import("../modules/claim/pages/ListPage"));
@@ -24,6 +25,7 @@ const Router = ({...rest}) => {
                     <Routes>
                         <Route path={"/"} element={<MainLayout/>}>
                             <Route path={"nbu"} element={<NbuListPage/>}/>
+                            <Route path={"nbu/view/:claimFormId"} element={<NbuViewPage/>}/>
                             <Route path={"claim"}>
                                 <Route index element={<ListPage/>}/>
                                 <Route path={"create"} element={<CreatePage/>}/>

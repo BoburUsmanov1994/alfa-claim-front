@@ -23,7 +23,7 @@ import Table from "../../../components/table";
 import Modal from "../../../components/modal";
 import {Minus, Plus} from "react-feather";
 
-const ViewContainer = ({claimFormId = null}) => {
+const NbuViewContainer = ({claimFormId = null}) => {
     const {t} = useTranslation()
     const navigate = useNavigate();
     const setBreadcrumbs = useStore(state => get(state, 'setBreadcrumbs', () => {
@@ -372,44 +372,44 @@ const ViewContainer = ({claimFormId = null}) => {
 
 
 
-                {/*{get(data, 'data.result.decisionId') && includes(['sent','add_decision'],get(data, 'data.result.status')) && <Button*/}
-                {/*    onClick={cancelDecision}*/}
-                {/*    danger*/}
-                {/*    type={'button'} className={'mr-16'}>Отменить решение</Button>*/}
-                
-                {/*}*/}
-                {/*{*/}
-                {/*    get(data, 'data.result.decisionId') && includes(['add_decision','sent'], get(data, 'data.result.status')) && <Button*/}
-                {/*        onClick={ () => setOpenEditModal(true) }*/}
-                {/*        yellow*/}
-                {/*        type={'button'} className={'mr-16'}>Редактировать решение</Button>*/}
-                {/*}*/}
-                {/*{*/}
-                {/*    get(data, 'data.result.decisionId') && includes(['sent','add_decision'],get(data, 'data.result.status')) && <Button*/}
-                {/*        onClick={sendDecision}*/}
-                {/*        green*/}
-                {/*        type={'button'} className={'mr-16'}>Отправка решение</Button>*/}
-                {/*}*/}
-                {/*{includes(['sent_decision','cancel_payment'],get(data, 'data.result.status')) && <Button*/}
-                {/*    onClick={()=>setOpenPaymentModal(true)}*/}
-                {/*    green*/}
-                {/*    type={'button'} className={'mr-16'}>Оплата</Button>}*/}
-                {/*{ includes(['add_payment'],get(data, 'data.result.status')) && <Button*/}
-                {/*    onClick={cancelPayment}*/}
-                {/*    danger*/}
-                {/*    type={'button'} className={'mr-16'}>Отменить оплаты</Button>*/}
-                
-                {/*}*/}
-                {/*{*/}
-                {/*    includes(['add_payment'], get(data, 'data.result.status')) && <Button*/}
-                {/*        onClick={ () => setOpenPaymentEditModal(true) }*/}
-                {/*        yellow*/}
-                {/*        type={'button'} className={'mr-16'}>Редактировать оплаты</Button>*/}
-                {/*}*/}
-                {/*{includes(['add_payment'],get(data, 'data.result.status')) && <Button*/}
-                {/*    onClick={sendPayment}*/}
-                {/*    green*/}
-                {/*    type={'button'} className={'mr-16'}>Отправить оплаты</Button>}*/}
+                {get(data, 'data.result.decisionId') && includes(['sent','add_decision'],get(data, 'data.result.status')) && <Button
+                    onClick={cancelDecision}
+                    danger
+                    type={'button'} className={'mr-16'}>Отменить решение</Button>
+
+                }
+                {
+                    get(data, 'data.result.decisionId') && includes(['add_decision','sent'], get(data, 'data.result.status')) && <Button
+                        onClick={ () => setOpenEditModal(true) }
+                        yellow
+                        type={'button'} className={'mr-16'}>Редактировать решение</Button>
+                }
+                {
+                    get(data, 'data.result.decisionId') && includes(['sent','add_decision'],get(data, 'data.result.status')) && <Button
+                        onClick={sendDecision}
+                        green
+                        type={'button'} className={'mr-16'}>Отправка решение</Button>
+                }
+                {includes(['sent_decision','cancel_payment'],get(data, 'data.result.status')) && <Button
+                    onClick={()=>setOpenPaymentModal(true)}
+                    green
+                    type={'button'} className={'mr-16'}>Оплата</Button>}
+                { includes(['add_payment'],get(data, 'data.result.status')) && <Button
+                    onClick={cancelPayment}
+                    danger
+                    type={'button'} className={'mr-16'}>Отменить оплаты</Button>
+
+                }
+                {
+                    includes(['add_payment'], get(data, 'data.result.status')) && <Button
+                        onClick={ () => setOpenPaymentEditModal(true) }
+                        yellow
+                        type={'button'} className={'mr-16'}>Редактировать оплаты</Button>
+                }
+                {includes(['add_payment'],get(data, 'data.result.status')) && <Button
+                    onClick={sendPayment}
+                    green
+                    type={'button'} className={'mr-16'}>Отправить оплаты</Button>}
 
 
             </Flex>}>
@@ -2422,4 +2422,4 @@ const ViewContainer = ({claimFormId = null}) => {
     </>);
 };
 
-export default ViewContainer;
+export default NbuViewContainer;
