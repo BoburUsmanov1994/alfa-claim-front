@@ -10,15 +10,14 @@ import NumberFormat from "react-number-format";
 import dayjs from "dayjs";
 import {Col, Row} from "react-grid-system";
 import Button from "../../../components/ui/button";
-import {Download, Filter, Trash} from "react-feather";
+import {Filter, Trash} from "react-feather";
 import {useNavigate} from "react-router-dom";
 import Form from "../../../containers/form/form";
 import {Flex} from "@chakra-ui/react";
 import Modal from "../../../components/modal";
-import {usePostQuery} from "../../../hooks/api";
+import {useGetAllQuery, usePostQuery} from "../../../hooks/api";
 import {OverlayLoader} from "../../../components/loader";
-import config from "../../../config";
-import {saveFile} from "../../../utils";
+import {getSelectOptionsListFromData, saveFile} from "../../../utils";
 
 const NbuListContainer = () => {
     const {t} = useTranslation()
@@ -28,6 +27,10 @@ const NbuListContainer = () => {
     const {mutate: uploadClaim, isLoading:isLoadingUploadClaim} = usePostQuery({listKeyId: [KEYS.list, filter]})
     const setBreadcrumbs = useStore(state => get(state, 'setBreadcrumbs', () => {
     }))
+    const {data: decisions} = useGetAllQuery({
+        key: KEYS.decisions, url: URLS.decisions
+    })
+    const decisionList = getSelectOptionsListFromData(get(decisions, `data.result`, []), 'id', 'name')
     const breadcrumbs = useMemo(() => [
         {
             id: 1,
@@ -71,6 +74,11 @@ const NbuListContainer = () => {
     const uploadDecision = ({data}) => {
         let formData = new FormData();
         formData.append("file", get(data,'file'));
+        formData.append("file_fatf", get(data,'file_fatf'));
+        formData.append("decisionId", get(data,'decisionId'));
+        formData.append("rejectionReason", get(data,'rejectionReason'));
+        formData.append("reasonForPayment", get(data,'reasonForPayment'));
+        formData.append("decisionDate", get(data,'decisionDate'));
         formData.append("claimNumber", get(data,'claimNumber'));
         uploadClaim({
             url: URLS.uploadDecisionClaimNbu, attributes: formData
@@ -290,8 +298,38 @@ const NbuListContainer = () => {
                                     params={{required: true}}/>
                         </Col>
                         <Col xs={4}>
+                            <Field params={{required: true}}
+                                   label={'Принятое решение'}
+                                   type={'select'}
+                                   options={decisionList}
+                                   name={'decisionId'}/>
+                        </Col>
+                        <Col xs={4}>
+                            <Field
+                                label={'Причина отказа'}
+                                type={'input'}
+                                name={'rejectionReason'}/>
+                        </Col>
+                        <Col xs={4}>
+                            <Field params={{required: true}}
+                                   label={'Номер протокола'}
+                                   type={'input'}
+                                   name={'reasonForPayment'}/>
+                        </Col>
+                        <Col xs={4}>
+                            <Field params={{required: true}}
+                                   label={'Дата решения'}
+                                   type={'datepicker'}
+                                   name={'decisionDate'}/>
+                        </Col>
+                        <Col xs={4}>
                             <Field property={{hasRequiredLabel:true}} name={`file`} type={'upload'}
-                                   label={'Файл претензий'}
+                                   label={'Файл решения'}
+                                   params={{required: true}}/>
+                        </Col>
+                        <Col xs={4}>
+                            <Field property={{hasRequiredLabel:true}} name={`file_fatf`} type={'upload'}
+                                   label={'Файл заключения ФАТФ'}
                                    params={{required: true}}/>
                         </Col>
                     </Row>
