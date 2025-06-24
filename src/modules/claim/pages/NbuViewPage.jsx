@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
-import ViewContainer from "../containers/ViewContainer";
 import {useParams} from "react-router-dom";
+import NbuViewContainer from "../containers/NbuViewContainer";
 
 const Styled = styled.div`
   .w-100 {
@@ -30,7 +30,7 @@ const NbuViewPage = ({...rest}) => {
     const {claimFormId  = null} = useParams();
     return (
         <Styled {...rest}>
-            <ViewContainer claimFormId ={claimFormId }/>
+            <NbuViewContainer claimFormId ={claimFormId }/>
         </Styled>
     );
 };
