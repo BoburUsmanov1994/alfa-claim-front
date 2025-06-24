@@ -16,7 +16,7 @@ import Form from "../../../containers/form/form";
 import {Flex} from "@chakra-ui/react";
 import Modal from "../../../components/modal";
 import {useGetAllQuery, usePostQuery} from "../../../hooks/api";
-import {OverlayLoader} from "../../../components/loader";
+import {ContentLoader, OverlayLoader} from "../../../components/loader";
 import {getSelectOptionsListFromData, saveFile} from "../../../utils";
 
 const NbuListContainer = () => {
@@ -50,7 +50,9 @@ const NbuListContainer = () => {
        formData.append("claimDate", get(data,'claimDate'));
        formData.append("claimNumber", get(data,'claimNumber'));
         uploadClaim({
-            url: URLS.uploadClaimNbu, attributes: formData
+            url: URLS.uploadClaimNbu, attributes: formData,config:{params:{
+                    responseType: 'blob'
+                }}
         },{
             onSuccess: (data) => {
                 setClaim({})
@@ -161,22 +163,13 @@ const NbuListContainer = () => {
                         id: 9,
                         key: 'status',
                         title: 'Status',
-                    },
-                    // {
-                    //     id: 10,
-                    //     key: 'applicationFile',
-                    //     title: 'File',
-                    //     render: ({value}) => value ? <a href={`${config.FILE_URL}${value}`} target={'_blank'}><Download /></a>:null
-                    // }
+                    }
 
                 ]}
                 keyId={[KEYS.list, filter]}
                 url={URLS.list}
                 title={t('Claims (NBU)')}
                 responseDataKey={'result.docs'}
-                // viewUrl={'/claim/view'}
-                // createUrl={'/claim/create'}
-                // updateUrl={'/claim/update'}
                 isHideColumn
                 dataKey={'claimMainNumber'}
                 deleteUrl={URLS.remove}
@@ -279,7 +272,7 @@ const NbuListContainer = () => {
                         </Col>
                         <Col xs={4}>
                             <Field property={{hasRequiredLabel:true}} name={`file`} type={'upload'}
-                                   label={'Файл претензий'}
+                                   label={'Файл заявления'}
                                    params={{required: true}}/>
                         </Col>
                     </Row>
@@ -339,7 +332,7 @@ const NbuListContainer = () => {
                 <Form
                     formRequest={uploadPayment}
                     footer={<Flex className={'mt-32'}><Button>Принять решение и отправить в НАПП</Button></Flex>}>
-                    {isLoadingUploadClaim && <OverlayLoader />}
+                    {isLoadingUploadClaim && <ContentLoader />}
                     <br/>
                     <Row>
                         <Col xs={4}>
