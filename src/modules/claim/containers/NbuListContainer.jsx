@@ -176,7 +176,7 @@ const NbuListContainer = () => {
                 title={t('Claims (NBU)')}
                 responseDataKey={'result.docs'}
                 isHideColumn
-                dataKey={'claimMainNumber'}
+                dataKey={'claimFormId'}
                 viewUrl={'/nbu/view'}
                 deleteUrl={URLS.remove}
                 deleteParam={'claimFormId'}
