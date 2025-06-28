@@ -74,7 +74,6 @@ const NbuListContainer = () => {
         },{
             onSuccess: (data) => {
                 setClaim({})
-                saveFile(get(data,'data'))
             }
         })
     }
@@ -92,7 +91,6 @@ const NbuListContainer = () => {
         },{
             onSuccess: (data) => {
                 setClaim({})
-                saveFile(get(data,'data'))
             }
         })
     }
@@ -107,7 +105,6 @@ const NbuListContainer = () => {
         },{
             onSuccess: (data) => {
                 setClaim({})
-                saveFile(get(data,'data'))
             }
         })
     }
